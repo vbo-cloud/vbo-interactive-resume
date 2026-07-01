@@ -25,15 +25,20 @@ export function MainContent() {
   return (
     <div className="md:w-[62%] p-8">
       {/* Header */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-4">
         <h1 className="text-3xl md:text-4xl font-bold tracking-[0.15em] text-resume-text">
           {personal.name.toUpperCase()}
         </h1>
         <p className="text-base text-resume-text-secondary tracking-widest mt-2">
           {resolve(personal.title).toUpperCase()}
         </p>
+        {personal.tagline && (
+          <p className="text-xs uppercase tracking-wide text-resume-text-secondary/70 mt-1">
+            {resolve(personal.tagline)}
+          </p>
+        )}
         {personal.subtitle && (
-          <p className="text-sm text-resume-primary mt-1">{resolve(personal.subtitle)}</p>
+          <p className="text-sm text-resume-text-secondary italic text-left mt-5">{resolve(personal.subtitle)}</p>
         )}
       </div>
 

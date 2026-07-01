@@ -21,6 +21,8 @@ export const resumeConfig: ResumeConfig = {
       en: 'Fullstack Developer',
       fr: 'Développeuse Fullstack',
     },
+    // Optional: short accent line under the title (e.g. area of focus)
+    // tagline: { en: 'Backend & Cloud Infrastructure', fr: 'Backend & Infrastructure Cloud' },
     subtitle: {
       en: '6 years of experience',
       fr: '6 ans d\'expérience',
