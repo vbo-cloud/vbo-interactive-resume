@@ -22,5 +22,11 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["vite.config.ts", "vite-plugin-resume-seo.ts", "src/data/types.ts"]
+  "include": [
+    "vite.config.ts",
+    "vite-plugin-resume-seo.ts",
+    "src/data/types.ts",
+    "scripts/render-resume-html.ts",
+    "scripts/generate-pdfs.ts"
+  ]
 }

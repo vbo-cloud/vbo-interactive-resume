@@ -74,6 +74,7 @@ export function MainContent() {
               }
               labels={experienceLabels}
               isHighlighted={exp.isHighlighted}
+              expandDescription={exp.expandDescription}
             />
           ))}
         </div>
@@ -114,6 +115,7 @@ export function MainContent() {
               specialty={edu.specialty ? resolve(edu.specialty) : undefined}
               period={edu.period}
               logo={edu.logo}
+              badge={edu.badge ? resolve(edu.badge) : undefined}
             />
           ))}
         </div>

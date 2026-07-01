@@ -42,6 +42,8 @@ export interface Experience {
   description: LocalizedString
   techs: (TechName | (string & {}))[]
   isHighlighted?: boolean
+  /** Show up to 4 lines of the description before truncating, instead of the default 2 */
+  expandDescription?: boolean
   subItem?: {
     title: LocalizedString
     description: LocalizedString
@@ -73,6 +75,7 @@ export interface Education {
   specialty?: LocalizedString
   period?: string
   logo?: string
+  badge?: LocalizedString
 }
 
 // ===== HOBBIES =====
@@ -114,6 +117,7 @@ export interface ResumeLabels {
     experience: LocalizedString
     education: LocalizedString
     projects?: LocalizedString
+    values?: LocalizedString
     hobbies?: LocalizedString
   }
   experience: {
@@ -155,6 +159,7 @@ export interface ResumeConfig {
   experiences: Experience[]
   education: Education[]
   projects?: Project[]
+  values?: LocalizedString[]
   hobbies?: Hobby[]
   pdf?: {
     label?: LocalizedString
