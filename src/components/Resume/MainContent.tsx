@@ -33,7 +33,7 @@ export function MainContent() {
           {resolve(personal.title).toUpperCase()}
         </p>
         {personal.tagline && (
-          <p className="text-xs uppercase tracking-wide text-resume-text-secondary/50 mt-1">
+          <p className="text-xs uppercase tracking-wide text-resume-text-secondary/70 mt-1">
             {resolve(personal.tagline)}
           </p>
         )}

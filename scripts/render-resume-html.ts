@@ -56,7 +56,7 @@ export function renderResumeHtml(
   lines.push(`${indent}    <h1 style="margin: 0 0 0.25rem 0; font-size: 1.75rem; color: ${colors.text};">${escapeHtml(personal.name)}</h1>`)
   lines.push(`${indent}    <p style="margin: 0 0 0.25rem 0; font-size: 1.1rem; color: ${colors.primary}; font-weight: 600;">${escapeHtml(resolve(personal.title))}</p>`)
   if (personal.tagline) {
-    lines.push(`${indent}    <p style="margin: 0 0 0.25rem 0; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; color: ${colors.textSecondary}80;">${escapeHtml(resolve(personal.tagline))}</p>`)
+    lines.push(`${indent}    <p style="margin: 0 0 0.25rem 0; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; color: ${colors.textSecondary}b3;">${escapeHtml(resolve(personal.tagline))}</p>`)
   }
   if (personal.subtitle) {
     lines.push(`${indent}    <p style="margin: 1rem 0 0.25rem 0; color: ${colors.textSecondary}; font-style: italic;">${escapeHtml(resolve(personal.subtitle))}</p>`)
