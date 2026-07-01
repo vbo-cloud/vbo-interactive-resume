@@ -8,9 +8,10 @@ import { assetsDetectPlugin } from './vite-plugin-assets-detect'
 import { resumeValidatePlugin } from './vite-plugin-resume-validate'
 
 export default defineConfig({
-  // Dynamic base path: set automatically by GitHub Actions deploy workflow.
-  // Falls back to repo name for local development.
-  base: process.env.VITE_BASE_PATH ?? '/interactive-resume-template/',
+  // Relative base: works whether the site is served from a domain root
+  // (custom domain) or a subpath (https://<user>.github.io/<repo>/),
+  // without needing to detect which one applies at build time.
+  base: './',
   plugins: [react(), tailwindcss(), assetsDetectPlugin(), resumeValidatePlugin(), resumeSeoPlugin()],
   resolve: {
     alias: {
