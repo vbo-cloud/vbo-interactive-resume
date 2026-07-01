@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Auto-generated at build time (npm run generate:pdf) — always kept in sync with resume-config.ts
+public/cv/*/*.pdf
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

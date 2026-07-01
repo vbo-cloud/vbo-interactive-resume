@@ -76,7 +76,7 @@ function SidebarPhoto({ photo, name, emoji }: { photo?: string; name: string; em
 
 export function Sidebar() {
   const { resolve } = useTranslation()
-  const { personal, contact, skills, hobbies, labels } = resumeConfig
+  const { personal, contact, skills, values, hobbies, labels } = resumeConfig
 
   return (
     <div className="md:w-[38%] bg-gradient-to-b from-resume-sidebar-from to-resume-sidebar-to p-8">
@@ -137,6 +137,19 @@ export function Sidebar() {
           ))}
         </div>
       </SidebarSection>
+
+      {/* Values */}
+      {values && values.length > 0 && labels.sections.values && (
+        <SidebarSection title={resolve(labels.sections.values)}>
+          <div className="space-y-1">
+            {values.map((value, i) => (
+              <p key={i} className="text-sm text-resume-text-secondary">
+                {resolve(value)}
+              </p>
+            ))}
+          </div>
+        </SidebarSection>
+      )}
 
       {/* Hobbies */}
       {hobbies && hobbies.length > 0 && labels.sections.hobbies && (

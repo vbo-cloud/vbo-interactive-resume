@@ -1,3 +1,387 @@
-// Copy resume-config.example.ts and customize it with your own information.
-// See docs/CUSTOMIZATION.md for a detailed guide.
-export { resumeConfig } from './resume-config.example'
+import type { ResumeConfig } from './types'
+
+export const resumeConfig: ResumeConfig = {
+  // ===== PERSONAL INFO =====
+  personal: {
+    name: 'Vincent Boutin',
+    photoBackEmoji: '🎮',
+    title: {
+      en: 'Cloud Engineer (Azure)',
+      fr: 'Cloud Engineer (Azure)',
+    },
+    subtitle: {
+      en: 'From game development to cloud engineering',
+      fr: "Du développement de jeux vidéo à l'ingénierie cloud",
+    },
+    location: 'Annemasse',
+  },
+
+  // ===== SEO (used in <head> meta tags) =====
+  seo: {
+    title: 'Vincent Boutin — Cloud Engineer (Azure)',
+    description:
+      'Interactive resume of Vincent Boutin, Cloud Engineer (Azure), AZ-104 certified, with a background in VR/game development (Unity, Unreal, C#/C++).',
+  },
+
+  // ===== LANGUAGES =====
+  languages: {
+    default: 'fr',
+    available: ['fr', 'en'],
+    labels: {
+      en: 'EN',
+      fr: 'FR',
+    },
+  },
+
+  // ===== CONTACT =====
+  contact: [
+    { type: 'linkedin', label: 'Vincent Boutin', href: 'https://linkedin.com/in/vincent-boutin/' },
+    { type: 'email', label: 'contact@vincentboutin.dev' },
+    { type: 'phone', label: '06 46 77 05 54' },
+    { type: 'location', label: 'Annemasse' },
+  ],
+
+  // ===== SKILLS =====
+  skills: [
+    {
+      title: { en: 'Cloud', fr: 'Cloud' },
+      type: 'badges',
+      items: [{ name: 'Azure' }, { name: 'Terraform' }],
+    },
+    {
+      title: { en: 'Code', fr: 'Code' },
+      type: 'badges',
+      items: [{ name: 'C#' }, { name: 'C++' }, { name: 'Python' }],
+    },
+    {
+      title: { en: 'Backend', fr: 'Backend' },
+      type: 'badges',
+      items: [{ name: 'FastAPI' }, { name: 'PostgreSQL' }, { name: 'Service Bus' }],
+    },
+    {
+      title: { en: 'AI', fr: 'IA' },
+      type: 'badges',
+      items: [{ name: 'OpenAI' }, { name: 'Claude' }],
+    },
+    {
+      title: { en: 'Workflow', fr: 'Workflow' },
+      type: 'badges',
+      items: [
+        { name: 'Git' },
+        { name: { en: 'Agile Methods', fr: 'Méthodes Agiles' } },
+        { name: 'CI/CD' },
+        { name: 'GitHub Actions' },
+        { name: 'Docker' },
+      ],
+    },
+    {
+      title: { en: 'Engine', fr: 'Moteurs' },
+      type: 'badges',
+      items: [{ name: 'Unity' }, { name: 'Unreal' }],
+    },
+  ],
+
+  // ===== PROFESSIONAL EXPERIENCES =====
+  experiences: [
+    {
+      id: 'cloud-ia-training',
+      company: { en: 'Cloud & AI Training', fr: 'Formation Cloud & IA' },
+      role: { en: 'Cloud Engineer (Azure)', fr: 'Cloud Engineer (Azure)' },
+      type: { en: 'Self-training', fr: 'Auto-formation' },
+      period: { en: 'Present - 09/2025', fr: 'Présent - 09/2025' },
+      description: {
+        en: 'AZ-104 certified, focused on cloud architecture, Azure administration and AI-oriented technical training. Flagship project: "job-finder", a multi-agent AI pipeline on Azure that automates job hunting end-to-end, from Terraform-provisioned infrastructure to a Next.js frontend.',
+        fr: 'Certifié AZ-104, avec un focus sur l\'architecture cloud, l\'administration Azure et une formation technique orientée IA. Projet phare : "job-finder", un pipeline multi-agents IA sur Azure qui automatise la recherche d\'emploi de bout en bout, de l\'infrastructure Terraform jusqu\'au frontend Next.js.',
+      },
+      techs: [
+        'Azure',
+        'Terraform',
+        'Python',
+        'FastAPI',
+        'PostgreSQL',
+        'OpenAI',
+        'Claude',
+        'Service Bus',
+        'GitHub Actions',
+        'Docker',
+      ],
+      isHighlighted: true,
+      details: {
+        context: {
+          en: 'Independent, self-driven learning path following the AZ-104 certification. Core of this training is "job-finder", a personal portfolio project: a multi-agent AI system that fetches job offers, matches them against CVs via semantic search, and reviews CVs against top matches — built solo end-to-end (infrastructure, backend, AI pipeline, frontend) and documented PR by PR (130+ merged PRs).',
+          fr: 'Parcours de formation autonome faisant suite à la certification AZ-104. Le cœur de cette formation est "job-finder", un projet personnel de portfolio : un système multi-agents IA qui collecte des offres d\'emploi, les met en correspondance avec des CV par recherche sémantique, et analyse les CV au regard des meilleurs matchs — construit en solo de bout en bout (infrastructure, backend, pipeline IA, frontend) et documenté PR par PR (130+ PR mergées).',
+        },
+        tasks: {
+          en: [
+            'Designed a two-layer Azure landing zone (platform + application) with reusable Terraform modules (network, compute, data, AI, messaging, monitoring) and remote state',
+            'Built a secretless CI/CD pipeline with GitHub Actions and OIDC federated credentials — zero stored cloud credentials, terraform plan on every PR, apply on merge',
+            'Developed a Python multi-agent pipeline (offer-fetching, cv-analysis, matching, cv-review, cleanup) orchestrated via Azure Service Bus and Container App Jobs, using pgvector (cosine similarity) and Azure OpenAI (GPT-4o-mini + text-embedding-3-small) for semantic matching and scoring',
+            'Built a FastAPI backend (JWT auth via Microsoft Entra External ID) and a Next.js 14 frontend, secured end-to-end with private networking (VNet, private endpoints/DNS), Key Vault, least-privilege RBAC and managed/workload identity',
+            'Set up observability with Application Insights and Log Analytics, KQL-based alerts, and a running PR-by-PR journal documenting every technical decision',
+            'Orchestrated an AI-assisted development workflow: up to 4 Claude Code agents running in parallel for implementation, Claude for architecture and planning discussions, and an autonomous Claude-based reviewer agent integrated into CI/CD for automatic code review on every PR',
+          ],
+          fr: [
+            'Conception d\'une landing zone Azure à deux couches (plateforme + application) avec des modules Terraform réutilisables (réseau, compute, data, IA, messagerie, monitoring) et un state distant',
+            'Mise en place d\'une CI/CD sans secret avec GitHub Actions et des identités fédérées OIDC — aucune credential cloud stockée, terraform plan à chaque PR, apply au merge',
+            'Développement d\'un pipeline multi-agents Python (collecte d\'offres, analyse de CV, matching, revue de CV, nettoyage) orchestré via Azure Service Bus et des Container App Jobs, avec pgvector (similarité cosinus) et Azure OpenAI (GPT-4o-mini + text-embedding-3-small) pour le matching sémantique et le scoring',
+            'Développement d\'un backend FastAPI (authentification JWT via Microsoft Entra External ID) et d\'un frontend Next.js 14, sécurisés de bout en bout : VNet avec endpoints/DNS privés, Key Vault, RBAC au moindre privilège, identité managée/workload',
+            'Mise en place de l\'observabilité avec Application Insights et Log Analytics, d\'alertes basées sur KQL, et suivi d\'un journal de bord PR par PR documentant chaque décision technique',
+            'Mise en place d\'un workflow de développement assisté par agents IA : jusqu\'à 4 agents Claude Code en simultané pour l\'implémentation, Claude Cowork pour les échanges d\'architecture et de planification, et un agent reviewer Claude autonome intégré en CI/CD pour la revue de code automatique sur chaque PR',
+          ],
+        },
+        training: {
+          en: [
+            'Infrastructure as Code at scale (Terraform modules, remote state, landing zone pattern)',
+            'Multi-agent systems and LLM orchestration (Azure OpenAI, prompt engineering, vector search)',
+            'Cloud platform trade-off analysis (Container Apps vs. AKS)',
+          ],
+          fr: [
+            'Infrastructure as Code à grande échelle (modules Terraform, state distant, landing zone)',
+            'Systèmes multi-agents et orchestration LLM (Azure OpenAI, prompt engineering, recherche vectorielle)',
+            'Analyse d\'arbitrage entre plateformes cloud (Container Apps vs. AKS)',
+          ],
+        },
+        env: {
+          en: 'Azure / Terraform / GitHub Actions / Python / FastAPI / PostgreSQL + pgvector / Azure OpenAI / Service Bus / Next.js / Docker',
+          fr: 'Azure / Terraform / GitHub Actions / Python / FastAPI / PostgreSQL + pgvector / Azure OpenAI / Service Bus / Next.js / Docker',
+        },
+      },
+    },
+    {
+      id: 'akanea',
+      company: { en: 'Akanea', fr: 'Akanea' },
+      role: { en: 'C# Developer', fr: 'Développeur C#' },
+      type: { en: 'Permanent', fr: 'CDI' },
+      period: { en: '09/2025 - 05/2025', fr: '09/2025 - 05/2025' },
+      description: {
+        en: 'Developed new features and fixed bugs on a transport management application, using C# and Oracle Database.',
+        fr: 'Développement de nouvelles fonctionnalités et correction de bugs sur une application de gestion de transport, en C# et Oracle Database.',
+      },
+      techs: ['C#', 'Oracle Database', 'Azure DevOps'],
+      details: {
+        context: {
+          en: 'C# development on a transport management application, contributing to an internal framework and a hybrid client/web application.',
+          fr: "Développement C# sur une application de gestion de transport, contribution à un framework interne et à une application hybride client/web.",
+        },
+        tasks: {
+          en: [
+            'Developed new features and fixed bugs on a transport management application using C# and Oracle Database',
+            'Contributed to architecture improvements and Gitflow processes with Azure DevOps pipelines',
+            'Contributed to the development of an internal framework and a hybrid client/web application (3-tier architecture)',
+          ],
+          fr: [
+            'Développement de nouvelles fonctionnalités et correction de bugs sur une application de gestion de transport avec C# et Oracle Database',
+            "Contribution à l'amélioration de l'architecture et aux processus Gitflow avec des pipelines Azure DevOps",
+            "Contribution au développement d'un framework interne et d'une application hybride client/web (architecture 3-tier)",
+          ],
+        },
+        env: {
+          en: 'C# / Oracle Database / Azure DevOps / Gitflow',
+          fr: 'C# / Oracle Database / Azure DevOps / Gitflow',
+        },
+      },
+    },
+    {
+      id: 'ls-group',
+      company: { en: 'LS Group', fr: 'LS Group' },
+      role: { en: 'VR Developer', fr: 'Développeur VR' },
+      type: { en: 'Work-study program', fr: 'Alternance' },
+      period: { en: '09/2024 - 09/2022', fr: '09/2024 - 09/2022' },
+      description: {
+        en: 'Developed and enhanced a VR industrial application in collaboration with CEA, using Unity.',
+        fr: "Développement et amélioration d'une application industrielle VR en collaboration avec le CEA, avec Unity.",
+      },
+      techs: ['Unity', 'C#', 'Git', 'CI/CD', 'Agile Methods'],
+      details: {
+        context: {
+          en: 'Work-study program at LS Group, Suresnes, developing a VR industrial application in partnership with CEA.',
+          fr: 'Alternance chez LS Group, Suresnes, développement d\'une application industrielle VR en partenariat avec le CEA.',
+        },
+        tasks: {
+          en: [
+            'Developed and enhanced a VR industrial application in collaboration with CEA using Unity',
+            'Improved UX and performance while following an MVC-inspired architecture',
+            'Worked with GitFlow and CI/CD, contributing within Agile (Scrum/Kanban) teams',
+          ],
+          fr: [
+            "Développement et amélioration d'une application industrielle VR en collaboration avec le CEA, avec Unity",
+            "Amélioration de l'UX et des performances en suivant une architecture inspirée du MVC",
+            'Travail avec GitFlow et CI/CD, au sein d\'équipes Agile (Scrum/Kanban)',
+          ],
+        },
+        env: {
+          en: 'Unity / C# / GitFlow / CI/CD',
+          fr: 'Unity / C# / GitFlow / CI/CD',
+        },
+      },
+    },
+    {
+      id: 'reality-academy',
+      company: { en: 'Reality Academy', fr: 'Reality Academy' },
+      role: { en: 'QA Tester / Tool Programmer', fr: 'QA Tester / Tool Programmer' },
+      type: { en: 'Internship', fr: 'Stage' },
+      period: { en: '08/2022 - 02/2022', fr: '08/2022 - 02/2022' },
+      description: {
+        en: 'Designed tools and contributed to QA for VR e-learning training content.',
+        fr: "Conception d'outils et contribution à la QA pour du contenu de formation VR e-learning.",
+      },
+      techs: ['Unity', 'C#', 'Git'],
+      details: {
+        context: {
+          en: 'Internship at Reality Academy, Bagnolet, within a VR e-learning content team.',
+          fr: 'Stage chez Reality Academy, Bagnolet, au sein d\'une équipe de contenu VR e-learning.',
+        },
+        tasks: {
+          en: [
+            'Designed a visual graph system to build VR training content',
+            'Developed tools to speed up QA and Unity workflows',
+            'Contributed to QA and improvements of VR e-learning content and website',
+            'Set up and followed a test/acceptance plan (cahier de recette) to ensure smooth production releases',
+          ],
+          fr: [
+            'Conception d\'un système de graphe visuel pour construire du contenu de formation VR',
+            "Développement d'outils pour accélérer la QA et les workflows Unity",
+            'Contribution à la QA et aux améliorations du contenu VR e-learning et du site web',
+            'Mise en place puis suivi d\'un cahier de recette pour assurer le bon déroulement des mises en production',
+          ],
+        },
+        env: {
+          en: 'Unity / C#',
+          fr: 'Unity / C#',
+        },
+      },
+    },
+    {
+      id: 'iim-student-projects',
+      company: { en: 'IIM', fr: 'IIM' },
+      role: { en: 'Student Projects', fr: 'Projets étudiants' },
+      type: { en: 'Studies', fr: 'Études' },
+      period: { en: '09/2024 - 09/2019', fr: '09/2024 - 09/2019' },
+      description: {
+        en: 'Developed multiple projects in Unity and Unreal, with C# and C++ applications (gameplay systems, AI, networking).',
+        fr: "Développement de plusieurs projets avec Unity et Unreal, en C# et C++ (systèmes de gameplay, IA, réseau).",
+      },
+      techs: ['Unity', 'Unreal', 'C#', 'C++', 'Git', 'Agile Methods'],
+      details: {
+        context: {
+          en: 'Student projects during the Game Programming curriculum at IIM, Paris La Défense.',
+          fr: "Projets étudiants dans le cadre du cursus Game Programming à l'IIM, Paris La Défense.",
+        },
+        tasks: {
+          en: [
+            'Built systems including 3C (character, camera, controls), procedural generation, and multiplayer features (FPS, online Snake)',
+            'Published a game on Steam and the Play Store',
+            'Provided pedagogical support to classmates on coding problems and code reviews',
+          ],
+          fr: [
+            "Construction de systèmes incluant 3C (personnage, caméra, contrôles), génération procédurale, et fonctionnalités multijoueur (FPS, Snake en ligne)",
+            "Publication d'un jeu sur Steam et le Play Store",
+            "Accompagnement pédagogique de camarades de classe sur des problèmes de code et des revues de code",
+          ],
+        },
+        env: {
+          en: 'Unity / Unreal / C# / C++',
+          fr: 'Unity / Unreal / C# / C++',
+        },
+      },
+    },
+  ],
+
+  // ===== EDUCATION =====
+  education: [
+    {
+      school: { en: 'Microsoft', fr: 'Microsoft' },
+      degree: { en: 'AZ-104 Certification', fr: 'Certification AZ-104' },
+      specialty: {
+        en: 'Azure, Virtual Machines, Networking, Storage, Identity (Azure AD), RBAC, Monitoring, Security, Backup & Recovery, Governance, Azure CLI / PowerShell, ARM templates, Bicep',
+        fr: 'Azure, Machines Virtuelles, Réseau, Stockage, Identité (Azure AD), RBAC, Supervision, Sécurité, Sauvegarde & Restauration, Gouvernance, Azure CLI / PowerShell, ARM templates, Bicep',
+      },
+      period: '2026',
+    },
+    {
+      school: { en: 'IIM, Courbevoie', fr: 'IIM, Courbevoie' },
+      degree: { en: "Master's Degree in Game Programming", fr: 'Master Game Programming' },
+      specialty: {
+        en: 'Unity, Unreal, C#, C++, OOP, 2D Mathematics, Algorithms, Integration, AI, Networking',
+        fr: 'Unity, Unreal, C#, C++, POO, Mathématiques 2D, Algorithmique, Intégration, IA, Réseau',
+      },
+      period: '2024',
+      badge: { en: 'Jury Honors', fr: 'Félicitations du Jury' },
+    },
+    {
+      school: { en: 'UPEC, Créteil', fr: 'UPEC, Créteil' },
+      degree: { en: "Bachelor's Degree in Sports Science (STAPS)", fr: 'Licence STAPS' },
+      specialty: {
+        en: 'Pedagogy, Group Coaching, Adaptability to Different Audiences, Active Listening, Empathy, Program Design (APA), Motivation & Engagement, Communication Skills, Safety Awareness',
+        fr: "Pédagogie, Coaching de groupe, Adaptabilité à différents publics, Écoute active, Empathie, Conception de programmes (APA), Motivation & Engagement, Communication, Sensibilisation à la sécurité",
+      },
+      period: '2016',
+    },
+  ],
+
+  // ===== VALUES =====
+  values: [
+    { en: 'Excellence', fr: 'Excellence' },
+    { en: 'Continuous Improvement', fr: 'Amélioration continue' },
+    { en: 'Knowledge Sharing', fr: 'Partage de connaissances' },
+  ],
+
+  // ===== HOBBIES =====
+  hobbies: [
+    {
+      title: { en: 'Game Dev', fr: 'Dev Jeux Vidéo' },
+      details: [
+        { en: 'Game Jams', fr: 'Game Jams' },
+        { en: 'Personal Projects', fr: 'Projets personnels' },
+      ],
+    },
+    {
+      title: { en: 'Sports', fr: 'Sport' },
+      details: [
+        { en: 'Strength Training', fr: 'Musculation' },
+        { en: 'Climbing (Bouldering)', fr: 'Escalade (Bloc)' },
+      ],
+    },
+    {
+      title: { en: 'Music', fr: 'Musique' },
+      details: [
+        { en: 'Mixing', fr: 'Mix' },
+        { en: 'Event Organization', fr: "Organisation d'événements" },
+      ],
+    },
+  ],
+
+  // ===== PDF (optional) =====
+  // Auto-detected: just drop your PDF files in public/cv/fr/ and public/cv/en/
+  // The download button will appear automatically — no config needed!
+
+  // ===== THEME =====
+  theme: {
+    preset: 'minimal', // 'minimal' | 'warm' | 'ocean' | 'forest' | 'slate' | 'lilac'
+    defaultMode: 'dark',
+  },
+
+  // ===== UI LABELS =====
+  labels: {
+    sections: {
+      contact: { en: 'CONTACT', fr: 'CONTACT' },
+      skills: { en: 'SKILLS', fr: 'COMPÉTENCES' },
+      experience: { en: 'PROFESSIONAL EXPERIENCE', fr: 'EXPÉRIENCES PROFESSIONNELLES' },
+      education: { en: 'EDUCATION', fr: 'FORMATION' },
+      values: { en: 'VALUES', fr: 'VALEURS' },
+      hobbies: { en: 'HOBBIES', fr: 'LOISIRS' },
+    },
+    experience: {
+      mainTasks: { en: 'Main tasks:', fr: 'Tâches principales :' },
+      moreTasks: { en: 'more tasks...', fr: 'autres tâches...' },
+      training: { en: 'Training:', fr: 'Formations :' },
+      techEnv: { en: 'Tech environment:', fr: 'Env. technique :' },
+      technologies: { en: 'Technologies', fr: 'Technologies' },
+    },
+    actions: {
+      clickHint: { en: 'Click on experiences to see more details', fr: 'Cliquez sur les expériences pour voir plus de détails' },
+      switchTheme: { en: 'Toggle dark mode', fr: 'Changer le thème' },
+      downloadPdf: { en: 'Download PDF', fr: 'Télécharger le PDF' },
+    },
+  },
+}

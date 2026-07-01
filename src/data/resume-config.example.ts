@@ -290,12 +290,21 @@ export const resumeConfig: ResumeConfig = {
       degree: { en: 'Master in Computer Science', fr: 'Master Informatique' },
       specialty: { en: 'Web & Mobile Development', fr: 'Développement Web & Mobile' },
       period: '2017 - 2019',
+      // Optional: small colored badge next to the degree (e.g. honors, distinction)
+      // badge: { en: 'Honors', fr: 'Félicitations du Jury' },
     },
     {
       school: { en: 'University of Paris', fr: 'Université de Paris' },
       degree: { en: 'Bachelor in Computer Science', fr: 'Licence Informatique' },
       period: '2014 - 2017',
     },
+  ],
+
+  // ===== VALUES (optional) =====
+  values: [
+    { en: 'Excellence', fr: 'Excellence' },
+    { en: 'Continuous Improvement', fr: 'Amélioration continue' },
+    { en: 'Knowledge Sharing', fr: 'Partage de connaissances' },
   ],
 
   // ===== HOBBIES (optional) =====
@@ -351,6 +360,7 @@ export const resumeConfig: ResumeConfig = {
       experience: { en: 'PROFESSIONAL EXPERIENCE', fr: 'EXPÉRIENCES PROFESSIONNELLES' },
       education: { en: 'EDUCATION', fr: 'FORMATION' },
       projects: { en: 'PROJECTS', fr: 'PROJETS' },
+      values: { en: 'VALUES', fr: 'VALEURS' },
       hobbies: { en: 'HOBBIES', fr: 'LOISIRS' },
     },
     experience: {
