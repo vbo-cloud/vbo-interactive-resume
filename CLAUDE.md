@@ -12,6 +12,7 @@ In this project, a version tag represents a finalized version of the CV content 
 - `feature/*` → merged directly into `dev`, no PR required
 - `hotfix/*` → PR to `main`, then sync to `dev`
 - `dev` → PR to `main` only when stable (triggers a version tag)
+- Every merge into `dev` or `main` uses a merge commit (`git merge --no-ff`), never a fast-forward
 
 ### Versioning (Semantic Versioning)
 - `v1.0.0` → MAJOR.MINOR.PATCH
@@ -22,6 +23,7 @@ In this project, a version tag represents a finalized version of the CV content 
 ### Workflow
 - New feature : `git checkout -b feature/xxx dev`
 - Hotfix      : `git checkout -b hotfix/xxx main`
+- Merge       : `git checkout dev && git merge --no-ff feature/xxx`
 - Release     : PR from `dev` to `main` + tag `vX.X.X` after merge
 
 ## Git Workflow
