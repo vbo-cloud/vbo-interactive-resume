@@ -142,6 +142,9 @@ export interface ResumeConfig {
     photo?: string
     photoBackEmoji?: string
     title: LocalizedString
+    /** Short accent line shown under the title (e.g. area of focus) */
+    tagline?: LocalizedString
+    /** Smaller, italicized line shown under the tagline (e.g. career journey) */
     subtitle?: LocalizedString
     location?: string
   }
