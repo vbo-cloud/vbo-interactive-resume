@@ -89,8 +89,8 @@ export const resumeConfig: ResumeConfig = {
       type: { en: 'Self-training', fr: 'Auto-formation' },
       period: { en: 'Present - 09/2025', fr: 'Présent - 09/2025' },
       description: {
-        en: 'AZ-104 certified, focused on cloud architecture, Azure administration and AI-oriented technical training. Flagship project: "job-finder", a multi-agent AI pipeline on Azure that automates job hunting end-to-end, from Terraform-provisioned infrastructure to a Next.js frontend.',
-        fr: 'Certifié AZ-104, avec un focus sur l\'architecture cloud, l\'administration Azure et une formation technique orientée IA. Projet phare : "job-finder", un pipeline multi-agents IA sur Azure qui automatise la recherche d\'emploi de bout en bout, de l\'infrastructure Terraform jusqu\'au frontend Next.js.',
+        en: 'AZ-104 certified (Microsoft Azure Administrator), with a personal focus on cloud architecture, automation, and AI. Flagship project: "Job Finder" — a multi-agent AI pipeline on Azure that automates job offer sourcing.',
+        fr: 'Certifié AZ-104 (Microsoft Azure Administrator), avec un focus personnel sur l\' architecture cloud, l\' automatisation des tâches et l\'IA. Projet phare : "Job Finder", un pipeline multi-agents IA sur Azure qui automatise la recherche d\' offres d\'emploi.'
       },
       techs: [
         'Azure',
@@ -129,21 +129,9 @@ export const resumeConfig: ResumeConfig = {
             'Mise en place d\'un workflow de développement assisté par agents IA : jusqu\'à 4 agents Claude Code en simultané pour l\'implémentation, Claude Cowork pour les échanges d\'architecture et de planification, et un agent reviewer Claude autonome intégré en CI/CD pour la revue de code automatique sur chaque PR',
           ],
         },
-        training: {
-          en: [
-            'Infrastructure as Code at scale (Terraform modules, remote state, landing zone pattern)',
-            'Multi-agent systems and LLM orchestration (Azure OpenAI, prompt engineering, vector search)',
-            'Cloud platform trade-off analysis (Container Apps vs. AKS)',
-          ],
-          fr: [
-            'Infrastructure as Code à grande échelle (modules Terraform, state distant, landing zone)',
-            'Systèmes multi-agents et orchestration LLM (Azure OpenAI, prompt engineering, recherche vectorielle)',
-            'Analyse d\'arbitrage entre plateformes cloud (Container Apps vs. AKS)',
-          ],
-        },
         env: {
-          en: 'Azure / Terraform / GitHub Actions / Python / FastAPI / PostgreSQL + pgvector / Azure OpenAI / Service Bus / Next.js / Docker',
-          fr: 'Azure / Terraform / GitHub Actions / Python / FastAPI / PostgreSQL + pgvector / Azure OpenAI / Service Bus / Next.js / Docker',
+          en: 'Azure / Terraform / GitHub Actions / Python / FastAPI / PostgreSQL + pgvector / Azure OpenAI / Claude / Service Bus / Next.js / Docker',
+          fr: 'Azure / Terraform / GitHub Actions / Python / FastAPI / PostgreSQL + pgvector / Azure OpenAI / Claude / Service Bus / Next.js / Docker',
         },
       },
     },
