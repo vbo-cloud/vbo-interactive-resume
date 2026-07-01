@@ -27,22 +27,8 @@ jobs:
 
       - run: npm ci
       - run: npm run lint
-      - name: Set base path
-        id: base
-        run: |
-          REPO="${{ github.event.repository.name }}"
-          OWNER="${{ github.repository_owner }}"
-          # Serve from root if this is a <owner>.github.io repo, or a custom domain is configured (public/CNAME)
-          if [ "$REPO" = "${OWNER}.github.io" ] || [ -f "public/CNAME" ]; then
-            echo "path=/" >> "$GITHUB_OUTPUT"
-          else
-            echo "path=/${REPO}/" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Build
         run: npm run build
-        env:
-          VITE_BASE_PATH: ${{ steps.base.outputs.path }}
 
       - uses: actions/upload-pages-artifact@v3
         with:
