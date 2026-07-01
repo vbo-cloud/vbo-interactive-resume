@@ -42,6 +42,8 @@ export interface Experience {
   description: LocalizedString
   techs: (TechName | (string & {}))[]
   isHighlighted?: boolean
+  /** Show up to 4 lines of the description before truncating, instead of the default 2 */
+  expandDescription?: boolean
   subItem?: {
     title: LocalizedString
     description: LocalizedString

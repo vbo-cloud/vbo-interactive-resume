@@ -74,6 +74,7 @@ export function MainContent() {
               }
               labels={experienceLabels}
               isHighlighted={exp.isHighlighted}
+              expandDescription={exp.expandDescription}
             />
           ))}
         </div>
