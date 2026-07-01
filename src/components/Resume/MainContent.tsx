@@ -33,10 +33,12 @@ export function MainContent() {
           {resolve(personal.title).toUpperCase()}
         </p>
         {personal.tagline && (
-          <p className="text-sm text-resume-primary mt-1">{resolve(personal.tagline)}</p>
+          <p className="text-xs uppercase tracking-wide text-resume-text-secondary/50 mt-1">
+            {resolve(personal.tagline)}
+          </p>
         )}
         {personal.subtitle && (
-          <p className="text-sm text-resume-text-secondary italic mt-1">{resolve(personal.subtitle)}</p>
+          <p className="text-sm text-resume-text-secondary italic text-left mt-4">{resolve(personal.subtitle)}</p>
         )}
       </div>
 
