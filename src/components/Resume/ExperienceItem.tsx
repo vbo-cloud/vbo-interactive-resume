@@ -31,6 +31,7 @@ interface ExperienceItemProps {
     technologies: string
   }
   isHighlighted?: boolean
+  expandDescription?: boolean
 }
 
 export function ExperienceItem({
@@ -46,6 +47,7 @@ export function ExperienceItem({
   subItem,
   labels,
   isHighlighted = false,
+  expandDescription = false,
 }: ExperienceItemProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { isDesktop } = useBreakpoints()
@@ -101,7 +103,7 @@ export function ExperienceItem({
               )}
             </div>
             <p className="text-xs text-resume-text-secondary mt-0.5">{role}</p>
-            <p className="text-xs text-resume-text-secondary/80 mt-1 line-clamp-2">{description}</p>
+            <p className={cn('text-xs text-resume-text-secondary/80 mt-1', expandDescription ? 'line-clamp-4' : 'line-clamp-2')}>{description}</p>
 
             <div className="flex flex-wrap gap-1.5 mt-2">
               {techs.map((tech) => (

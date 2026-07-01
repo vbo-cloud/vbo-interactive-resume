@@ -105,6 +105,7 @@ export const resumeConfig: ResumeConfig = {
         'Docker',
       ],
       isHighlighted: true,
+      expandDescription: true,
       details: {
         context: {
           en: 'Independent, self-driven learning path following the AZ-104 certification. Core of this training is "job-finder", a personal portfolio project: a multi-agent AI system that fetches job offers, matches them against CVs via semantic search, and reviews CVs against top matches — built solo end-to-end (infrastructure, backend, AI pipeline, frontend) and documented PR by PR (130+ merged PRs).',
