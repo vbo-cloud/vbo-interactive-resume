@@ -6,8 +6,12 @@ export const resumeConfig: ResumeConfig = {
     name: 'Vincent Boutin',
     photoBackEmoji: '🎮',
     title: {
-      en: 'Cloud Engineer (Azure)',
-      fr: 'Cloud Engineer (Azure)',
+      en: 'DevOps / Cloud Engineer (Azure)',
+      fr: 'DevOps / Cloud Engineer (Azure)',
+    },
+    tagline: {
+      en: 'AI Automation & Orchestration',
+      fr: 'Automatisation et Orchestration IA',
     },
     subtitle: {
       en: 'From game development to cloud engineering',
