@@ -30,19 +30,21 @@ export function MainContent() {
   return (
     <div className="md:w-[62%] p-8">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-4 md:block">
-        {/* Photo — mobile only, shown to the left of the name; desktop photo lives in Sidebar */}
-        <ProfilePhoto
-          photo={(personal.photo || detectedAssets.photo) ? assetUrl(personal.photo || detectedAssets.photo!) : undefined}
-          name={personal.name}
-          emoji={personal.photoBackEmoji}
-          size="sm"
-          className="md:hidden"
-        />
-        <div className="flex-1 text-left md:text-center">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-[0.15em] text-resume-text">
+      <div className="mb-4">
+        <div className="flex items-center gap-4 md:block">
+          {/* Photo — mobile only, shown to the left of the name; desktop photo lives in Sidebar */}
+          <ProfilePhoto
+            photo={(personal.photo || detectedAssets.photo) ? assetUrl(personal.photo || detectedAssets.photo!) : undefined}
+            name={personal.name}
+            emoji={personal.photoBackEmoji}
+            size="sm"
+            className="md:hidden"
+          />
+          <h1 className="flex-1 text-left md:text-center text-3xl md:text-4xl font-bold tracking-[0.15em] text-resume-text">
             {personal.name.toUpperCase()}
           </h1>
+        </div>
+        <div className="text-center">
           <p className="text-base text-resume-text-secondary tracking-widest mt-2">
             {resolve(personal.title).toUpperCase()}
           </p>
