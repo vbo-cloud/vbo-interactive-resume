@@ -1,13 +1,18 @@
 import { useState } from 'react'
 import { useTranslation } from '@/lib/i18n'
 import { resumeConfig } from '@/data/resume-config'
+import { assetUrl } from '@/lib/utils'
+import { detectedAssets } from 'virtual:detected-assets'
 import { ExperienceItem } from './ExperienceItem'
 import { ProjectItem } from './ProjectItem'
 import { EducationItem } from './EducationItem'
+import { ProfilePhoto } from './ProfilePhoto'
+import { SidebarSection } from './SidebarSection'
+import { ContactItem } from './ContactItem'
 
 export function MainContent() {
   const { resolve, resolveArray } = useTranslation()
-  const { personal, experiences, projects, education, labels } = resumeConfig
+  const { personal, contact, experiences, projects, education, labels } = resumeConfig
   const [expandedExp, setExpandedExp] = useState<string | null>(null)
 
   const toggleExp = (id: string) => {
@@ -25,22 +30,43 @@ export function MainContent() {
   return (
     <div className="md:w-[62%] p-8">
       {/* Header */}
-      <div className="text-center mb-4">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-[0.15em] text-resume-text">
-          {personal.name.toUpperCase()}
-        </h1>
-        <p className="text-base text-resume-text-secondary tracking-widest mt-2">
-          {resolve(personal.title).toUpperCase()}
-        </p>
-        {personal.tagline && (
-          <p className="text-xs uppercase tracking-wide text-resume-text-secondary/70 mt-1">
-            {resolve(personal.tagline)}
+      <div className="mb-4">
+        <div className="flex items-center gap-4 md:block">
+          {/* Photo — mobile only, shown to the left of the name; desktop photo lives in Sidebar */}
+          <ProfilePhoto
+            photo={(personal.photo || detectedAssets.photo) ? assetUrl(personal.photo || detectedAssets.photo!) : undefined}
+            name={personal.name}
+            emoji={personal.photoBackEmoji}
+            size="sm"
+            className="md:hidden"
+          />
+          <h1 className="flex-1 text-left md:text-center text-3xl md:text-4xl font-bold tracking-[0.15em] text-resume-text">
+            {personal.name.toUpperCase()}
+          </h1>
+        </div>
+        <div className="text-center">
+          <p className="text-base text-resume-text-secondary tracking-widest mt-2">
+            {resolve(personal.title).toUpperCase()}
           </p>
-        )}
-        {personal.subtitle && (
-          <p className="text-sm text-resume-text-secondary italic text-left mt-5">{resolve(personal.subtitle)}</p>
-        )}
+          {personal.tagline && (
+            <p className="text-xs uppercase tracking-wide text-resume-text-secondary/70 mt-1">
+              {resolve(personal.tagline)}
+            </p>
+          )}
+          {personal.subtitle && (
+            <p className="text-sm text-resume-text-secondary italic text-left mt-5">{resolve(personal.subtitle)}</p>
+          )}
+        </div>
       </div>
+
+      {/* Contact — mobile only, shown between the tagline and Experience; desktop contact lives in Sidebar */}
+      <SidebarSection title={resolve(labels.sections.contact)} className="md:hidden">
+        <div className="space-y-3">
+          {contact.map((item) => (
+            <ContactItem key={`${item.type}-${item.label}`} type={item.type} label={item.label} href={item.href} />
+          ))}
+        </div>
+      </SidebarSection>
 
       {/* Experiences */}
       <div className="relative">
