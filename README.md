@@ -4,6 +4,8 @@ An open-source interactive resume template. Clone it, fill in your info, deploy 
 
 Built with React, TypeScript, Tailwind CSS, and Framer Motion.
 
+> Based on [Clément Bouly's Interactive Resume Template](https://github.com/clementbouly/interactive-resume-template) — this repository is a personal fork used to deploy [cv.vincentboutin.dev](https://cv.vincentboutin.dev/). All credit for the original design and template goes to the original author.
+
 **[▶ Live Demo](https://clementbouly.github.io/interactive-resume-template/)**
 
 <p align="center">
@@ -142,4 +144,4 @@ Contributions are welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelin
 
 ## License
 
-MIT
+MIT — based on the original [Interactive Resume Template](https://github.com/clementbouly/interactive-resume-template) by Clément Bouly.
