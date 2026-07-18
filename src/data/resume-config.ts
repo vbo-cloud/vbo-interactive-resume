@@ -4,6 +4,9 @@ export const resumeConfig: ResumeConfig = {
   // ===== PERSONAL INFO =====
   personal: {
     name: 'Vincent Boutin',
+    // Pinned explicitly: public/images/ also holds FullImage.png (PDF hero preview) and
+    // Thumbnail.png, which would otherwise confuse the auto-detection in vite-plugin-assets-detect.ts
+    photo: '/images/photo.jpg',
     photoBackEmoji: '🎮',
     title: {
       en: 'DevOps / Cloud Engineer (Azure)',
