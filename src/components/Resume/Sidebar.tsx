@@ -2,6 +2,7 @@ import { useTranslation } from '@/lib/i18n'
 import { resumeConfig } from '@/data/resume-config'
 import { assetUrl } from '@/lib/utils'
 import { detectedAssets } from 'virtual:detected-assets'
+import { ExternalLinkIcon } from '@/components/icons'
 import { SidebarSection } from './SidebarSection'
 import { ContactItem } from './ContactItem'
 import { ProfilePhoto } from './ProfilePhoto'
@@ -10,7 +11,7 @@ import { TechBadge } from './TechBadge'
 
 export function Sidebar() {
   const { resolve } = useTranslation()
-  const { personal, contact, skills, values, hobbies, labels } = resumeConfig
+  const { personal, contact, skills, values, hobbies, referent, labels } = resumeConfig
 
   return (
     <div className="md:w-[38%] bg-gradient-to-b from-resume-sidebar-from to-resume-sidebar-to p-8">
@@ -31,6 +32,28 @@ export function Sidebar() {
           ))}
         </div>
       </SidebarSection>
+
+      {/* Referent */}
+      {referent && labels.sections.referent && (
+        <SidebarSection title={resolve(labels.sections.referent)}>
+          {referent.href ? (
+            <a
+              href={referent.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group font-medium text-sm text-resume-text-secondary hover:text-resume-primary transition-colors duration-200"
+            >
+              <span className="relative inline-flex items-center gap-1 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:bg-resume-primary after:origin-left after:scale-x-0 group-hover:after:scale-x-100 after:transition-transform after:duration-300">
+                {referent.name}
+                <ExternalLinkIcon className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shrink-0" />
+              </span>
+            </a>
+          ) : (
+            <p className="font-medium text-sm text-resume-text">{referent.name}</p>
+          )}
+          <p className="text-xs text-resume-text-secondary">{resolve(referent.title)}</p>
+        </SidebarSection>
+      )}
 
       {/* Skills */}
       <SidebarSection title={resolve(labels.sections.skills)}>

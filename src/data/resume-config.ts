@@ -4,6 +4,9 @@ export const resumeConfig: ResumeConfig = {
   // ===== PERSONAL INFO =====
   personal: {
     name: 'Vincent Boutin',
+    // Pinned explicitly: public/images/ also holds FullImage.png (PDF hero preview) and
+    // Thumbnail.png, which would otherwise confuse the auto-detection in vite-plugin-assets-detect.ts
+    photo: '/images/photo.jpg',
     photoBackEmoji: '🎮',
     title: {
       en: 'DevOps / Cloud Engineer (Azure)',
@@ -39,10 +42,20 @@ export const resumeConfig: ResumeConfig = {
 
   // ===== CONTACT =====
   contact: [
-    { type: 'linkedin', label: 'Vincent Boutin', href: 'https://linkedin.com/in/vincent-boutin/' },
+    { type: 'linkedin', label: 'Vincent BOUTIN', href: 'https://linkedin.com/in/vincent-boutin/' },
     { type: 'email', label: 'contact@vincentboutin.dev' },
     { type: 'location', label: 'Annemasse' },
   ],
+
+  // ===== REFERENT =====
+  referent: {
+    name: 'Samy-Adrien FOUDIL',
+    href: 'https://www.linkedin.com/in/sfoudil/',
+    title: {
+      en: 'MLOps AWS | Fullstack Python Developer',
+      fr: 'MLOps AWS | Développeur Python Fullstack',
+    },
+  },
 
   // ===== SKILLS =====
   skills: [
@@ -362,6 +375,7 @@ export const resumeConfig: ResumeConfig = {
       education: { en: 'EDUCATION', fr: 'FORMATION' },
       values: { en: 'VALUES', fr: 'VALEURS' },
       hobbies: { en: 'HOBBIES', fr: 'LOISIRS' },
+      referent: { en: 'REFERENT', fr: 'RÉFÉRENT' },
     },
     experience: {
       mainTasks: { en: 'Main tasks:', fr: 'Tâches principales :' },
@@ -374,6 +388,7 @@ export const resumeConfig: ResumeConfig = {
       clickHint: { en: 'Click on experiences to see more details', fr: 'Cliquez sur les expériences pour voir plus de détails' },
       switchTheme: { en: 'Toggle dark mode', fr: 'Changer le thème' },
       downloadPdf: { en: 'Download PDF', fr: 'Télécharger le PDF' },
+      viewInteractive: { en: 'View the interactive resume', fr: 'Voir le CV interactif' },
     },
   },
 }

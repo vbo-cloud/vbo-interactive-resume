@@ -55,6 +55,13 @@ export const resumeConfig: ResumeConfig = {
     { type: 'location', label: 'Paris, France' },
   ],
 
+  // ===== REFERENT (optional) =====
+  // referent: {
+  //   name: 'John Smith',
+  //   href: 'https://www.linkedin.com/in/johnsmith/',
+  //   title: { en: 'Engineering Manager', fr: 'Manager Ingénierie' },
+  // },
+
   // ===== SKILLS =====
   skills: [
     {
@@ -364,6 +371,7 @@ export const resumeConfig: ResumeConfig = {
       projects: { en: 'PROJECTS', fr: 'PROJETS' },
       values: { en: 'VALUES', fr: 'VALEURS' },
       hobbies: { en: 'HOBBIES', fr: 'LOISIRS' },
+      referent: { en: 'REFERENT', fr: 'RÉFÉRENT' },
     },
     experience: {
       mainTasks: { en: 'Main tasks:', fr: 'Tâches principales :' },
@@ -376,6 +384,7 @@ export const resumeConfig: ResumeConfig = {
       clickHint: { en: 'Click on experiences to see more details', fr: 'Cliquez sur les expériences pour voir plus de détails' },
       switchTheme: { en: 'Toggle dark mode', fr: 'Changer le thème' },
       downloadPdf: { en: 'Download PDF', fr: 'Télécharger le PDF' },
+      viewInteractive: { en: 'View the interactive resume', fr: 'Voir le CV interactif' },
     },
   },
 }

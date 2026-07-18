@@ -1,23 +1,21 @@
 {
-  "name": "interactive-resume-template",
+  "name": "vbo-interactive-resume",
   "version": "1.0.0",
-  "description": "An open-source interactive resume template. Clone it, fill in your info, deploy it.",
-  "homepage": "https://clementbouly.github.io/interactive-resume-template/",
+  "description": "Vincent Boutin's personal interactive resume, deployed at cv.vincentboutin.dev.",
+  "homepage": "https://cv.vincentboutin.dev/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/clementbouly/interactive-resume-template.git"
+    "url": "https://github.com/vbo-cloud/vbo-interactive-resume.git"
   },
   "keywords": [
     "resume",
     "cv",
-    "template",
     "react",
     "typescript",
     "portfolio",
     "interactive",
     "tailwindcss",
-    "vite",
-    "open-source"
+    "vite"
   ],
   "license": "MIT",
   "type": "module",

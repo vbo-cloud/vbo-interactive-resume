@@ -1,3 +1,5 @@
+import fs from 'fs'
+import path from 'path'
 import type { ResumeConfig } from '../src/data/types'
 import { presets } from '../src/data/presets'
 import { getTechColor } from '../src/data/tech-registry'
@@ -13,6 +15,28 @@ export function escapeHtml(str: string): string {
 function resolveThemeColors(config: ResumeConfig) {
   const preset = presets[config.theme?.preset ?? 'minimal']
   return { ...preset, ...config.theme?.colors }
+}
+
+/** Inlines public/images/FullImage.png as a data URI so the PDF is self-contained (no network fetch at print time). */
+function getFullImagePreviewDataUri(): string | null {
+  try {
+    const imgPath = path.resolve(process.cwd(), 'public', 'images', 'FullImage.png')
+    const buffer = fs.readFileSync(imgPath)
+    return `data:image/png;base64,${buffer.toString('base64')}`
+  } catch {
+    return null
+  }
+}
+
+/**
+ * The web timeline lists experiences top (most recent) to bottom (oldest), so each
+ * period reads "recent - older" (e.g. "Present - 09/2025") to match that flow. The PDF
+ * is a flat, linear document without that visual cue, so the same string reads
+ * backwards there — flip it to "older - recent" for PDF-only rendering.
+ */
+function reverseDateRange(period: string): string {
+  const parts = period.split(' - ')
+  return parts.length === 2 ? `${parts[1]} - ${parts[0]}` : period
 }
 
 function renderTechBadges(techs: string[]): string {
@@ -42,14 +66,37 @@ export function renderResumeHtml(
 ): string {
   const resolve = (ls: Record<string, string>) => ls[lang] ?? Object.values(ls)[0] ?? ''
   const colors = resolveThemeColors(config)
+  // siteUrl is only ever passed when generating the downloadable PDF, never for the <noscript> fallback.
+  const isPdf = Boolean(siteUrl)
   const sectionTitle = (label: string) =>
     `<h2 style="font-size: 1.1rem; text-transform: uppercase; color: ${colors.text}; border-bottom: 2px solid ${colors.primary}40; padding-bottom: 0.25rem; margin-bottom: 0.5rem;">${escapeHtml(label)}</h2>`
 
-  const { personal, contact, skills, experiences, education, projects, values, hobbies } = config
+  const { personal, contact, skills, experiences, education, projects, values, hobbies, referent } = config
   const lines: string[] = []
 
   const indent = '      '
   lines.push(`${indent}<div style="max-width: 800px; margin: 2rem auto; padding: 2rem; font-family: system-ui, -apple-system, sans-serif; color: ${colors.text}; line-height: 1.6;">`)
+
+  // Hero banner — only on the generated PDF (siteUrl is only passed there, never for the <noscript> fallback),
+  // so a recruiter opening the file immediately sees and can click through to the interactive version.
+  if (siteUrl) {
+    const previewDataUri = getFullImagePreviewDataUri()
+    const ctaLabel = resolve(config.labels.actions.viewInteractive ?? { en: 'View the interactive resume', fr: 'Voir le CV interactif' })
+    const heroHeadline = lang === 'fr'
+      ? 'Ce CV existe aussi en version interactive'
+      : 'This resume also exists as an interactive version'
+
+    lines.push(`${indent}  <a href="${escapeHtml(siteUrl)}" style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; padding: 1.25rem; border-radius: 14px; background: ${colors.primary}12; border: 1px solid ${colors.primary}40; text-decoration: none;">`)
+    if (previewDataUri) {
+      lines.push(`${indent}    <img src="${previewDataUri}" alt="${escapeHtml(personal.name)} — ${escapeHtml(heroHeadline)}" style="width: 130px; height: auto; border-radius: 8px; box-shadow: 0 6px 16px rgba(0,0,0,0.3); flex-shrink: 0;" />`)
+    }
+    lines.push(`${indent}    <span style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.6rem;">`)
+    lines.push(`${indent}      <span style="font-size: 1.05rem; font-weight: 700; color: ${colors.text};">✨ ${escapeHtml(heroHeadline)}</span>`)
+    lines.push(`${indent}      <span style="display: inline-block; padding: 0.65rem 1.4rem; border-radius: 8px; background: ${colors.primary}; color: #ffffff; font-weight: 600; font-size: 0.95rem;">${escapeHtml(ctaLabel)} →</span>`)
+    lines.push(`${indent}      <span style="font-size: 0.8rem; color: ${colors.textSecondary};">${escapeHtml(siteUrl.replace(/^https?:\/\//, ''))}</span>`)
+    lines.push(`${indent}    </span>`)
+    lines.push(`${indent}  </a>`)
+  }
 
   // Header
   lines.push(`${indent}  <header style="margin-bottom: 2rem; border-bottom: 2px solid ${colors.primary}; padding-bottom: 1rem;">`)
@@ -64,9 +111,6 @@ export function renderResumeHtml(
   if (personal.location) {
     lines.push(`${indent}    <p style="margin: 0; color: ${colors.textSecondary};">${escapeHtml(personal.location)}</p>`)
   }
-  if (siteUrl) {
-    lines.push(`${indent}    <p style="margin: 0.5rem 0 0 0;"><a href="${escapeHtml(siteUrl)}" style="color: ${colors.primary}; font-weight: 600; text-decoration: none;">🔗 ${escapeHtml(siteUrl.replace(/^https?:\/\//, ''))}</a></p>`)
-  }
   lines.push(`${indent}  </header>`)
 
   // Contact
@@ -76,12 +120,25 @@ export function renderResumeHtml(
     lines.push(`${indent}    <ul style="list-style: none; padding: 0; margin: 0;">`)
     for (const c of contact) {
       if (c.href) {
-        lines.push(`${indent}      <li style="margin-bottom: 0.25rem;"><a href="${escapeHtml(c.href)}" style="color: ${colors.primary};">${escapeHtml(c.label)}</a></li>`)
+        const linkedinBold = isPdf && c.type === 'linkedin' ? ' font-weight: 600;' : ''
+        lines.push(`${indent}      <li style="margin-bottom: 0.25rem;"><a href="${escapeHtml(c.href)}" style="color: ${colors.primary};${linkedinBold}">${escapeHtml(c.label)}</a></li>`)
       } else {
         lines.push(`${indent}      <li style="margin-bottom: 0.25rem;">${escapeHtml(c.label)}</li>`)
       }
     }
     lines.push(`${indent}    </ul>`)
+    lines.push(`${indent}  </section>`)
+  }
+
+  // Referent
+  if (referent && config.labels.sections.referent) {
+    lines.push(`${indent}  <section style="margin-bottom: 1.5rem;">`)
+    lines.push(`${indent}    ${sectionTitle(resolve(config.labels.sections.referent))}`)
+    const referentName = referent.href
+      ? `<a href="${escapeHtml(referent.href)}" style="color: ${colors.text}; font-weight: 600; text-decoration: ${isPdf ? 'underline' : 'none'};">${escapeHtml(referent.name)}</a>`
+      : `<span style="font-weight: 600;">${escapeHtml(referent.name)}</span>`
+    lines.push(`${indent}    <p style="margin: 0;">${referentName}</p>`)
+    lines.push(`${indent}    <p style="margin: 0; color: ${colors.textSecondary};">${escapeHtml(resolve(referent.title))}</p>`)
     lines.push(`${indent}  </section>`)
   }
 
@@ -115,7 +172,8 @@ export function renderResumeHtml(
     for (const exp of experiences) {
       lines.push(`${indent}    <article style="margin-bottom: 1.25rem;">`)
       lines.push(`${indent}      <h3 style="margin: 0 0 0.15rem 0; font-size: 1rem; color: ${colors.text};">${escapeHtml(resolve(exp.role))} — ${escapeHtml(resolve(exp.company))}</h3>`)
-      const meta = [resolve(exp.period)]
+      const periodText = resolve(exp.period)
+      const meta = [isPdf ? reverseDateRange(periodText) : periodText]
       if (exp.type) meta.push(resolve(exp.type))
       lines.push(`${indent}      <p style="margin: 0 0 0.25rem 0; color: ${colors.primary}; font-size: 0.9rem; font-weight: 500;">${escapeHtml(meta.join(' · '))}</p>`)
       lines.push(`${indent}      <p style="margin: 0 0 0.25rem 0;">${escapeHtml(resolve(exp.description))}</p>`)
