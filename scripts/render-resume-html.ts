@@ -109,7 +109,8 @@ export function renderResumeHtml(
     lines.push(`${indent}    <ul style="list-style: none; padding: 0; margin: 0;">`)
     for (const c of contact) {
       if (c.href) {
-        lines.push(`${indent}      <li style="margin-bottom: 0.25rem;"><a href="${escapeHtml(c.href)}" style="color: ${colors.primary};">${escapeHtml(c.label)}</a></li>`)
+        const linkedinBold = isPdf && c.type === 'linkedin' ? ' font-weight: 600;' : ''
+        lines.push(`${indent}      <li style="margin-bottom: 0.25rem;"><a href="${escapeHtml(c.href)}" style="color: ${colors.primary};${linkedinBold}">${escapeHtml(c.label)}</a></li>`)
       } else {
         lines.push(`${indent}      <li style="margin-bottom: 0.25rem;">${escapeHtml(c.label)}</li>`)
       }
