@@ -28,6 +28,17 @@ function getFullImagePreviewDataUri(): string | null {
   }
 }
 
+/**
+ * The web timeline lists experiences top (most recent) to bottom (oldest), so each
+ * period reads "recent - older" (e.g. "Present - 09/2025") to match that flow. The PDF
+ * is a flat, linear document without that visual cue, so the same string reads
+ * backwards there — flip it to "older - recent" for PDF-only rendering.
+ */
+function reverseDateRange(period: string): string {
+  const parts = period.split(' - ')
+  return parts.length === 2 ? `${parts[1]} - ${parts[0]}` : period
+}
+
 function renderTechBadges(techs: string[]): string {
   if (techs.length === 0) return ''
   const badges = techs
@@ -161,7 +172,8 @@ export function renderResumeHtml(
     for (const exp of experiences) {
       lines.push(`${indent}    <article style="margin-bottom: 1.25rem;">`)
       lines.push(`${indent}      <h3 style="margin: 0 0 0.15rem 0; font-size: 1rem; color: ${colors.text};">${escapeHtml(resolve(exp.role))} — ${escapeHtml(resolve(exp.company))}</h3>`)
-      const meta = [resolve(exp.period)]
+      const periodText = resolve(exp.period)
+      const meta = [isPdf ? reverseDateRange(periodText) : periodText]
       if (exp.type) meta.push(resolve(exp.type))
       lines.push(`${indent}      <p style="margin: 0 0 0.25rem 0; color: ${colors.primary}; font-size: 0.9rem; font-weight: 500;">${escapeHtml(meta.join(' · '))}</p>`)
       lines.push(`${indent}      <p style="margin: 0 0 0.25rem 0;">${escapeHtml(resolve(exp.description))}</p>`)
