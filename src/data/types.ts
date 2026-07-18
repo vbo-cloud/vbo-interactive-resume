@@ -85,6 +85,14 @@ export interface Hobby {
   details?: LocalizedString[]
 }
 
+// ===== REFERENT =====
+
+export interface Referent {
+  name: string
+  href?: string
+  title: LocalizedString
+}
+
 // ===== THEME =====
 
 export interface ThemeColors {
@@ -119,6 +127,7 @@ export interface ResumeLabels {
     projects?: LocalizedString
     values?: LocalizedString
     hobbies?: LocalizedString
+    referent?: LocalizedString
   }
   experience: {
     mainTasks: LocalizedString
@@ -164,6 +173,7 @@ export interface ResumeConfig {
   projects?: Project[]
   values?: LocalizedString[]
   hobbies?: Hobby[]
+  referent?: Referent
   pdf?: {
     label?: LocalizedString
     /** Single path for all languages, or one path per language (hides button if no PDF for current language) */
