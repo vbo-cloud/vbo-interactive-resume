@@ -39,7 +39,7 @@ export const resumeConfig: ResumeConfig = {
 
   // ===== CONTACT =====
   contact: [
-    { type: 'linkedin', label: 'Vincent Boutin', href: 'https://linkedin.com/in/vincent-boutin/' },
+    { type: 'linkedin', label: 'Vincent BOUTIN', href: 'https://linkedin.com/in/vincent-boutin/' },
     { type: 'email', label: 'contact@vincentboutin.dev' },
     { type: 'location', label: 'Annemasse' },
   ],
