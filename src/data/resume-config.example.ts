@@ -55,6 +55,13 @@ export const resumeConfig: ResumeConfig = {
     { type: 'location', label: 'Paris, France' },
   ],
 
+  // ===== REFERENT (optional) =====
+  // referent: {
+  //   name: 'John Smith',
+  //   href: 'https://www.linkedin.com/in/johnsmith/',
+  //   title: { en: 'Engineering Manager', fr: 'Manager Ingénierie' },
+  // },
+
   // ===== SKILLS =====
   skills: [
     {
@@ -364,6 +371,7 @@ export const resumeConfig: ResumeConfig = {
       projects: { en: 'PROJECTS', fr: 'PROJETS' },
       values: { en: 'VALUES', fr: 'VALEURS' },
       hobbies: { en: 'HOBBIES', fr: 'LOISIRS' },
+      referent: { en: 'REFERENT', fr: 'RÉFÉRENT' },
     },
     experience: {
       mainTasks: { en: 'Main tasks:', fr: 'Tâches principales :' },

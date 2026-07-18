@@ -39,10 +39,20 @@ export const resumeConfig: ResumeConfig = {
 
   // ===== CONTACT =====
   contact: [
-    { type: 'linkedin', label: 'Vincent Boutin', href: 'https://linkedin.com/in/vincent-boutin/' },
+    { type: 'linkedin', label: 'Vincent BOUTIN', href: 'https://linkedin.com/in/vincent-boutin/' },
     { type: 'email', label: 'contact@vincentboutin.dev' },
     { type: 'location', label: 'Annemasse' },
   ],
+
+  // ===== REFERENT =====
+  referent: {
+    name: 'Samy-Adrien FOUDIL',
+    href: 'https://www.linkedin.com/in/sfoudil/',
+    title: {
+      en: 'MLOps AWS | Fullstack Python Developer',
+      fr: 'MLOps AWS | Développeur Python Fullstack',
+    },
+  },
 
   // ===== SKILLS =====
   skills: [
@@ -362,6 +372,7 @@ export const resumeConfig: ResumeConfig = {
       education: { en: 'EDUCATION', fr: 'FORMATION' },
       values: { en: 'VALUES', fr: 'VALEURS' },
       hobbies: { en: 'HOBBIES', fr: 'LOISIRS' },
+      referent: { en: 'REFERENT', fr: 'RÉFÉRENT' },
     },
     experience: {
       mainTasks: { en: 'Main tasks:', fr: 'Tâches principales :' },
