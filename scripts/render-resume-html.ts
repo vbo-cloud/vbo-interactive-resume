@@ -55,6 +55,8 @@ export function renderResumeHtml(
 ): string {
   const resolve = (ls: Record<string, string>) => ls[lang] ?? Object.values(ls)[0] ?? ''
   const colors = resolveThemeColors(config)
+  // siteUrl is only ever passed when generating the downloadable PDF, never for the <noscript> fallback.
+  const isPdf = Boolean(siteUrl)
   const sectionTitle = (label: string) =>
     `<h2 style="font-size: 1.1rem; text-transform: uppercase; color: ${colors.text}; border-bottom: 2px solid ${colors.primary}40; padding-bottom: 0.25rem; margin-bottom: 0.5rem;">${escapeHtml(label)}</h2>`
 
@@ -121,7 +123,7 @@ export function renderResumeHtml(
     lines.push(`${indent}  <section style="margin-bottom: 1.5rem;">`)
     lines.push(`${indent}    ${sectionTitle(resolve(config.labels.sections.referent))}`)
     const referentName = referent.href
-      ? `<a href="${escapeHtml(referent.href)}" style="color: ${colors.text}; font-weight: 600; text-decoration: none;">${escapeHtml(referent.name)}</a>`
+      ? `<a href="${escapeHtml(referent.href)}" style="color: ${colors.text}; font-weight: 600; text-decoration: ${isPdf ? 'underline' : 'none'};">${escapeHtml(referent.name)}</a>`
       : `<span style="font-weight: 600;">${escapeHtml(referent.name)}</span>`
     lines.push(`${indent}    <p style="margin: 0;">${referentName}</p>`)
     lines.push(`${indent}    <p style="margin: 0; color: ${colors.textSecondary};">${escapeHtml(resolve(referent.title))}</p>`)
