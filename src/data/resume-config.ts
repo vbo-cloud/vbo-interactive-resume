@@ -277,18 +277,22 @@ export const resumeConfig: ResumeConfig = {
       techs: ['Unity', 'Unreal', 'C#', 'C++', 'Git', 'Agile Methods'],
       details: {
         context: {
-          en: 'Student projects during the Game Programming curriculum at IIM, Paris La Défense.',
-          fr: "Projets étudiants dans le cadre du cursus Game Programming à l'IIM, Paris La Défense.",
+          en: 'Student projects completed as part of the Game Programming curriculum at IIM (Paris La Défense), solo and in teams, with Unity, Unreal and custom C++ network engines.',
+          fr: "Projets étudiants réalisés dans le cadre du cursus Game Programming à l'IIM (Paris La Défense), en solo et en équipe, avec Unity, Unreal et des moteurs réseau custom en C++.",
         },
         tasks: {
           en: [
-            'Built systems including 3C (character, camera, controls), procedural generation, and multiplayer features (FPS, online Snake)',
-            'Published a game on Steam and the Play Store',
+            'Dwarfs Delight, 6 weeks, 13 people:\nLead Programmer on this local multiplayer couch game for 2-4 players, selected by IIM for the Pégases awards and published on Steam',
+            "Xenos Heresy, 1 month, 6 people:\nDesigned a tool for game designers to easily use a teammate's tile-selection algorithm (attack type, range, etc.), and designed the game's architecture (turn-based system, AI for the different monsters, player-monster interactions, art implementation, level selection, tutorial...), published on the Play Store",
+            'Online FPS, 3 weeks, 2 people:\nBuilt a custom C++/Enet network architecture (client-side prediction, server reconciliation, server-authoritative physics), plus a similar architecture for an online multiplayer Snake',
+            "Procedural Dungeon Generation, 2 weeks, 2 people:\nAdapted Dwarfs Delight into a procedurally generated dungeon crawler, reworking its architecture around my teammate's floor-generation algorithm (room chaining, doors, room types), and building the room prefabs, their variety and associated content (controls, level design). Added an ability-unlock gate between floors",
             'Provided pedagogical support to classmates on coding problems and code reviews',
           ],
           fr: [
-            "Construction de systèmes incluant 3C (personnage, caméra, contrôles), génération procédurale, et fonctionnalités multijoueur (FPS, Snake en ligne)",
-            "Publication d'un jeu sur Steam et le Play Store",
+            "Dwarfs Delight, 6 semaines, 13 personnes :\nLead Programmer sur ce jeu multijoueur local pour 2 à 4 joueurs, sélectionné par l'IIM pour les Pégases et publié sur Steam",
+            "Xenos Heresy, 1 mois, 6 personnes :\nConception d'un outil dédié aux game designers pour exploiter facilement l'algorithme de sélection de cases d'un camarade (type d'attaque, portée, etc.), et conception de l'architecture du jeu (système tour par tour, IA des différents monstres, interaction entre joueurs et monstres, implémentation de l'art, sélection des différents niveaux, tutoriel...), publié sur le Play Store",
+            "Online FPS, 3 semaines, 2 personnes :\nDéveloppement d'une architecture réseau C++/Enet (prédiction côté client, réconciliation serveur, physique faisant autorité côté serveur), ainsi qu'une architecture similaire pour un Snake multijoueur en ligne",
+            "Procedural Dungeon Generation, 2 semaines, 2 personnes :\nAdaptation de Dwarfs Delight en un dungeon crawler à génération procédurale, refonte de son architecture autour de l'algorithme de génération d'étages de mon camarade (enchaînement des salles, portes, types de salles), et création des prefabs de salles, de leur diversité et du contenu associé (contrôles, level design). Ajout d'un système de déblocage de capacité conditionnant le passage à l'étage suivant",
             "Accompagnement pédagogique de camarades de classe sur des problèmes de code et des revues de code",
           ],
         },

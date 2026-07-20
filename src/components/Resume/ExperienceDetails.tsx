@@ -57,7 +57,7 @@ export function ExperienceDetailsContent({
             {(variant === 'inline' ? tasks.slice(0, MAX_INLINE_TASKS) : tasks).map((task, i) => (
               <li key={i} className="flex items-start gap-2">
                 <span className="text-resume-primary">&#8226;</span>
-                <span>{task}</span>
+                <span className="whitespace-pre-line">{task}</span>
               </li>
             ))}
             {variant === 'inline' && tasks.length > MAX_INLINE_TASKS && (
