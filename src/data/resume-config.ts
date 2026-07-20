@@ -44,6 +44,7 @@ export const resumeConfig: ResumeConfig = {
   contact: [
     { type: 'linkedin', label: 'Vincent BOUTIN', href: 'https://linkedin.com/in/vincent-boutin/' },
     { type: 'email', label: 'contact@vincentboutin.dev' },
+    { type: 'website', label: 'Portfolio', href: 'https://vincentboutin.dev' },
     { type: 'location', label: 'Annemasse' },
   ],
 
