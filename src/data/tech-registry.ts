@@ -224,7 +224,7 @@ export type TechTier = 'brand' | 'workflow' | 'support' | 'muted'
 const BRAND_TECHS = new Set([
   'Azure',
   'Terraform',
-  'Python',
+  'C#',
   'Service Bus',
   'OpenAI',
   'Claude',
@@ -250,7 +250,7 @@ const WORKFLOW_TECHS = new Set(['Git', 'CI/CD', 'GitHub', 'GitLab', 'Azure DevOp
 const SUPPORT_TECHS = new Set([
   'FastAPI',
   'PostgreSQL',
-  'C#',
+  'Python',
   'PostHog',
   'Grafana',
   'Application Insights',
