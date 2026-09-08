@@ -9,8 +9,8 @@ export const resumeConfig: ResumeConfig = {
     photo: '/images/photo.jpg',
     photoBackEmoji: '☁️',
     title: {
-      en: 'DevOps / Cloud Engineer (Azure)',
-      fr: 'DevOps / Cloud Engineer (Azure)',
+      en: 'C# Developer / DEVOPS / CLOUD (AZURE)',
+      fr: 'Développeur C# / DEVOPS / CLOUD (AZURE)',
     },
     location: 'Annemasse',
   },
