@@ -12,7 +12,7 @@ export const resumeConfig: ResumeConfig = {
       en: 'C# Developer / DEVOPS / CLOUD (AZURE)',
       fr: 'Développeur C# / DEVOPS / CLOUD (AZURE)',
     },
-    location: 'Annemasse',
+    location: 'Lyon',
   },
 
   // ===== SEO (used in <head> meta tags) =====
@@ -38,7 +38,7 @@ export const resumeConfig: ResumeConfig = {
     { type: 'email', label: 'contact@vincentboutin.dev' },
     { type: 'phone', label: '+33 6 46 77 05 54' },
     { type: 'website', label: 'Portfolio', href: 'https://vincentboutin.dev' },
-    { type: 'location', label: 'Annemasse' },
+    { type: 'location', label: 'Lyon' },
   ],
 
   // ===== REFERENTS =====
@@ -330,9 +330,13 @@ export const resumeConfig: ResumeConfig = {
     },
   ],
 
-  // ===== PDF (optional) =====
-  // Auto-detected: just drop your PDF files in public/cv/fr/ and public/cv/en/
-  // The download button will appear automatically — no config needed!
+  // ===== PDF =====
+  // Pinned explicitly: public/cv/<lang>/ also holds the PDF-only variants
+  // (CV_VincentBOUTIN-<lang>-dev/cloud/ia.pdf, see resume-variants.ts), which the
+  // auto-detection would otherwise pick up instead of the main CV.
+  pdf: {
+    path: { fr: '/cv/fr/CV_VincentBOUTIN-fr.pdf', en: '/cv/en/CV_VincentBOUTIN-en.pdf' },
+  },
 
   // ===== THEME =====
   theme: {

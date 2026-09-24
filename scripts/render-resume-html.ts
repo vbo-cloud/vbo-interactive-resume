@@ -110,39 +110,71 @@ function ensureLightModeReadable(hex: string): string {
 
 const WORKFLOW_DARK_GRAY = '#374151' // TechBadge.tsx's light-theme `workflow` badge — dark gray, not black
 
+/**
+ * A couple of tech labels aren't language-resolved at the source (techs are plain
+ * strings, not LocalizedString) — this covers the ones that need a French display
+ * label without touching their color/tier lookup, which stays keyed on the English name.
+ */
+const TECH_LABEL_FR: Record<string, string> = {
+  'Agile Methods': 'Méthodes Agiles',
+}
+
+/** Renders one tech as a colored badge <span>. Shared by renderTechBadges' single-row and grouped forms. */
+function renderOneBadge(tech: string, badgePadding: string, badgeMargin: string, badgeFontSize: string, lang = 'en'): string {
+  const tier = getTechTier(tech)
+  const color = getTechColor(tech)
+  const label = lang === 'fr' ? (TECH_LABEL_FR[tech] ?? tech) : tech
+  let background: string
+  let fg: string
+  let border: string
+
+  if (tier === 'workflow') {
+    background = WORKFLOW_DARK_GRAY
+    fg = '#e5e7eb'
+    border = 'rgba(255, 255, 255, 0.3)'
+  } else if (tier === 'support') {
+    fg = ensureLightModeReadable(mixColors(color, '#64748b', 0.7))
+    background = `${fg}1f`
+    border = 'transparent'
+  } else if (tier === 'muted') {
+    fg = '#4b5563' // darkened from the spec's #6b7280 to clear WCAG AA (4.5:1)
+    background = 'rgba(0, 0, 0, 0.045)'
+    border = 'transparent'
+  } else {
+    fg = ensureLightModeReadable(color)
+    background = `${color}20`
+    border = `${color}59`
+  }
+
+  return `<span style="display: inline-block; line-height: 1.25; margin: ${badgeMargin}; padding: ${badgePadding}; border-radius: 4px; font-size: ${badgeFontSize}; font-weight: 500; background: ${background}; color: ${fg}; border: 1px solid ${border};">${escapeHtml(label)}</span>`
+}
+
 /** Light-mode-only counterpart to TechBadge.tsx's `resolveTierStyle` (the PDF/noscript body has no dark mode). */
-function renderTechBadges(techs: string[]): string {
+function renderTechBadges(techs: string[], isPdf = false, compact = true, lang = 'en'): string {
   if (techs.length === 0) return ''
-  const badges = techs
-    .map((tech) => {
-      const tier = getTechTier(tech)
-      const color = getTechColor(tech)
-      let background: string
-      let fg: string
-      let border: string
+  const badgePadding = isPdf ? (compact ? '0.04rem 0.4rem' : '0.15rem 0.55rem') : '0.15rem 0.55rem'
+  const badgeMargin = isPdf ? (compact ? '0 0.2rem 0.15rem 0' : '0 0.35rem 0.35rem 0') : '0 0.35rem 0.35rem 0'
+  const badgeFontSize = '0.8rem'
+  const wrapMargin = isPdf ? (compact ? '0.12rem 0' : '0.2rem 0') : '0.35rem 0'
+  const badges = techs.map((tech) => renderOneBadge(tech, badgePadding, badgeMargin, badgeFontSize, lang)).join('')
+  return `<div style="margin: ${wrapMargin};">${badges}</div>`
+}
 
-      if (tier === 'workflow') {
-        background = WORKFLOW_DARK_GRAY
-        fg = '#e5e7eb'
-        border = 'rgba(255, 255, 255, 0.3)'
-      } else if (tier === 'support') {
-        fg = ensureLightModeReadable(mixColors(color, '#64748b', 0.7))
-        background = `${fg}1f`
-        border = 'transparent'
-      } else if (tier === 'muted') {
-        fg = '#4b5563' // darkened from the spec's #6b7280 to clear WCAG AA (4.5:1)
-        background = 'rgba(0, 0, 0, 0.045)'
-        border = 'transparent'
-      } else {
-        fg = ensureLightModeReadable(color)
-        background = `${color}20`
-        border = `${color}59`
-      }
-
-      return `<span style="display: inline-block; margin: 0 0.35rem 0.35rem 0; padding: 0.15rem 0.55rem; border-radius: 4px; font-size: 0.8rem; font-weight: 500; background: ${background}; color: ${fg}; border: 1px solid ${border};">${escapeHtml(tech)}</span>`
-    })
-    .join('')
-  return `<div style="margin: 0.35rem 0;">${badges}</div>`
+/**
+ * Same badge styling as renderTechBadges, but split into clusters separated by the
+ * same round-bullet marker used between tasks in the experience paragraphs — for the
+ * PDF-only skills rows that group related techs within one category.
+ */
+function renderGroupedTechBadges(groups: string[][], primaryColor: string, lang = 'en'): string {
+  const badgePadding = '0.15rem 0.55rem'
+  const badgeMargin = '0 0.35rem 0.35rem 0'
+  const badgeFontSize = '0.8rem'
+  const separator = ` <span style="color: ${primaryColor}; font-weight: 700;">&bull;</span> `
+  const groupsHtml = groups
+    .filter((g) => g.length > 0)
+    .map((group) => group.map((tech) => renderOneBadge(tech, badgePadding, badgeMargin, badgeFontSize, lang)).join(''))
+    .join(separator)
+  return `<div style="margin: 0.2rem 0;">${groupsHtml}</div>`
 }
 
 /**
@@ -163,149 +195,255 @@ export function renderResumeHtml(
   const colors = resolveThemeColors(config)
   // siteUrl is only ever passed when generating the downloadable PDF, never for the <noscript> fallback.
   const isPdf = Boolean(siteUrl)
+  const sectionGap = isPdf ? '1.4rem' : '1.5rem'
+  const articleGap = isPdf ? '1.15rem' : '1.25rem'
   const sectionTitle = (label: string) =>
-    `<h2 style="font-size: 1.1rem; text-transform: uppercase; color: ${colors.text}; border-bottom: 2px solid ${colors.primary}40; padding-bottom: 0.25rem; margin-bottom: 0.5rem;">${escapeHtml(label)}</h2>`
+    `<h2 style="font-size: ${isPdf ? '0.95rem' : '1.1rem'}; text-transform: uppercase; color: ${colors.text}; border-bottom: 2px solid ${colors.primary}40; padding-bottom: ${isPdf ? '0.15rem' : '0.25rem'}; margin-bottom: ${isPdf ? '0.3rem' : '0.5rem'};">${escapeHtml(label)}</h2>`
 
   const { personal, contact, skills, experiences, education, projects, values, hobbies, referents } = config
   const lines: string[] = []
 
   const indent = '      '
-  lines.push(`${indent}<div style="max-width: 800px; margin: 2rem auto; padding: 2rem; font-family: system-ui, -apple-system, sans-serif; color: ${colors.text}; line-height: 1.6;">`)
+  const containerMargin = isPdf ? '0 auto' : '2rem auto'
+  const containerPadding = isPdf ? '0.3rem' : '2rem'
+  const lineHeight = isPdf ? 1.55 : 1.6
+  lines.push(`${indent}<div style="max-width: 800px; margin: ${containerMargin}; padding: ${containerPadding}; font-family: system-ui, -apple-system, sans-serif; color: ${colors.text}; line-height: ${lineHeight};">`)
 
-  // Hero banner — only on the generated PDF (siteUrl is only passed there, never for the <noscript> fallback),
-  // so a recruiter opening the file immediately sees and can click through to the interactive version.
-  if (siteUrl) {
-    const previewDataUri = getImageDataUri('FullImage.png')
-    const qrCodeDataUri = getImageDataUri('qr-code.png')
-    const ctaLabel = resolve(config.labels.actions.viewInteractive ?? { en: 'View the interactive resume', fr: 'Voir le CV interactif' })
-    const heroHeadline = lang === 'fr'
-      ? 'Ce CV existe aussi en version interactive'
-      : 'This resume also exists as an interactive version'
-
-    // The QR is taken out of the flex flow and pinned to the corner, with matching
-    // padding reserved for it. As a flex item it could be shoved past the border by a
-    // wide headline, and the printable width is narrower than the CSS page suggests.
-    const qrSize = 110
-    const qrInset = '1.25rem'
-    // Nudged 5px further into the corner than the padding edge. The reserved
-    // padding-right still uses the full inset, so the text only gains clearance.
-    const qrCorner = `calc(${qrInset} - 5px)`
-    lines.push(`${indent}  <a href="${escapeHtml(siteUrl)}" style="position: relative; display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; padding: 1.25rem; padding-right: calc(${qrInset} + ${qrSize}px + 1rem); border-radius: 14px; background: ${colors.primary}12; border: 1px solid ${colors.primary}40; text-decoration: none;">`)
-    if (previewDataUri) {
-      lines.push(`${indent}    <img src="${previewDataUri}" alt="${escapeHtml(personal.name)} - ${escapeHtml(heroHeadline)}" style="width: 100px; height: auto; border-radius: 8px; box-shadow: 0 6px 16px rgba(0,0,0,0.3); flex-shrink: 0;" />`)
-    }
-    lines.push(`${indent}    <span style="display: flex; flex-direction: column; align-items: flex-start; align-self: flex-start; gap: 0.6rem;">`)
-    // No nowrap: a headline that cannot fit should wrap, not shove the layout apart.
-    lines.push(`${indent}      <span style="font-size: 0.95rem; font-weight: 700; color: ${colors.text};">✨ ${escapeHtml(heroHeadline)}</span>`)
-    lines.push(`${indent}      <span style="display: inline-block; padding: 0.65rem 1.4rem; border-radius: 8px; background: ${colors.primary}; color: #ffffff; font-weight: 600; font-size: 0.95rem;">${escapeHtml(ctaLabel)} →</span>`)
-    lines.push(`${indent}      <span style="font-size: 0.8rem; color: ${colors.textSecondary};">${escapeHtml(siteUrl)}</span>`)
-    lines.push(`${indent}    </span>`)
-    if (qrCodeDataUri) {
-      lines.push(`${indent}    <img src="${qrCodeDataUri}" alt="${escapeHtml(siteUrl)}" style="position: absolute; right: ${qrCorner}; bottom: ${qrCorner}; width: ${qrSize}px; height: ${qrSize}px;" />`)
-    }
-    lines.push(`${indent}  </a>`)
-  }
-
-  // Header
-  lines.push(`${indent}  <header style="margin-bottom: 2rem; border-bottom: 2px solid ${colors.primary}; padding-bottom: 1rem;">`)
-  lines.push(`${indent}    <h1 style="margin: 0 0 0.25rem 0; font-size: 1.75rem; color: ${colors.text};">${escapeHtml(personal.name)}</h1>`)
-  lines.push(`${indent}    <p style="margin: 0 0 0.25rem 0; font-size: 1.1rem; color: ${colors.primary}; font-weight: 600;">${escapeHtml(resolve(personal.title))}</p>`)
+  // Header — on the PDF, no more screenshot/CTA banner: just a small QR code pinned
+  // to the corner (siteUrl is only ever passed when generating the PDF, never for
+  // the <noscript> fallback), and the pitch (accroche) right under the title.
+  const qrCodeDataUri = isPdf ? getImageDataUri('qr-code.png') : null
+  const headerBorder = isPdf ? '' : `border-bottom: 2px solid ${colors.primary}; `
+  const headerPaddingRight = isPdf && qrCodeDataUri ? 'padding-right: 4.5rem; ' : ''
+  lines.push(`${indent}  <header style="position: relative; margin-bottom: ${isPdf ? '0.6rem' : '2rem'}; ${headerBorder}${headerPaddingRight}padding-bottom: ${isPdf ? '0' : '1rem'};">`)
+  lines.push(`${indent}    <h1 style="margin: 0 0 0.15rem 0; font-size: ${isPdf ? '1.3rem' : '1.75rem'}; color: ${colors.text};">${escapeHtml(personal.name)}</h1>`)
+  lines.push(`${indent}    <p style="margin: 0 0 0.15rem 0; font-size: ${isPdf ? '1rem' : '1.1rem'}; color: ${colors.primary}; font-weight: 600;">${escapeHtml(resolve(personal.title))}</p>`)
   if (personal.tagline) {
     lines.push(`${indent}    <p style="margin: 0 0 0.25rem 0; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; color: ${colors.textSecondary}b3;">${escapeHtml(resolve(personal.tagline))}</p>`)
   }
   if (personal.subtitle) {
-    lines.push(`${indent}    <p style="margin: 1rem 0 0.25rem 0; color: ${colors.textSecondary}; font-style: italic;">${escapeHtml(resolve(personal.subtitle))}</p>`)
+    // Normal style, black text — not italic/grey like the on-site subtitle, per an
+    // explicit PDF styling request (the accroche should read as primary content).
+    const subtitleStyle = isPdf
+      ? `margin: 0.35rem 0 0.25rem 0; font-size: 0.95rem; color: ${colors.text};`
+      : `margin: 1rem 0 0.25rem 0; color: ${colors.textSecondary}; font-style: italic;`
+    lines.push(`${indent}    <p style="${subtitleStyle}">${escapeHtml(resolve(personal.subtitle))}</p>`)
   }
-  if (personal.location) {
+  if (personal.location && !isPdf) {
+    // On the PDF, the location already appears in the Contact section below — no
+    // need to repeat it right under the headline.
     lines.push(`${indent}    <p style="margin: 0; color: ${colors.textSecondary};">${escapeHtml(personal.location)}</p>`)
+  }
+  if (qrCodeDataUri) {
+    lines.push(`${indent}    <img src="${qrCodeDataUri}" alt="${escapeHtml(siteUrl ?? '')}" style="position: absolute; top: 0; right: 0; width: 60px; height: 60px;" />`)
   }
   lines.push(`${indent}  </header>`)
 
-  // Contact
-  if (contact.length > 0) {
-    lines.push(`${indent}  <section style="margin-bottom: 1.5rem;">`)
-    lines.push(`${indent}    ${sectionTitle(resolve(config.labels.sections.contact))}`)
-    lines.push(`${indent}    <ul style="list-style: none; padding: 0; margin: 0;">`)
-    for (const c of contact) {
-      const slot = iconSlot(c.type in INLINE_ICONS ? c.type : null, colors.primary)
-      if (c.href) {
-        const linkedinBold = isPdf && c.type === 'linkedin' ? ' font-weight: 600;' : ''
-        lines.push(`${indent}      <li style="margin-bottom: 0.25rem;">${slot}<a href="${escapeHtml(c.href)}" style="color: ${colors.primary};${linkedinBold}">${escapeHtml(c.label)}</a></li>`)
-      } else {
-        lines.push(`${indent}      <li style="margin-bottom: 0.25rem;">${slot}${escapeHtml(c.label)}</li>`)
+  // Contact + Referents — side by side on the PDF (two narrow columns instead of two
+  // full-width stacked sections) to reclaim vertical space; stacked as usual on the
+  // <noscript> fallback, which has no such space pressure.
+  const contactBlock = contact.length > 0 || (isPdf && siteUrl)
+    ? [
+        sectionTitle(resolve(config.labels.sections.contact)),
+        `<ul style="list-style: none; padding: 0; margin: 0;">`,
+        ...contact.map((c) => {
+          const slot = iconSlot(c.type in INLINE_ICONS ? c.type : null, colors.primary)
+          const linkedinBold = isPdf && c.type === 'linkedin' ? ' font-weight: 600;' : ''
+          const inner = c.href
+            ? `<a href="${escapeHtml(c.href)}" style="color: ${colors.primary};${linkedinBold}">${escapeHtml(c.label)}</a>`
+            : escapeHtml(c.label)
+          return `<li style="margin-bottom: ${isPdf ? '0.12rem' : '0.25rem'};">${slot}${inner}</li>`
+        }),
+        // Replaces the old screenshot/button hero banner: a plain contact-list line
+        // linking back to the interactive site.
+        ...(isPdf && siteUrl
+          ? [`<li style="margin-bottom: 0.12rem;">🔗 <a href="${escapeHtml(siteUrl)}" style="color: ${colors.primary};">${lang === 'fr' ? 'CV interactif' : 'Interactive resume'}</a></li>`]
+          : []),
+        `</ul>`,
+      ].join(`\n${indent}    `)
+    : null
+
+  const referentsBlock = referents?.length && config.labels.sections.referent
+    ? [
+        sectionTitle(resolve(config.labels.sections.referent)),
+        ...referents.map((referent, index) => {
+          const referentName = referent.href
+            ? `<a href="${escapeHtml(referent.href)}" style="color: ${colors.text}; font-weight: 600; text-decoration: ${isPdf ? 'underline' : 'none'};">${escapeHtml(referent.name)}</a>`
+            : `<span style="font-weight: 600;">${escapeHtml(referent.name)}</span>`
+          // Space each entry apart from the previous one, so the second name never
+          // butts against the first one's title (both <p> tags have margin: 0).
+          const spacing = index > 0 ? ' margin-top: 0.5rem;' : ''
+          // Icon on the name line only, title left flush underneath, mirroring the sidebar.
+          const slot = iconSlot(referent.href ? 'linkedin' : null, colors.primary)
+          return `<p style="margin: 0;${spacing}">${slot}${referentName}</p>\n${indent}    <p style="margin: 0; color: ${colors.textSecondary};">${escapeHtml(resolve(referent.title))}</p>`
+        }),
+      ].join(`\n${indent}    `)
+    : null
+
+  if (contactBlock || referentsBlock) {
+    if (isPdf && contactBlock && referentsBlock) {
+      lines.push(`${indent}  <section style="margin-bottom: ${sectionGap}; display: flex; gap: 2rem;">`)
+      lines.push(`${indent}    <div style="flex: 1;">`)
+      lines.push(`${indent}    ${contactBlock}`)
+      lines.push(`${indent}    </div>`)
+      lines.push(`${indent}    <div style="flex: 1;">`)
+      lines.push(`${indent}    ${referentsBlock}`)
+      lines.push(`${indent}    </div>`)
+      lines.push(`${indent}  </section>`)
+    } else {
+      if (contactBlock) {
+        lines.push(`${indent}  <section style="margin-bottom: ${sectionGap};">`)
+        lines.push(`${indent}    ${contactBlock}`)
+        lines.push(`${indent}  </section>`)
+      }
+      if (referentsBlock) {
+        lines.push(`${indent}  <section style="margin-bottom: ${sectionGap};">`)
+        lines.push(`${indent}    ${referentsBlock}`)
+        lines.push(`${indent}  </section>`)
       }
     }
-    lines.push(`${indent}    </ul>`)
-    lines.push(`${indent}  </section>`)
-  }
-
-  // Referents
-  if (referents?.length && config.labels.sections.referent) {
-    lines.push(`${indent}  <section style="margin-bottom: 1.5rem;">`)
-    lines.push(`${indent}    ${sectionTitle(resolve(config.labels.sections.referent))}`)
-    referents.forEach((referent, index) => {
-      const referentName = referent.href
-        ? `<a href="${escapeHtml(referent.href)}" style="color: ${colors.text}; font-weight: 600; text-decoration: ${isPdf ? 'underline' : 'none'};">${escapeHtml(referent.name)}</a>`
-        : `<span style="font-weight: 600;">${escapeHtml(referent.name)}</span>`
-      // Space each entry apart from the previous one, so the second name never
-      // butts against the first one's title (both <p> tags have margin: 0).
-      const spacing = index > 0 ? ' margin-top: 0.5rem;' : ''
-      // Icon on the name line only, title left flush underneath, mirroring the sidebar.
-      const slot = iconSlot(referent.href ? 'linkedin' : null, colors.primary)
-      lines.push(`${indent}    <p style="margin: 0;${spacing}">${slot}${referentName}</p>`)
-      lines.push(`${indent}    <p style="margin: 0; color: ${colors.textSecondary};">${escapeHtml(resolve(referent.title))}</p>`)
-    })
-    lines.push(`${indent}  </section>`)
   }
 
   // Skills
   if (skills.length > 0) {
-    lines.push(`${indent}  <section style="margin-bottom: 1.5rem;">`)
+    lines.push(`${indent}  <section style="margin-bottom: ${sectionGap};">`)
     lines.push(`${indent}    ${sectionTitle(resolve(config.labels.sections.skills))}`)
-    for (const cat of skills) {
-      lines.push(`${indent}    <p style="margin: 0.5rem 0 0.25rem 0; font-weight: 600;">${escapeHtml(resolve(cat.title))}</p>`)
-      if (cat.type === 'badges') {
-        const names = cat.items.map((item) => (typeof item.name === 'string' ? item.name : resolve(item.name)))
-        lines.push(`${indent}    ${renderTechBadges(names)}`)
-      } else {
-        const skillNames = cat.items.map((item) => {
-          const name = typeof item.name === 'string' ? item.name : resolve(item.name)
-          if (cat.type === 'languages' && item.level) {
-            return `${name} (${resolve(item.level)})`
+    if (isPdf) {
+      // One row per category: name aligned with its badges on the same line — no
+      // card background, no columns, just a simple aligned list.
+      lines.push(`${indent}    <div style="display: flex; flex-direction: column; gap: 0.35rem;">`)
+      for (const cat of skills) {
+        const items = cat.type === 'badges'
+          ? cat.items.map((item) => (typeof item.name === 'string' ? item.name : resolve(item.name)))
+          : cat.items.map((item) => {
+              const name = typeof item.name === 'string' ? item.name : resolve(item.name)
+              return cat.type === 'languages' && item.level ? `${name} (${resolve(item.level)})` : name
+            })
+        let body: string
+        if (cat.type === 'badges' && cat.groupSizes && cat.groupSizes.reduce((a, b) => a + b, 0) === items.length) {
+          const groups: string[][] = []
+          let offset = 0
+          for (const size of cat.groupSizes) {
+            groups.push(items.slice(offset, offset + size))
+            offset += size
           }
-          return name
-        })
-        lines.push(`${indent}    <p style="margin: 0; color: ${colors.textSecondary};">${escapeHtml(skillNames.join(' · '))}</p>`)
+          body = renderGroupedTechBadges(groups, colors.primary, lang)
+        } else if (cat.type === 'badges') {
+          body = renderTechBadges(items, isPdf, false, lang)
+        } else {
+          body = `<span style="color: ${colors.textSecondary};">${escapeHtml(items.join(' · '))}</span>`
+        }
+        lines.push(`${indent}      <div style="display: flex; align-items: baseline; gap: 0.5rem;">`)
+        lines.push(`${indent}        <span style="display: inline-block; width: 8rem; flex-shrink: 0; font-weight: 600;">${escapeHtml(resolve(cat.title))}</span>`)
+        lines.push(`${indent}        <div style="flex: 1;">${body}</div>`)
+        lines.push(`${indent}      </div>`)
       }
+      lines.push(`${indent}    </div>`)
+    } else {
+      for (const cat of skills) {
+        const items = cat.type === 'badges'
+          ? cat.items.map((item) => (typeof item.name === 'string' ? item.name : resolve(item.name)))
+          : cat.items.map((item) => {
+              const name = typeof item.name === 'string' ? item.name : resolve(item.name)
+              return cat.type === 'languages' && item.level ? `${name} (${resolve(item.level)})` : name
+            })
+        lines.push(`${indent}    <p style="margin: 0.5rem 0 0.25rem 0; font-weight: 600;">${escapeHtml(resolve(cat.title))}</p>`)
+        if (cat.type === 'badges') {
+          lines.push(`${indent}    ${renderTechBadges(items, isPdf)}`)
+        } else {
+          lines.push(`${indent}    <p style="margin: 0; color: ${colors.textSecondary};">${escapeHtml(items.join(' · '))}</p>`)
+        }
+      }
+    }
+    lines.push(`${indent}  </section>`)
+  }
+
+  // Featured project — pulled out of "experiences" so it isn't buried under a job
+  // title. Real bullets (<ul><li>), like the Experiences section below.
+  if (isPdf && config.featuredProject) {
+    const fp = config.featuredProject
+    lines.push(`${indent}  <section style="margin-bottom: ${sectionGap};">`)
+    lines.push(`${indent}    ${sectionTitle(lang === 'fr' ? 'PROJET PHARE' : 'FLAGSHIP PROJECT')}`)
+    lines.push(`${indent}    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem;">`)
+    lines.push(`${indent}      <h3 style="margin: 0 0 0.15rem 0; font-size: 1.02rem; color: ${colors.text};">${escapeHtml(resolve(fp.title))}</h3>`)
+    lines.push(`${indent}      <span style="flex-shrink: 0; white-space: nowrap; font-size: 0.85rem; color: ${colors.primary}; font-weight: 500;">${escapeHtml(resolve(fp.period))}</span>`)
+    lines.push(`${indent}    </div>`)
+    if (fp.techs && fp.techs.length > 0) {
+      lines.push(`${indent}    ${renderTechBadges(fp.techs, isPdf, true, lang)}`)
+    }
+    if (fp.url) {
+      lines.push(`${indent}    <p style="margin: 0.15rem 0; font-size: 0.85rem;"><a href="${escapeHtml(fp.url)}" style="color: ${colors.primary}; text-decoration: underline;">${escapeHtml(fp.url)}</a></p>`)
+    }
+    if (fp.description) {
+      lines.push(`${indent}    <p style="margin: 0 0 0.15rem 0; font-size: 0.95rem;">${escapeHtml(resolve(fp.description))}</p>`)
+    }
+    const bullets = fp.bullets[lang] ?? Object.values(fp.bullets)[0] ?? []
+    if (bullets.length > 0) {
+      lines.push(`${indent}    <ul style="margin: 0.3rem 0 0 1rem; padding: 0;">`)
+      for (const bullet of bullets) {
+        lines.push(`${indent}      <li style="margin-bottom: 0.15rem; font-size: 0.95rem; color: ${colors.text};">${escapeHtml(bullet)}</li>`)
+      }
+      lines.push(`${indent}    </ul>`)
     }
     lines.push(`${indent}  </section>`)
   }
 
   // Experiences
   if (experiences.length > 0) {
-    lines.push(`${indent}  <section style="margin-bottom: 1.5rem;">`)
+    lines.push(`${indent}  <section style="margin-bottom: ${sectionGap};">`)
     lines.push(`${indent}    ${sectionTitle(resolve(config.labels.sections.experience))}`)
     for (const exp of experiences) {
-      lines.push(`${indent}    <article style="margin-bottom: 1.25rem;">`)
-      lines.push(`${indent}      <h3 style="margin: 0 0 0.15rem 0; font-size: 1rem; color: ${colors.text};">${escapeHtml(resolve(exp.role))} - ${escapeHtml(resolve(exp.company))}</h3>`)
-      if (exp.url) {
-        lines.push(`${indent}      <p style="margin: 0 0 0.15rem 0; font-size: 0.9rem;"><a href="${escapeHtml(exp.url)}" style="color: ${colors.primary}; text-decoration: ${isPdf ? 'underline' : 'none'};">${escapeHtml(exp.url)}</a></p>`)
-      }
+      lines.push(`${indent}    <article style="margin-bottom: ${articleGap};">`)
       const periodText = resolve(exp.period)
-      const meta = [isPdf ? reverseDateRange(periodText) : periodText]
-      if (exp.type) meta.push(resolve(exp.type))
-      lines.push(`${indent}      <p style="margin: 0 0 0.25rem 0; color: ${colors.primary}; font-size: 0.9rem; font-weight: 500;">${escapeHtml(meta.join(' · '))}</p>`)
-      lines.push(`${indent}      <p style="margin: 0 0 0.25rem 0;">${escapeHtml(resolve(exp.description))}</p>`)
-      lines.push(`${indent}      ${renderTechBadges(exp.techs)}`)
+      if (isPdf) {
+        // Title + status grouped together on the left (status right next to the
+        // title), date pinned to the far right edge on the same line.
+        lines.push(`${indent}      <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem;">`)
+        lines.push(`${indent}        <span style="display: flex; align-items: baseline; gap: 0.5rem;">`)
+        lines.push(`${indent}          <h3 style="margin: 0 0 0.15rem 0; font-size: 1.02rem; color: ${colors.text};">${escapeHtml(resolve(exp.role))} - ${escapeHtml(resolve(exp.company))}</h3>`)
+        if (exp.type) {
+          // Soft red badge — a status pill, not an alert, so kept low-contrast.
+          lines.push(`${indent}          <span style="flex-shrink: 0; white-space: nowrap; display: inline-block; padding: 0.08rem 0.5rem; border-radius: 4px; background: #fee2e2; border: 1px solid #fecaca; font-size: 0.78rem; color: #b91c1c; font-weight: 600;">${escapeHtml(resolve(exp.type))}</span>`)
+        }
+        lines.push(`${indent}        </span>`)
+        lines.push(`${indent}        <span style="flex-shrink: 0; white-space: nowrap; font-size: 0.85rem; color: ${colors.primary}; font-weight: 500;">${escapeHtml(reverseDateRange(periodText))}</span>`)
+        lines.push(`${indent}      </div>`)
+      } else {
+        lines.push(`${indent}      <h3 style="margin: 0 0 0.15rem 0; font-size: 1rem; color: ${colors.text};">${escapeHtml(resolve(exp.role))} - ${escapeHtml(resolve(exp.company))}</h3>`)
+      }
+      const techBadges = renderTechBadges(exp.techs, isPdf, true, lang)
+      if (isPdf) {
+        // Badges sit right under the title, ahead of dates/description — the tech
+        // stack is the first thing to scan for this role.
+        lines.push(`${indent}      ${techBadges}`)
+      }
+      if (exp.url) {
+        lines.push(`${indent}      <p style="margin: 0 0 0.15rem 0; font-size: ${isPdf ? '0.85rem' : '0.9rem'};"><a href="${escapeHtml(exp.url)}" style="color: ${colors.primary}; text-decoration: ${isPdf ? 'underline' : 'none'};">${escapeHtml(exp.url)}</a></p>`)
+      }
+      if (!isPdf) {
+        // Date + status already sit next to the title on the PDF, so this line is web-only.
+        const meta = exp.type ? [periodText, resolve(exp.type)] : [periodText]
+        lines.push(`${indent}      <p style="margin: 0 0 0.25rem 0; color: ${colors.primary}; font-size: 0.9rem; font-weight: 500;">${escapeHtml(meta.join(' · '))}</p>`)
+      }
+      lines.push(`${indent}      <p style="margin: 0 0 ${isPdf ? '0.15rem' : '0.25rem'} 0; font-size: ${isPdf ? '0.95rem' : '1rem'};">${escapeHtml(resolve(exp.description))}</p>`)
+      if (!isPdf) {
+        lines.push(`${indent}      ${techBadges}`)
+      }
       if (exp.details?.tasks) {
         const tasks = exp.details.tasks[lang] ?? Object.values(exp.details.tasks)[0]
         if (tasks && tasks.length > 0) {
-          lines.push(`${indent}      <ul style="margin: 0.5rem 0 0 1rem; padding: 0;">`)
+          const taskFontSize = isPdf ? '0.9rem' : '0.9rem'
+          lines.push(`${indent}      <ul style="margin: ${isPdf ? '0.25rem' : '0.5rem'} 0 0 1rem; padding: 0;">`)
           for (const task of tasks) {
-            lines.push(`${indent}        <li style="margin-bottom: 0.15rem; font-size: 0.9rem;">${escapeHtml(task)}</li>`)
+            lines.push(`${indent}        <li style="margin-bottom: 0.15rem; font-size: ${taskFontSize}; color: ${colors.text};">${escapeHtml(task)}</li>`)
           }
           lines.push(`${indent}      </ul>`)
         }
+      }
+      if (isPdf && exp.portfolioNote) {
+        const before = lang === 'fr' ? 'Détail complet sur mon ' : 'Full detail on my '
+        const linkText = lang === 'fr' ? 'portfolio' : 'portfolio'
+        lines.push(`${indent}      <p style="margin: 0.25rem 0 0 0; font-size: 0.85rem; font-style: italic; color: ${colors.textSecondary};">${escapeHtml(before)}<a href="https://vincentboutin.dev" style="color: #2563eb; text-decoration: underline;">${escapeHtml(linkText)}</a>.</p>`)
       }
       lines.push(`${indent}    </article>`)
     }
@@ -314,10 +452,10 @@ export function renderResumeHtml(
 
   // Education
   if (education.length > 0) {
-    lines.push(`${indent}  <section style="margin-bottom: 1.5rem;">`)
+    lines.push(`${indent}  <section style="margin-bottom: ${sectionGap};">`)
     lines.push(`${indent}    ${sectionTitle(resolve(config.labels.sections.education))}`)
     for (const edu of education) {
-      lines.push(`${indent}    <div style="margin-bottom: 0.75rem;">`)
+      lines.push(`${indent}    <div style="margin-bottom: ${isPdf ? "0.4rem" : "0.75rem"};">`)
       const degreeLine = edu.badge
         ? `${escapeHtml(resolve(edu.degree))} <span style="color: #b91c1c; font-size: 0.8rem; font-weight: 500;">(${escapeHtml(resolve(edu.badge))})</span>`
         : escapeHtml(resolve(edu.degree))
@@ -335,16 +473,16 @@ export function renderResumeHtml(
 
   // Projects
   if (projects && projects.length > 0 && config.labels.sections.projects) {
-    lines.push(`${indent}  <section style="margin-bottom: 1.5rem;">`)
+    lines.push(`${indent}  <section style="margin-bottom: ${sectionGap};">`)
     lines.push(`${indent}    ${sectionTitle(resolve(config.labels.sections.projects))}`)
     for (const proj of projects) {
-      lines.push(`${indent}    <div style="margin-bottom: 0.75rem;">`)
+      lines.push(`${indent}    <div style="margin-bottom: ${isPdf ? "0.4rem" : "0.75rem"};">`)
       const titleHtml = proj.url
         ? `<a href="${escapeHtml(proj.url)}" style="color: ${colors.primary};">${escapeHtml(resolve(proj.title))}</a>`
         : escapeHtml(resolve(proj.title))
       lines.push(`${indent}      <p style="margin: 0; font-weight: 600; color: ${colors.text};">${titleHtml}</p>`)
       lines.push(`${indent}      <p style="margin: 0; color: ${colors.textSecondary};">${escapeHtml(resolve(proj.description))}</p>`)
-      lines.push(`${indent}      ${renderTechBadges(proj.techs)}`)
+      lines.push(`${indent}      ${renderTechBadges(proj.techs, isPdf)}`)
       lines.push(`${indent}    </div>`)
     }
     lines.push(`${indent}  </section>`)
@@ -352,7 +490,7 @@ export function renderResumeHtml(
 
   // Values
   if (values && values.length > 0 && config.labels.sections.values) {
-    lines.push(`${indent}  <section style="margin-bottom: 1.5rem;">`)
+    lines.push(`${indent}  <section style="margin-bottom: ${sectionGap};">`)
     lines.push(`${indent}    ${sectionTitle(resolve(config.labels.sections.values))}`)
     lines.push(`${indent}    <p style="margin: 0; color: ${colors.textSecondary};">${escapeHtml(values.map((v) => resolve(v)).join(' · '))}</p>`)
     lines.push(`${indent}  </section>`)
@@ -360,10 +498,26 @@ export function renderResumeHtml(
 
   // Hobbies
   if (hobbies && hobbies.length > 0 && config.labels.sections.hobbies) {
-    lines.push(`${indent}  <section style="margin-bottom: 1.5rem;">`)
+    lines.push(`${indent}  <section style="margin-bottom: ${sectionGap};">`)
     lines.push(`${indent}    ${sectionTitle(resolve(config.labels.sections.hobbies))}`)
-    const hobbyNames = hobbies.map((h) => resolve(h.title))
-    lines.push(`${indent}    <p style="margin: 0; color: ${colors.textSecondary};">${escapeHtml(hobbyNames.join(' · '))}</p>`)
+    if (isPdf) {
+      // Single line for the whole section: "Sport : Musculation, Escalade (Bloc) · Musique : Mix, ...".
+      // A colon rather than wrapping parens, since a detail can already carry its own (e.g. "Escalade (Bloc)").
+      const oneLine = hobbies
+        .map((hobby) => {
+          const details = hobby.details?.map((d) => resolve(d)).join(', ')
+          return details ? `${resolve(hobby.title)} : ${details}` : resolve(hobby.title)
+        })
+        .join(' · ')
+      lines.push(`${indent}    <p style="margin: 0; color: ${colors.textSecondary};">${escapeHtml(oneLine)}</p>`)
+    } else {
+      for (const hobby of hobbies) {
+        const details = hobby.details?.map((d) => resolve(d)).join(' / ')
+        const titleHtml = `<span style="color: ${colors.text}; font-weight: 600;">${escapeHtml(resolve(hobby.title))}</span>`
+        const line = details ? `${titleHtml} : ${escapeHtml(details)}` : titleHtml
+        lines.push(`${indent}    <p style="margin: 0 0 0.15rem 0; color: ${colors.textSecondary};">${line}</p>`)
+      }
+    }
     lines.push(`${indent}  </section>`)
   }
 

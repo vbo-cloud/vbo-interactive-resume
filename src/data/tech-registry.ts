@@ -104,7 +104,9 @@ const TECH_REGISTRY = {
   'GCP': { color: '#4285F4' },
   'Google Cloud': { color: '#4285F4' },
   'Azure': { color: '#0078D4' },
+  'Azure Monitor': { color: '#0078D4' },
   'Terraform': { color: '#7B42BC' },
+  'Bicep': { color: '#0078D4' },
   'GitHub Actions': { color: '#6D071A' },
   'GitLab CI': { color: '#FC6D26' },
   'Azure DevOps': { color: '#374151' },
@@ -174,6 +176,7 @@ const TECH_REGISTRY = {
   'TensorFlow': { color: '#FF6F00' },
   'PyTorch': { color: '#EE4C2C' },
   'OpenAI': { color: '#412991' },
+  'Azure OpenAI': { color: '#412991' },
   'LangChain': { color: '#1C3C3C' },
   'Pandas': { color: '#150458' },
   'NumPy': { color: '#013243' },
@@ -211,42 +214,29 @@ export function getTechColor(name: string): string {
 }
 
 /**
- * Badge color is not decorative — it encodes how much a tech should stand out on
- * the CV, from "this is the pitch" down to "true but not the point". Any tech not
- * explicitly classified below falls to `muted` on purpose: the default is discreet.
+ * Badge tier — kept only for the <noscript> SEO fallback (render-resume-html.ts),
+ * which still derives its own light-mode-only badge colors from a tech's tier. The
+ * live site (TechBadge.tsx) and the PDF (render-resume-pdf.ts) no longer use this —
+ * they resolve through the explicit per-theme palette below instead.
  */
 export type TechTier = 'brand' | 'workflow' | 'support' | 'muted'
 
-/**
- * Brand tier — the actual sales pitch for a DevOps / Cloud Engineer (Azure) role.
- * Full brand color + outline: these are what should catch the eye first.
- */
 const BRAND_TECHS = new Set([
   'Azure',
   'Terraform',
   'C#',
   'Service Bus',
   'OpenAI',
+  'Azure OpenAI',
   'Claude',
   'pgvector',
   'Docker',
   'Agile Methods',
-  // fr label for the same skill — the sidebar badge text isn't currently
-  // language-resolved for this entry (see Sidebar.tsx), but classify both
-  // so tiering stays correct if that gets fixed later.
   'Méthodes Agiles',
 ])
 
-/**
- * Workflow tier — the versioning/CI-CD substrate. Read as one object rather than
- * distinct tools: flat black background, one shared text color, no brand colors.
- */
 const WORKFLOW_TECHS = new Set(['Git', 'CI/CD', 'GitHub', 'GitLab', 'Azure DevOps'])
 
-/**
- * Support tier — genuinely used, but not the argument for hiring: real second-plan
- * credibility. Desaturated so it reads as "also true" rather than competing with brand tier.
- */
 const SUPPORT_TECHS = new Set([
   'FastAPI',
   'PostgreSQL',
@@ -255,15 +245,76 @@ const SUPPORT_TECHS = new Set([
   'Grafana',
   'Application Insights',
   'Log Analytics',
+  'Azure Monitor',
 ])
 
-/**
- * Resolves the visual tier for a tech name. Anything not classified above is `muted`
- * — historical or off-trajectory skills: visible and factual, never salient.
- */
 export function getTechTier(name: string): TechTier {
   if (BRAND_TECHS.has(name)) return 'brand'
   if (WORKFLOW_TECHS.has(name)) return 'workflow'
   if (SUPPORT_TECHS.has(name)) return 'support'
   return 'muted'
+}
+
+/**
+ * The actual badge palette for this CV — one official color per tool, per theme
+ * (not derived algorithmically from a single hex like TECH_REGISTRY above, which
+ * exists only for the broader TechName autocomplete surface). This is the single
+ * source of truth every badge resolves through, on both the site (TechBadge.tsx)
+ * and the PDF (render-resume-pdf.ts): same tech, same color, everywhere.
+ *
+ * One color per ecosystem rather than per literal tool name — every Azure service
+ * shares the Azure blue, PostgreSQL and pgvector share the same blue, etc. Both hex
+ * values are checked to clear 4.5:1 contrast against their own badge background
+ * (14% tint of the color over the card background) — a handful needed darkening or
+ * lightening to pass; see getTechBadgeColor's callers for which ones.
+ */
+export interface TechThemeColors {
+  dark: string
+  light: string
+}
+
+const TECH_BADGE_COLORS: Record<string, TechThemeColors> = {
+  // Azure family — every Azure-branded service shares the same blue.
+  'Azure': { dark: '#3A9BE8', light: '#006ABB' },
+  'Service Bus': { dark: '#3A9BE8', light: '#006ABB' },
+  'Application Insights': { dark: '#3A9BE8', light: '#006ABB' },
+  'Log Analytics': { dark: '#3A9BE8', light: '#006ABB' },
+  'Azure DevOps': { dark: '#3A9BE8', light: '#006ABB' },
+  'Terraform': { dark: '#A77EDB', light: '#7B42BC' },
+  'Docker': { dark: '#2496ED', light: '#1C5FE4' },
+  'Git': { dark: '#E6EDF3', light: '#24292F' },
+  'GitLab': { dark: '#E6EDF3', light: '#24292F' },
+  'GitHub': { dark: '#E6EDF3', light: '#24292F' },
+  'CI/CD': { dark: '#E6EDF3', light: '#24292F' },
+  'C#': { dark: '#C27BC0', light: '#68217A' },
+  'C++': { dark: '#659AD2', light: '#00599C' },
+  'Python': { dark: '#FFD43B', light: '#336D9D' },
+  'FastAPI': { dark: '#1FBFAE', light: '#04766B' },
+  'PostgreSQL': { dark: '#7AA6DA', light: '#336791' },
+  'pgvector': { dark: '#7AA6DA', light: '#336791' },
+  'Oracle Database': { dark: '#E36A5A', light: '#B74030' },
+  'OpenAI': { dark: '#9B8CFF', light: '#6D55CD' },
+  'Claude': { dark: '#D97757', light: '#A45133' },
+  'Grafana': { dark: '#F58A3C', light: '#AE4A00' },
+  'PostHog': { dark: '#6684FF', light: '#1D4AFF' },
+  'Next.js': { dark: '#E6EDF3', light: '#111111' },
+  // Slightly grayed relative to the rest of the palette — less central to the
+  // targeted career path now, so these recede rather than compete for attention.
+  'Unity': { dark: '#9AA0A6', light: '#5F6368' },
+  'Unreal': { dark: '#D0D4DB', light: '#333333' },
+  'Netcode': { dark: '#9AA0A6', light: '#5F6368' },
+  'AR': { dark: '#9AA0A6', light: '#5F6368' },
+  'Agile Methods': { dark: '#4ADE80', light: '#107937' },
+  // fr label for the same skill — badge text isn't language-resolved everywhere
+  // it's read from, so classify both to keep the color lookup correct.
+  'Méthodes Agiles': { dark: '#4ADE80', light: '#107937' },
+}
+
+/** Any tech not explicitly listed above — visible and factual, never salient. */
+const NEUTRAL_TECH_BADGE_COLOR: TechThemeColors = { dark: '#D0D4DB', light: '#333333' }
+
+/** Resolves a tech's badge color for the given theme. Unlisted techs fall back to neutral. */
+export function getTechBadgeColor(name: string, mode: 'dark' | 'light'): string {
+  const entry = TECH_BADGE_COLORS[name] ?? NEUTRAL_TECH_BADGE_COLOR
+  return mode === 'dark' ? entry.dark : entry.light
 }
