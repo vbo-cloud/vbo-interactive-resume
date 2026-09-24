@@ -23,6 +23,8 @@
     "dev": "npm run generate:pdf && vite",
     "build": "npm run generate:pdf && tsc -b && vite build",
     "generate:pdf": "tsx scripts/generate-pdfs.ts",
+    "check:pdf-pages": "tsx scripts/check-pdf-page-count.ts",
+    "test:pdf": "npm run generate:pdf && npm run check:pdf-pages",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -45,6 +47,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "pdf-lib": "^1.17.1",
     "puppeteer": "^25.3.0",
     "tailwindcss": "^4.1.18",
     "tsx": "^4.22.4",

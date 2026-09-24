@@ -74,6 +74,12 @@ async function main() {
 async function printPdf(browser: Awaited<ReturnType<typeof puppeteer.launch>>, html: string, outPath: string) {
   const page = await browser.newPage()
   await page.setContent(html, { waitUntil: 'load' })
+  // The self-hosted faces are embedded as data URIs (no network fetch), but decoding
+  // and shaping them is still async — wait for it explicitly rather than relying on
+  // 'load' to happen to cover it, so the PDF never prints with a fallback font mid-swap.
+  // Passed as a string (not a function) so tsc — this file has no "dom" lib — doesn't
+  // need to type-check a `document` reference that only ever runs in the page context.
+  await page.evaluate('document.fonts.ready')
   await page.pdf({
     path: outPath,
     format: 'A4',

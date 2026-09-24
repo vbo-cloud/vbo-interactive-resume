@@ -47,6 +47,29 @@ function getImageDataUri(fileName: string): string | null {
 }
 
 /**
+ * Self-hosted, embedded as base64 so headless Chrome never depends on a network
+ * fetch or a relative path resolving against the printed HTML's base URL. Not
+ * wrapped in try/catch: a missing font file here would silently reintroduce the
+ * layout-shifting-fallback-font bug (prod PDF running longer than 1 page) that
+ * this is fixing, so a missing file should fail the build loudly instead.
+ */
+function getFontDataUri(fileName: string): string {
+  const fontPath = path.resolve(process.cwd(), 'public', 'fonts', fileName)
+  const buffer = fs.readFileSync(fontPath)
+  return `data:font/ttf;base64,${buffer.toString('base64')}`
+}
+
+// Selawik is Microsoft's own open substitute for Segoe UI (the font system-ui was
+// resolving to locally on Windows) — chosen over a generic webfont so self-hosting it
+// doesn't shift the line-wrapping the layout was tuned against. No 500 weight ships,
+// so it's mapped onto the regular face; no italic face ships either, so italic text
+// (see font-style: italic below) falls back to the browser's synthetic-oblique of the
+// regular face rather than a different, wider font.
+const FONT_REGULAR_DATA_URI = getFontDataUri('selawik-regular.ttf')
+const FONT_SEMIBOLD_DATA_URI = getFontDataUri('selawik-semibold.ttf')
+const FONT_BOLD_DATA_URI = getFontDataUri('selawik-bold.ttf')
+
+/**
  * The web timeline lists experiences top (most recent) to bottom (oldest), so each
  * period reads "recent - older". Flip it to "older - recent" for the flat PDF document.
  */
@@ -382,8 +405,32 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string): str
     <meta charset="utf-8" />
     <title>CV_VincentBOUTIN</title>
     <style>
+      /* Self-hosted (see FONT_*_DATA_URI above): identical metrics locally and in the
+         prod build container, so line-wrapping — and therefore page count — can't
+         drift between the two depending on which system UI font happens to be installed. */
+      @font-face {
+        font-family: 'Selawik';
+        src: url(${FONT_REGULAR_DATA_URI}) format('truetype');
+        font-weight: 400 500;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: 'Selawik';
+        src: url(${FONT_SEMIBOLD_DATA_URI}) format('truetype');
+        font-weight: 600;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: 'Selawik';
+        src: url(${FONT_BOLD_DATA_URI}) format('truetype');
+        font-weight: 700;
+        font-style: normal;
+        font-display: block;
+      }
       * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      body { font-family: system-ui, -apple-system, sans-serif; }
+      body { font-family: 'Selawik', system-ui, -apple-system, sans-serif; }
       a { text-decoration: none; }
     </style>
   </head>
