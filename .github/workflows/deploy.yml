@@ -30,6 +30,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Check CV PDFs fit on 1 page
+        run: npm run check:pdf-pages
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
