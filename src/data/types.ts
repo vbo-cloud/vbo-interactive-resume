@@ -20,6 +20,12 @@ export interface SkillCategory {
   title: LocalizedString
   type: 'badges' | 'text' | 'languages'
   items: SkillItem[]
+  /**
+   * PDF only: splits `items` into visual clusters of this many items each (must sum
+   * to items.length), separated by a round bullet — mirrors the task separator used
+   * in experience paragraphs. Omit to render the category as one flat badge row.
+   */
+  groupSizes?: number[]
 }
 
 export interface SkillItem {
@@ -52,6 +58,8 @@ export interface Experience {
     tasks?: LocalizedStringArray
     training?: LocalizedStringArray
   }
+  /** PDF only: adds an italic "Full detail on my portfolio" line at the end of the entry, portfolio linked. */
+  portfolioNote?: boolean
 }
 
 // ===== PROJECTS =====
@@ -172,10 +180,28 @@ export interface ResumeConfig {
   values?: LocalizedString[]
   hobbies?: Hobby[]
   referents?: Referent[]
+  /** PDF only: spoken languages, rendered as their own "Langues" sidebar section. */
+  spokenLanguages?: { name: LocalizedString; level: LocalizedString }[]
   pdf?: {
     label?: LocalizedString
     /** Single path for all languages, or one path per language (hides button if no PDF for current language) */
     path: string | LocalizedString
+  }
+  /**
+   * PDF only: a standout project rendered as its own "Projet phare" section —
+   * pulled out of experiences so it isn't buried under a job title.
+   */
+  featuredProject?: {
+    title: LocalizedString
+    /** Shown as a status badge next to the title, mirroring Experience.type (e.g. "Independent project"). */
+    type?: LocalizedString
+    /** Shown next to the type badge, mirroring Experience.role (e.g. "DevOps and Cloud Engineer"). */
+    role?: LocalizedString
+    period: LocalizedString
+    url?: string
+    description?: LocalizedString
+    techs?: (TechName | (string & {}))[]
+    bullets: LocalizedStringArray
   }
   theme?: {
     preset?: PresetName
