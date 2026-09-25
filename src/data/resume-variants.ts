@@ -35,18 +35,6 @@ export const resumeVariants: ResumeVariant[] = [
     skillsOrder: ['Code', 'Backend', 'AI', 'DevOps', 'Cloud', 'Observability', 'Workflow'],
   },
   {
-    id: 'cloud',
-    title: {
-      fr: 'Ingénieur Cloud / DevOps (Azure)',
-      en: 'Cloud / DevOps Engineer (Azure)',
-    },
-    featuredProjectRole: {
-      fr: 'Ingénieur Cloud / DevOps',
-      en: 'Cloud / DevOps Engineer',
-    },
-    skillsOrder: ['Cloud', 'DevOps', 'Observability', 'Workflow', 'Code', 'Backend', 'AI'],
-  },
-  {
     id: 'ia',
     title: {
       fr: "Concepteur d'applications IA / Cloud Azure",
