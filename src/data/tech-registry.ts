@@ -280,6 +280,7 @@ const TECH_BADGE_COLORS: Record<string, TechThemeColors> = {
   'Application Insights': { dark: '#3A9BE8', light: '#006ABB' },
   'Log Analytics': { dark: '#3A9BE8', light: '#006ABB' },
   'Azure DevOps': { dark: '#3A9BE8', light: '#006ABB' },
+  'Azure Foundry': { dark: '#3A9BE8', light: '#006ABB' },
   'Terraform': { dark: '#A77EDB', light: '#7B42BC' },
   'Docker': { dark: '#2496ED', light: '#1C5FE4' },
   'Git': { dark: '#E6EDF3', light: '#24292F' },

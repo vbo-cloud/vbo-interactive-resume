@@ -11,6 +11,14 @@ export interface ResumeVariant {
   id: string
   /** Replaces personal.title (the headline under the name) */
   title: LocalizedString
+  /**
+   * Replaces featuredProject.role (the Job Finder role badge) — kept equivalent to
+   * `title` so the flagship project reads as the same role the CV is targeting.
+   * Left unset to keep the default "DevOps / Cloud Engineer": the dev variant's own
+   * title ("C# / .NET Developer") isn't what Job Finder was actually built as, so
+   * it keeps the DevOps/Cloud framing instead of following its own title.
+   */
+  featuredProjectRole?: LocalizedString
   /** Skill categories to show first, matched on their English title. Others keep their order after these. */
   skillsOrder?: string[]
   /** Experience ids to show first. Others keep their order after these. Leave empty to keep chronology. */
@@ -27,18 +35,14 @@ export const resumeVariants: ResumeVariant[] = [
     skillsOrder: ['Code', 'Backend', 'AI', 'DevOps', 'Cloud', 'Observability', 'Workflow'],
   },
   {
-    id: 'cloud',
-    title: {
-      fr: 'Ingénieur Cloud / DevOps (Azure)',
-      en: 'Cloud / DevOps Engineer (Azure)',
-    },
-    skillsOrder: ['Cloud', 'DevOps', 'Observability', 'Workflow', 'Code', 'Backend', 'AI'],
-  },
-  {
     id: 'ia',
     title: {
       fr: "Concepteur d'applications IA / Cloud Azure",
       en: 'AI Application Engineer / Azure Cloud',
+    },
+    featuredProjectRole: {
+      fr: 'Développeur IA / Cloud Azure',
+      en: 'AI Developer / Cloud Azure',
     },
     skillsOrder: ['AI', 'Backend', 'Code', 'Cloud', 'DevOps', 'Observability', 'Workflow'],
   },
