@@ -187,7 +187,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string): str
   if (skills.length > 0) {
     sidebar.push(`<section style="margin-bottom: 1.2rem;">`)
     sidebar.push(sidebarSectionTitle(resolve(config.labels.sections.skills), colors))
-    sidebar.push(`<div style="display: flex; flex-direction: column; gap: 0.8rem;">`)
+    sidebar.push(`<div style="display: flex; flex-direction: column; gap: 0.6rem;">`)
     for (const cat of skills) {
       sidebar.push(`<div>`)
       sidebar.push(`<p style="margin: 0 0 0.3rem 0; font-size: 0.75rem; font-weight: 500; color: ${colors.text};">${escapeHtml(resolve(cat.title))}</p>`)

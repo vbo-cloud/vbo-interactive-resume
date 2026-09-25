@@ -104,6 +104,10 @@ function applyVariant(config: ResumeConfig, variant: ResumeVariant): ResumeConfi
   return {
     ...config,
     personal: { ...config.personal, title: variant.title },
+    featuredProject: config.featuredProject && {
+      ...config.featuredProject,
+      role: variant.featuredProjectRole ?? config.featuredProject.role,
+    },
     skills: reorder(config.skills, (cat) => cat.title.en ?? '', variant.skillsOrder),
     experiences: reorder(config.experiences, (exp) => exp.id, variant.experiencesOrder),
   }

@@ -9,10 +9,10 @@ import type { ContactItem, Education, Experience, Hobby, Referent, ResumeConfig,
 
 /** Headline + pitch shown under the name. No numbers/skills beyond what's elsewhere in this file. */
 export const pdfPersonal = {
-  title: { en: 'Cloud / DevOps Azure Engineer — AZ-104 certified', fr: 'Ingénieur Cloud / DevOps Azure — certifié AZ-104' },
+  title: { en: 'DevOps / Cloud Engineer Azure — AZ-104 certified', fr: 'DevOps / Cloud Engineer Azure — certifié AZ-104' },
   subtitle: {
     en: 'Cloud / DevOps Engineer, AZ-104 certified, coming from a C# development background. I designed and single-handedly operate a production Azure platform, from Terraform infrastructure to monitoring. Strong interest in AI. Looking for a Cloud / DevOps role in Lyon.',
-    fr: "Ingénieur Cloud / DevOps certifié AZ-104, issu du développement C#. J'ai conçu et j'exploite seul une plateforme Azure en production, de l'infrastructure Terraform jusqu'au monitoring. Forte appétence pour l'IA. À la recherche d'un poste Cloud / DevOps à Lyon.",
+    fr: "Ingénieur Cloud / DevOps certifié AZ-104, issu du développement C#. J'ai conçu une plateforme Azure que j'exploite seul en production, de l'infrastructure Terraform jusqu'au monitoring. Forte appétence pour l'IA. À la recherche d'un poste Cloud / DevOps à Lyon.",
   },
 }
 
@@ -183,7 +183,11 @@ export const pdfSkills: SkillCategory[] = [
     type: 'badges',
     items: [{ name: 'FastAPI' }, { name: 'PostgreSQL' }, { name: 'pgvector' }, { name: 'Service Bus' }],
   },
-  { title: { en: 'AI', fr: 'IA' }, type: 'badges', items: [{ name: 'OpenAI' }, { name: 'Claude' }] },
+  {
+    title: { en: 'AI', fr: 'IA' },
+    type: 'badges',
+    items: [{ name: 'OpenAI' }, { name: 'Claude' }, { name: 'Azure Foundry' }, { name: 'LLM' }],
+  },
   {
     title: { en: 'Observability', fr: 'Observabilité' },
     type: 'badges',
