@@ -183,7 +183,11 @@ export const pdfSkills: SkillCategory[] = [
     type: 'badges',
     items: [{ name: 'FastAPI' }, { name: 'PostgreSQL' }, { name: 'pgvector' }, { name: 'Service Bus' }],
   },
-  { title: { en: 'AI', fr: 'IA' }, type: 'badges', items: [{ name: 'OpenAI' }, { name: 'Claude' }] },
+  {
+    title: { en: 'AI', fr: 'IA' },
+    type: 'badges',
+    items: [{ name: 'OpenAI' }, { name: 'Claude' }, { name: 'Azure Foundry' }, { name: 'LLM' }],
+  },
   {
     title: { en: 'Observability', fr: 'Observabilité' },
     type: 'badges',
