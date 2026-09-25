@@ -78,9 +78,25 @@ function reverseDateRange(period: string): string {
   return parts.length === 2 ? `${parts[1]} - ${parts[0]}` : period
 }
 
-function resolveDarkThemeColors(config: ResumeConfig) {
+/**
+ * The PDF defaults to dark; 'light' reads the same preset's light half instead — a
+ * white main column against the sidebar's light gray, meant for printing.
+ */
+function resolveThemeColors(config: ResumeConfig, mode: 'dark' | 'light') {
   const preset = presets[config.theme?.preset ?? 'minimal']
   const merged = { ...preset, ...config.theme?.colors }
+  if (mode === 'light') {
+    return {
+      bg: merged.bg,
+      bgCard: merged.bgCard,
+      text: merged.text,
+      textSecondary: merged.textSecondary,
+      primary: merged.primary,
+      primaryLight: merged.primaryLight,
+      sidebarFrom: merged.sidebarLight,
+      sidebarTo: merged.sidebarLightEnd,
+    }
+  }
   return {
     bg: merged.bgDark,
     bgCard: merged.bgCardDark,
@@ -140,36 +156,43 @@ function techIcon(tech: string): string {
 /**
  * Same recipe as TechBadge.tsx, resolved through the same central palette
  * (tech-registry.ts): full-opacity text, 14% tint background, 45% tint border.
- * The PDF is always dark, so this always reads the 'dark' half of the palette.
+ * `mode` picks which half of that palette to read (see resolveThemeColors).
  * `withIcon` is only turned on for the skills sidebar (see below) — experience/project
  * tech badges stay text-only, unchanged.
  */
-function renderBadge(tech: string, lang: string, withIcon = false): string {
-  const color = getTechBadgeColor(tech, 'dark')
+function renderBadge(tech: string, lang: string, mode: 'dark' | 'light', withIcon = false): string {
+  const color = getTechBadgeColor(tech, mode)
   const label = lang === 'fr' ? (TECH_LABEL_FR[tech] ?? tech) : tech
   const icon = withIcon ? techIcon(tech) : ''
   const display = icon ? 'inline-flex; align-items: center; gap: 0.3rem' : 'inline-block'
   return `<span style="display: ${display}; padding: 0.22rem 0.5rem; border-radius: 4px; font-size: 0.72rem; font-weight: 500; line-height: 1.2; background: ${color}24; color: ${color}; border: 1px solid ${color}73;">${icon}${escapeHtml(label)}</span>`
 }
 
-function renderBadges(techs: string[], lang: string, gap = '0.35rem', marginTop = '0.4rem', withIcon = false): string {
+function renderBadges(
+  techs: string[],
+  lang: string,
+  mode: 'dark' | 'light',
+  gap = '0.35rem',
+  marginTop = '0.4rem',
+  withIcon = false,
+): string {
   if (techs.length === 0) return ''
-  return `<div style="display: flex; flex-wrap: wrap; gap: ${gap}; margin-top: ${marginTop};">${techs.map((t) => renderBadge(t, lang, withIcon)).join('')}</div>`
+  return `<div style="display: flex; flex-wrap: wrap; gap: ${gap}; margin-top: ${marginTop};">${techs.map((t) => renderBadge(t, lang, mode, withIcon)).join('')}</div>`
 }
 
 /** Mirrors SidebarSection.tsx: small tracking-widest heading, underlined. */
-function sidebarSectionTitle(label: string, colors: ReturnType<typeof resolveDarkThemeColors>): string {
+function sidebarSectionTitle(label: string, colors: ReturnType<typeof resolveThemeColors>): string {
   return `<h3 style="font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; color: ${colors.text}; margin: 0 0 0.6rem 0; padding-bottom: 0.3rem; border-bottom: 1px solid ${colors.primary}33;">${escapeHtml(label)}</h3>`
 }
 
 /** Mirrors MainContent.tsx's section headings ("EXPERIENCE", "EDUCATION", ...). */
-function mainSectionTitle(label: string, colors: ReturnType<typeof resolveDarkThemeColors>): string {
+function mainSectionTitle(label: string, colors: ReturnType<typeof resolveThemeColors>): string {
   return `<h2 style="font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; color: ${colors.text}; margin: 0 0 0.9rem 0; padding-bottom: 0.4rem; border-bottom: 1px solid ${colors.primary}33;">${escapeHtml(label)}</h2>`
 }
 
-export function renderResumePdfDocument(config: ResumeConfig, lang: string): string {
+export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode: 'dark' | 'light' = 'dark'): string {
   const resolve = (ls: Record<string, string>) => ls[lang] ?? Object.values(ls)[0] ?? ''
-  const colors = resolveDarkThemeColors(config)
+  const colors = resolveThemeColors(config, mode)
   const { personal, contact, skills, experiences, education, values, hobbies, referents, spokenLanguages } = config
 
   const s: string[] = []
@@ -236,7 +259,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string): str
       sidebar.push(`<p style="margin: 0 0 0.3rem 0; font-size: 0.75rem; font-weight: 500; color: ${colors.text};">${escapeHtml(resolve(cat.title))}</p>`)
       if (cat.type === 'badges') {
         const items = cat.items.map((item) => (typeof item.name === 'string' ? item.name : resolve(item.name)))
-        sidebar.push(renderBadges(items, lang, '0.3rem', '0.4rem', true))
+        sidebar.push(renderBadges(items, lang, mode, '0.3rem', '0.4rem', true))
       } else {
         const items = cat.items.map((item) => {
           const name = typeof item.name === 'string' ? item.name : resolve(item.name)
@@ -334,7 +357,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string): str
     }
     // Badges last — same order as the experiences below (description, tasks, badges).
     if (fp.techs && fp.techs.length > 0) {
-      main.push(renderBadges(fp.techs, lang, '0.35rem', '0.55rem'))
+      main.push(renderBadges(fp.techs, lang, mode, '0.35rem', '0.55rem'))
     }
     main.push(`</div>`)
   }
@@ -383,7 +406,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string): str
         }
       }
       if (exp.techs.length > 0) {
-        main.push(renderBadges(exp.techs, lang, '0.35rem', '0.55rem'))
+        main.push(renderBadges(exp.techs, lang, mode, '0.35rem', '0.55rem'))
       }
       if (exp.subItem) {
         main.push(`<div style="margin-top: 0.5rem; padding-left: 0.6rem; border-left: 2px solid ${colors.primary}33;">`)
