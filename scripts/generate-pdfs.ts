@@ -55,13 +55,6 @@ async function main() {
 
       console.log(`[generate-pdfs] ${lang} -> ${path.relative(process.cwd(), outPath)}`)
 
-      // Trial: a light/printable take on the default CV — white main column, gray
-      // sidebar, meant for actually printing on paper rather than reading on screen.
-      const printHtml = renderResumePdfDocument(pdfConfig, lang, 'light')
-      const printPath = path.join(outDir, `${FILE_PREFIX}-${lang}-print.pdf`)
-      await printPdf(browser, printHtml, printPath)
-      console.log(`[generate-pdfs] ${lang}/print -> ${path.relative(process.cwd(), printPath)}`)
-
       for (const variant of resumeVariants) {
         const variantHtml = renderResumePdfDocument(applyVariant(pdfConfig, variant), lang)
         const variantPath = path.join(outDir, `${FILE_PREFIX}-${lang}-${variant.id}.pdf`)

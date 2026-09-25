@@ -79,8 +79,9 @@ function reverseDateRange(period: string): string {
 }
 
 /**
- * The PDF defaults to dark; 'light' reads the same preset's light half instead — a
- * white main column against the sidebar's light gray, meant for printing.
+ * The PDF defaults to light — white main column against the sidebar's light gray,
+ * meant for printing. 'dark' reads the same preset's dark half instead, kept for
+ * anyone who wants the site's default dark look back.
  */
 function resolveThemeColors(config: ResumeConfig, mode: 'dark' | 'light') {
   const preset = presets[config.theme?.preset ?? 'minimal']
@@ -190,7 +191,7 @@ function mainSectionTitle(label: string, colors: ReturnType<typeof resolveThemeC
   return `<h2 style="font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; color: ${colors.text}; margin: 0 0 0.9rem 0; padding-bottom: 0.4rem; border-bottom: 1px solid ${colors.primary}33;">${escapeHtml(label)}</h2>`
 }
 
-export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode: 'dark' | 'light' = 'dark'): string {
+export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode: 'dark' | 'light' = 'light'): string {
   const resolve = (ls: Record<string, string>) => ls[lang] ?? Object.values(ls)[0] ?? ''
   const colors = resolveThemeColors(config, mode)
   const { personal, contact, skills, experiences, education, values, hobbies, referents, spokenLanguages } = config
