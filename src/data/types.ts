@@ -134,6 +134,8 @@ export interface ResumeLabels {
     values?: LocalizedString
     hobbies?: LocalizedString
     referent?: LocalizedString
+    languages?: LocalizedString
+    featuredProject?: LocalizedString
   }
   experience: {
     mainTasks: LocalizedString
@@ -180,7 +182,7 @@ export interface ResumeConfig {
   values?: LocalizedString[]
   hobbies?: Hobby[]
   referents?: Referent[]
-  /** PDF only: spoken languages, rendered as their own "Langues" sidebar section. */
+  /** Spoken languages, rendered as their own "Langues" sidebar section on both the site and the PDF. */
   spokenLanguages?: { name: LocalizedString; level: LocalizedString }[]
   pdf?: {
     label?: LocalizedString
@@ -188,8 +190,8 @@ export interface ResumeConfig {
     path: string | LocalizedString
   }
   /**
-   * PDF only: a standout project rendered as its own "Projet phare" section —
-   * pulled out of experiences so it isn't buried under a job title.
+   * A standout project rendered as its own "Projet phare" section, on both the site
+   * and the PDF — pulled out of experiences so it isn't buried under a job title.
    */
   featuredProject?: {
     title: LocalizedString
