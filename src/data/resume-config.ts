@@ -109,10 +109,8 @@ export const resumeConfig: ResumeConfig = {
     experience: {
       mainTasks: { en: 'Main tasks:', fr: 'Tâches principales :' },
       training: { en: 'Training:', fr: 'Formations :' },
-      technologies: { en: 'Technologies', fr: 'Technologies' },
     },
     actions: {
-      clickHint: { en: 'Click on experiences to see more details', fr: 'Cliquez sur les expériences pour voir plus de détails' },
       switchTheme: { en: 'Toggle dark mode', fr: 'Changer le thème' },
       downloadPdf: { en: 'Download PDF', fr: 'Télécharger le PDF' },
       viewInteractive: { en: 'View the interactive resume', fr: 'Voir le CV interactif' },

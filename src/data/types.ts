@@ -140,10 +140,8 @@ export interface ResumeLabels {
   experience: {
     mainTasks: LocalizedString
     training?: LocalizedString
-    technologies: LocalizedString
   }
   actions: {
-    clickHint: LocalizedString
     switchTheme: LocalizedString
     downloadPdf?: LocalizedString
     /** CTA button label used on the PDF's hero banner linking back to the interactive site */

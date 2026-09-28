@@ -1,7 +1,6 @@
-import { useState } from 'react'
 import { useTranslation } from '@/lib/i18n'
 import { resumeConfig } from '@/data/resume-config'
-import { assetUrl } from '@/lib/utils'
+import { assetUrl, reverseDateRange } from '@/lib/utils'
 import { detectedAssets } from 'virtual:detected-assets'
 import { ExperienceItem } from './ExperienceItem'
 import { ProjectItem } from './ProjectItem'
@@ -13,23 +12,17 @@ import { ReferentItem } from './ReferentItem'
 
 export function MainContent() {
   const { resolve, resolveArray } = useTranslation()
-  const { personal, contact, referents, experiences, projects, education, labels } = resumeConfig
-  const [expandedExp, setExpandedExp] = useState<string | null>(null)
-
-  const toggleExp = (id: string) => {
-    setExpandedExp(expandedExp === id ? null : id)
-  }
+  const { personal, contact, referents, featuredProject, experiences, projects, education, labels } = resumeConfig
 
   const experienceLabels = {
     mainTasks: resolve(labels.experience.mainTasks),
     training: labels.experience.training ? resolve(labels.experience.training) : undefined,
-    technologies: resolve(labels.experience.technologies),
   }
 
   return (
-    <div className="md:w-[62%] p-8">
+    <div className="md:w-[71%] p-8">
       {/* Header */}
-      <div className="mb-4">
+      <div className="mb-[1.6rem]">
         <div className="flex items-center gap-4 md:block">
           {/* Photo — mobile only, shown to the left of the name; desktop photo lives in Sidebar */}
           <ProfilePhoto
@@ -39,21 +32,23 @@ export function MainContent() {
             size="sm"
             className="md:hidden"
           />
-          <h1 className="flex-1 text-left md:text-center text-3xl md:text-4xl font-bold tracking-[0.15em] text-resume-text">
+          <h1 className="flex-1 text-left md:text-center text-2xl md:text-[1.55rem] font-bold tracking-[0.1em] text-resume-text">
             {personal.name.toUpperCase()}
           </h1>
         </div>
         <div className="text-center">
-          <p className="text-base text-resume-text-secondary tracking-widest mt-2">
+          <p className="text-[0.85rem] text-resume-text-secondary tracking-[0.08em] mt-2">
             {resolve(personal.title).toUpperCase()}
           </p>
           {personal.tagline && (
-            <p className="text-xs uppercase tracking-wide text-resume-text-secondary/70 mt-1">
+            <p className="text-[0.68rem] uppercase tracking-wide text-resume-text-secondary/70 mt-1">
               {resolve(personal.tagline)}
             </p>
           )}
           {personal.subtitle && (
-            <p className="text-sm text-resume-text-secondary italic text-left mt-5">{resolve(personal.subtitle)}</p>
+            <p className="md:hidden text-sm text-resume-text-secondary italic text-left mt-5">
+              {resolve(personal.subtitle)}
+            </p>
           )}
         </div>
       </div>
@@ -83,51 +78,71 @@ export function MainContent() {
         </SidebarSection>
       ) : null}
 
+      {/* Flagship project — shown first, same ExperienceItem format as the timeline below */}
+      {featuredProject && labels.sections.featuredProject && (
+        <div className="mb-[1.6rem]">
+          <h2 className="text-[0.78rem] font-bold tracking-widest text-resume-text mb-[0.9rem] pb-[0.4rem] border-b border-resume-primary/20">
+            {resolve(labels.sections.featuredProject)}
+          </h2>
+          <ExperienceItem
+            year={reverseDateRange(resolve(featuredProject.period))}
+            company={resolve(featuredProject.title)}
+            type={featuredProject.type ? resolve(featuredProject.type) : undefined}
+            role={featuredProject.role ? resolve(featuredProject.role) : ''}
+            url={featuredProject.url}
+            description={featuredProject.description ? resolve(featuredProject.description) : ''}
+            techs={featuredProject.techs ?? []}
+            details={{ tasks: resolveArray(featuredProject.bullets) }}
+            labels={experienceLabels}
+          />
+        </div>
+      )}
+
       {/* Experiences */}
       <div className="relative">
-        <h2 className="text-sm font-bold tracking-widest text-resume-text mb-6 pb-2 border-b border-resume-primary/20">
+        <h2 className="text-[0.78rem] font-bold tracking-widest text-resume-text mb-[0.9rem] pb-[0.4rem] border-b border-resume-primary/20">
           {resolve(labels.sections.experience)}
         </h2>
         <div className="space-y-2">
-          {experiences.map((exp) => (
-            <ExperienceItem
-              key={exp.id}
-              year={resolve(exp.period)}
-              company={resolve(exp.company)}
-              type={exp.type ? resolve(exp.type) : undefined}
-              role={resolve(exp.role)}
-              url={exp.url}
-              description={resolve(exp.description)}
-              techs={exp.techs}
-              expanded={expandedExp === exp.id}
-              onToggle={() => toggleExp(exp.id)}
-              details={
-                exp.details
-                  ? {
-                      tasks: exp.details.tasks ? resolveArray(exp.details.tasks) : undefined,
-                      training: exp.details.training ? resolveArray(exp.details.training) : undefined,
-                    }
-                  : undefined
-              }
-              subItem={
-                exp.subItem
-                  ? {
-                      title: resolve(exp.subItem.title),
-                      description: resolve(exp.subItem.description),
-                    }
-                  : undefined
-              }
-              labels={experienceLabels}
-              isHighlighted={exp.isHighlighted}
-            />
+          {experiences.map((exp, i) => (
+            <div key={exp.id}>
+              {i > 0 && <div className="h-px w-[94%] mx-auto mb-[0.2rem] bg-resume-sidebar-from" />}
+              <ExperienceItem
+                year={reverseDateRange(resolve(exp.period))}
+                company={resolve(exp.company)}
+                type={exp.type ? resolve(exp.type) : undefined}
+                role={resolve(exp.role)}
+                url={exp.url}
+                description={resolve(exp.description)}
+                techs={exp.techs}
+                details={
+                  exp.details
+                    ? {
+                        tasks: exp.details.tasks ? resolveArray(exp.details.tasks) : undefined,
+                        training: exp.details.training ? resolveArray(exp.details.training) : undefined,
+                      }
+                    : undefined
+                }
+                subItem={
+                  exp.subItem
+                    ? {
+                        title: resolve(exp.subItem.title),
+                        description: resolve(exp.subItem.description),
+                      }
+                    : undefined
+                }
+                labels={experienceLabels}
+                isHighlighted={exp.isHighlighted}
+              />
+            </div>
           ))}
         </div>
       </div>
 
       {/* Projects */}
       {projects && projects.length > 0 && labels.sections.projects && (
-        <div className="mt-8">
-          <h2 className="text-sm font-bold tracking-widest text-resume-text mb-4 pb-2 border-b border-resume-primary/20">
+        <div className="mt-[1.6rem]">
+          <h2 className="text-[0.78rem] font-bold tracking-widest text-resume-text mb-[0.9rem] pb-[0.4rem] border-b border-resume-primary/20">
             {resolve(labels.sections.projects)}
           </h2>
           <div className="space-y-1">
@@ -146,11 +161,11 @@ export function MainContent() {
       )}
 
       {/* Education */}
-      <div className="mt-8">
-        <h2 className="text-sm font-bold tracking-widest text-resume-text mb-4 pb-2 border-b border-resume-primary/20">
+      <div className="mt-[1.6rem]">
+        <h2 className="text-[0.78rem] font-bold tracking-widest text-resume-text mb-[0.9rem] pb-[0.4rem] border-b border-resume-primary/20">
           {resolve(labels.sections.education)}
         </h2>
-        <div className="space-y-4">
+        <div className="space-y-3">
           {education.map((edu, i) => (
             <EducationItem
               key={`${resolve(edu.school)}-${resolve(edu.degree)}-${edu.period ?? i}`}
