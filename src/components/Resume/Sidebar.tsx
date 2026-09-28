@@ -11,18 +11,25 @@ import { TechBadge } from './TechBadge'
 
 export function Sidebar() {
   const { resolve } = useTranslation()
-  const { personal, contact, skills, values, hobbies, referents, labels } = resumeConfig
+  const { personal, contact, skills, values, hobbies, referents, spokenLanguages, labels } = resumeConfig
 
   return (
-    <div className="md:w-[38%] bg-gradient-to-b from-resume-sidebar-from to-resume-sidebar-to p-8">
+    <div className="md:w-[29%] bg-gradient-to-b from-resume-sidebar-from to-resume-sidebar-to p-8">
       {/* Photo / Profile image — priority: config > auto-detected > emoji fallback */}
       {/* Hidden on mobile: shown next to the name in MainContent instead */}
       <ProfilePhoto
         photo={(personal.photo || detectedAssets.photo) ? assetUrl(personal.photo || detectedAssets.photo!) : undefined}
         name={personal.name}
         emoji={personal.photoBackEmoji}
-        className="hidden md:flex justify-center mb-6"
+        className="hidden md:flex justify-center mb-[1.1rem]"
       />
+
+      {/* Subtitle — hidden on mobile: shown under the tagline in MainContent instead */}
+      {personal.subtitle && (
+        <p className="hidden md:block text-xs text-resume-text-secondary italic leading-relaxed text-justify mb-[1.2rem]">
+          {resolve(personal.subtitle)}
+        </p>
+      )}
 
       {/* Contact — hidden on mobile: shown between the tagline and Experience in MainContent instead */}
       <SidebarSection title={resolve(labels.sections.contact)} className="hidden md:block">
@@ -58,7 +65,7 @@ export function Sidebar() {
                 <div className="flex flex-wrap gap-1.5">
                   {category.items.map((item) => {
                     const techName = typeof item.name === 'string' ? item.name : Object.values(item.name)[0]
-                    return <TechBadge key={techName} tech={techName} color={item.color} />
+                    return <TechBadge key={techName} tech={techName} color={item.color} showIcon />
                   })}
                 </div>
               )}
@@ -104,20 +111,33 @@ export function Sidebar() {
         </SidebarSection>
       )}
 
+      {/* Spoken languages */}
+      {spokenLanguages && spokenLanguages.length > 0 && labels.sections.languages && (
+        <SidebarSection title={resolve(labels.sections.languages)}>
+          <div className="space-y-1">
+            {spokenLanguages.map((item, i) => (
+              <p key={`${resolve(item.name)}-${i}`} className="text-sm">
+                <span className="font-medium text-resume-text">{resolve(item.name)}</span>
+                <span className="text-resume-text-secondary"> : {resolve(item.level)}</span>
+              </p>
+            ))}
+          </div>
+        </SidebarSection>
+      )}
+
       {/* Hobbies */}
       {hobbies && hobbies.length > 0 && labels.sections.hobbies && (
         <SidebarSection title={resolve(labels.sections.hobbies)}>
-          <div className="grid grid-cols-2 gap-3">
-            {hobbies.map((hobby, i) => (
-              <div key={`${resolve(hobby.title)}-${i}`}>
-                <p className="font-medium text-sm text-resume-text">{resolve(hobby.title)}</p>
-                {hobby.details?.map((detail, j) => (
-                  <p key={j} className="text-xs text-resume-text-secondary">
-                    {resolve(detail)}
-                  </p>
-                ))}
-              </div>
-            ))}
+          <div className="flex flex-col gap-2">
+            {hobbies.map((hobby, i) => {
+              const details = (hobby.details ?? []).map((d) => resolve(d)).join(' - ')
+              return (
+                <div key={`${resolve(hobby.title)}-${i}`}>
+                  <p className="font-medium text-sm text-resume-text">{resolve(hobby.title)}</p>
+                  {details && <p className="text-xs text-resume-text-secondary">{details}</p>}
+                </div>
+              )
+            })}
           </div>
         </SidebarSection>
       )}

@@ -40,9 +40,38 @@
   --resume-sidebar-to: #0a0a0a;
 }
 
+/**
+ * Same three files the PDF self-hosts (see scripts/render-resume-pdf.ts) — routed
+ * through src/assets so Vite hashes and base-prefixes the URLs, unlike a hardcoded
+ * /fonts/... path, which would break under a non-root base (see vite.config.ts).
+ * No 500 weight ships, so font-medium (500) falls back to the nearest declared
+ * weight; no italic face ships either, matching the PDF.
+ */
+@font-face {
+  font-family: 'Selawik';
+  src: url('./assets/fonts/selawik-regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Selawik';
+  src: url('./assets/fonts/selawik-semibold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Selawik';
+  src: url('./assets/fonts/selawik-bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Selawik', system-ui, -apple-system, sans-serif;
   background-color: var(--resume-bg);
   color: var(--resume-text);
   -webkit-font-smoothing: antialiased;

@@ -17,21 +17,23 @@ export function EducationItem({ school, degree, specialty, period, logo, badge }
           <img src={assetUrl(logo)} alt={`${school} logo`} className="object-contain w-full h-full" loading="lazy" />
         </div>
       )}
-      <div>
-        <p className="text-base font-semibold text-resume-text">{school}</p>
-        <div className="flex items-center gap-2 flex-wrap">
-          <p className="text-sm text-resume-text-secondary">{degree}</p>
-          {badge && (
-            <span className="text-xs font-medium px-2 py-0.5 rounded bg-red-400/10 text-red-400">
-              {badge}
-            </span>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between gap-2 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap min-w-0">
+            <p className="text-base font-semibold text-resume-text">{degree}</p>
+            <span className="text-sm text-resume-text-secondary">- {school}</span>
+            {badge && (
+              <span className="text-xs font-medium px-2 py-0.5 rounded bg-red-400/10 text-red-400">
+                {badge}
+              </span>
+            )}
+          </div>
+          {period && (
+            <span className="text-xs text-resume-text-secondary flex-shrink-0 whitespace-nowrap">{period}</span>
           )}
         </div>
         {specialty && (
-          <p className="text-sm text-resume-primary">{specialty}</p>
-        )}
-        {period && (
-          <p className="text-xs text-resume-text-secondary mt-0.5">{period}</p>
+          <p className="text-sm text-resume-primary mt-0.5">{specialty}</p>
         )}
       </div>
     </div>

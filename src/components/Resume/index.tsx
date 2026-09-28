@@ -11,7 +11,7 @@ export function Resume() {
   const { resolve } = useTranslation()
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-8">
+    <div className="w-full max-w-[72rem] mx-auto px-4 py-8">
       {/* Top bar: theme toggle + language + pdf */}
       <div className="flex items-center justify-between mb-4">
         <PdfDownload />
@@ -32,11 +32,6 @@ export function Resume() {
           <MainContent />
         </div>
       </motion.div>
-
-      {/* Hint */}
-      <p className="text-center text-sm text-resume-text-secondary mt-6">
-        {resolve(resumeConfig.labels.actions.clickHint)}
-      </p>
     </div>
   )
 }
