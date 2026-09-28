@@ -14,7 +14,7 @@ export function ReferentItem({ name, title, href }: ReferentItemProps) {
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="group flex items-center gap-3 font-medium text-sm text-resume-text-secondary hover:text-resume-primary transition-colors duration-200"
+          className="group flex items-center gap-3 font-medium text-sm text-resume-text hover:text-resume-primary transition-colors duration-200"
         >
           <span className="text-resume-primary group-hover:scale-115 transition-transform duration-200">
             <LinkedInIcon className="w-4 h-4" />

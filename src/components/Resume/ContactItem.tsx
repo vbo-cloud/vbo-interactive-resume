@@ -56,7 +56,7 @@ export function ContactItem({ type, label, href }: ContactItemProps) {
       <button
         type="button"
         onClick={handleCopy}
-        className="group flex items-center gap-3 text-sm text-resume-text-secondary hover:text-resume-primary transition-colors duration-200 cursor-pointer"
+        className="group flex items-center gap-3 text-sm text-resume-text hover:text-resume-primary transition-colors duration-200 cursor-pointer"
       >
         <span className="relative w-4 h-4 text-resume-primary group-hover:scale-115 transition-transform duration-200">
           <AnimatePresence mode="wait">
@@ -112,7 +112,7 @@ export function ContactItem({ type, label, href }: ContactItemProps) {
         href={resolvedHref}
         target={isExternal ? '_blank' : undefined}
         rel={isExternal ? 'noopener noreferrer' : undefined}
-        className="group flex items-center gap-3 text-sm text-resume-text-secondary hover:text-resume-primary transition-colors duration-200"
+        className="group flex items-center gap-3 text-sm text-resume-text hover:text-resume-primary transition-colors duration-200"
       >
         <span className="text-resume-primary group-hover:scale-115 transition-transform duration-200">
           <IconComponent className="w-4 h-4" />
@@ -124,7 +124,7 @@ export function ContactItem({ type, label, href }: ContactItemProps) {
 
   // Plain text (location without href)
   return (
-    <div className="group flex items-center gap-3 text-sm text-resume-text-secondary">
+    <div className="group flex items-center gap-3 text-sm text-resume-text">
       <span className="text-resume-primary">
         <IconComponent className="w-4 h-4" />
       </span>
