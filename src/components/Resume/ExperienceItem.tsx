@@ -1,8 +1,4 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronDownIcon } from '@/components/icons'
-import { useBreakpoints } from '@/lib/hooks/useBreakpoints'
-import { Modal } from '@/components/ui/Modal'
+import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { TechBadge } from './TechBadge'
 import { ExperienceDetailsContent } from './ExperienceDetails'
@@ -15,8 +11,6 @@ interface ExperienceItemProps {
   url?: string
   description: string
   techs: string[]
-  expanded: boolean
-  onToggle: () => void
   details?: {
     tasks?: string[]
     training?: string[]
@@ -25,7 +19,6 @@ interface ExperienceItemProps {
   labels: {
     mainTasks: string
     training?: string
-    technologies: string
   }
   isHighlighted?: boolean
 }
@@ -38,24 +31,11 @@ export function ExperienceItem({
   url,
   description,
   techs,
-  expanded,
-  onToggle,
   details,
   subItem,
   labels,
   isHighlighted = false,
 }: ExperienceItemProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const { isDesktop } = useBreakpoints()
-  const handleClick = () => {
-    if (!details) return
-    if (isDesktop) {
-      onToggle()
-    } else {
-      setIsModalOpen(true)
-    }
-  }
-
   return (
     <motion.div
       className="relative"
@@ -65,60 +45,44 @@ export function ExperienceItem({
       transition={{ duration: 0.2 }}
     >
       <div className="w-full text-left group relative">
-        {/* The click surface is an overlay rather than a wrapper around the card:
-            the project link below has to be a real anchor, and nesting one inside
-            a <button> is invalid markup. Hover moves to group-hover accordingly. */}
-        {details && (
-          <button
-            onClick={handleClick}
-            aria-expanded={expanded}
-            aria-label={`${company} - ${role}`}
-            className="absolute inset-0 z-10 cursor-pointer"
-          />
-        )}
         <div
           className={cn(
-            'flex items-start gap-4 py-3 rounded-lg px-3 -mx-3 transition-all duration-300',
+            'py-3 rounded-lg px-3 -mx-3 transition-all duration-300',
             isHighlighted
               ? 'border-2 border-resume-primary/30 bg-resume-primary/5 group-hover:border-resume-primary/50 group-hover:shadow-md'
               : 'group-hover:bg-resume-primary/5'
           )}
         >
-          <div className="w-20 flex-shrink-0">
-            <span className="text-sm font-bold text-resume-primary">{year}</span>
-          </div>
-
-          <div className="flex-1 min-w-0 relative">
-            {details && (
-              <motion.div
-                animate={{ rotate: expanded ? 180 : 0 }}
-                className="absolute top-0 right-0"
-              >
-                <ChevronDownIcon className="w-4 h-4 text-resume-primary" />
-              </motion.div>
-            )}
-            <div className="flex items-center gap-2 flex-wrap pr-6 md:pr-0">
-              <h3 className="text-sm font-semibold text-resume-text">{company}</h3>
-              {type && (
-                <span className="text-xs px-2 py-0.5 bg-resume-primary/10 text-resume-primary rounded">
-                  {type}
-                </span>
-              )}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between gap-2 flex-wrap">
+              <div className="flex items-center gap-2 flex-wrap min-w-0">
+                <h3 className="text-sm font-semibold text-resume-text uppercase">{role}</h3>
+                <span className="text-sm text-resume-text-secondary">- {company}</span>
+                {type && (
+                  <span className="text-xs px-2 py-0.5 bg-resume-primary/10 text-resume-primary rounded">
+                    {type}
+                  </span>
+                )}
+              </div>
+              <span className="text-xs text-resume-text-secondary flex-shrink-0 whitespace-nowrap">{year}</span>
             </div>
-            <p className="text-xs text-resume-text-secondary mt-0.5">{role}</p>
-            {/* z-20 lifts it above the click overlay, so the anchor wins the click
-                and the card does not toggle underneath it. */}
             {url && (
               <a
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative z-20 inline-block text-xs text-resume-link hover:underline mt-0.5 break-all"
+                className="inline-block text-xs text-resume-link hover:underline mt-0.5 break-all"
               >
                 {url}
               </a>
             )}
-            <p className="text-xs text-resume-text-secondary/80 mt-1 line-clamp-5">{description}</p>
+            <p className="text-xs text-resume-text mt-1">{description}</p>
+
+            {details && (
+              <div className="mt-2">
+                <ExperienceDetailsContent tasks={details.tasks} training={details.training} labels={labels} />
+              </div>
+            )}
 
             <div className="flex flex-wrap gap-1.5 mt-2">
               {techs.map((tech) => (
@@ -135,66 +99,6 @@ export function ExperienceItem({
           </div>
         </div>
       </div>
-
-      {isDesktop && details && (
-        <AnimatePresence>
-          {expanded && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="overflow-hidden"
-            >
-              <div className="ml-24 mt-2 mb-4 p-4 bg-resume-bg rounded-lg border border-resume-primary/20">
-                <ExperienceDetailsContent
-                  tasks={details.tasks}
-                  training={details.training}
-                  labels={labels}
-                  variant="inline"
-                />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      )}
-
-      {details && (
-        <Modal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          header={
-            <div>
-              <h2 className="font-semibold text-lg text-resume-text">{company}</h2>
-              <p className="text-sm text-resume-primary">{role}</p>
-              {url && (
-                <a
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-resume-link hover:underline break-all"
-                >
-                  {url}
-                </a>
-              )}
-              <p className="text-xs text-resume-text-secondary mt-1">{year}</p>
-            </div>
-          }
-        >
-          <ExperienceDetailsContent
-            tasks={details.tasks}
-            training={details.training}
-            techs={techs}
-            labels={labels}
-            variant="modal"
-          />
-          {subItem && (
-            <div className="pt-3 mt-3 border-t border-resume-primary/20">
-              <p className="text-sm font-medium text-resume-text mb-1">{subItem.title}</p>
-              <p className="text-sm text-resume-text-secondary">{subItem.description}</p>
-            </div>
-          )}
-        </Modal>
-      )}
     </motion.div>
   )
 }

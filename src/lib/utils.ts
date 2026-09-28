@@ -18,3 +18,14 @@ export function assetUrl(path: string): string {
   }
   return `${base}${path}`
 }
+
+/**
+ * resume-config.ts stores periods "recent - older" (matching the timeline's
+ * top-to-bottom sort — see resume-config.ts's period fields). The card display
+ * reads left-to-right chronologically instead, so flip it here at render time
+ * rather than changing the stored data (which the PDF renderer reads as-is).
+ */
+export function reverseDateRange(period: string): string {
+  const parts = period.split(' - ')
+  return parts.length === 2 ? `${parts[1]} - ${parts[0]}` : period
+}

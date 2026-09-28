@@ -1,10 +1,13 @@
 import type { ContactItem, Education, Experience, Hobby, Referent, ResumeConfig, SkillCategory } from './types'
 
 /**
- * PDF-only content overrides, applied on top of resumeConfig in generate-pdfs.ts
- * (never imported by the interactive site or the <noscript> SEO fallback). Structure
- * mirrors the live site closely, but with a repositioned flagship project — those
- * edits stay scoped to this file instead of touching what the live site shows.
+ * Canonical resume content. resume-config.ts imports most of these exports directly
+ * (so the site and the PDF can't drift apart), then layers the few things that only
+ * make sense on paper (a QR code, a "view interactive" CTA, etc.) at render time in
+ * render-resume-pdf.ts. generate-pdfs.ts still re-applies these exports on top of
+ * resumeConfig as an explicit, redundant safety net — harmless since resumeConfig
+ * already matches — and resume-variants.ts's dev/ia deltas layer further on top of
+ * that, PDF-only.
  */
 
 /** Headline + pitch shown under the name. No numbers/skills beyond what's elsewhere in this file. */

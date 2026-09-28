@@ -359,23 +359,38 @@ export function renderResumeHtml(
   }
 
   // Featured project — pulled out of "experiences" so it isn't buried under a job
-  // title. Real bullets (<ul><li>), like the Experiences section below.
-  if (isPdf && config.featuredProject) {
+  // title. Real bullets (<ul><li>), like the Experiences section below. Rendered for
+  // both isPdf and the <noscript> fallback (unlike before), since experiences no
+  // longer duplicates it — dropping the isPdf gate here would otherwise make Job
+  // Finder vanish from the SEO fallback entirely.
+  if (config.featuredProject && config.labels.sections.featuredProject) {
     const fp = config.featuredProject
+    const fpTitle = fp.role ? `${resolve(fp.role)} - ${resolve(fp.title)}` : resolve(fp.title)
     lines.push(`${indent}  <section style="margin-bottom: ${sectionGap};">`)
-    lines.push(`${indent}    ${sectionTitle(lang === 'fr' ? 'PROJET PHARE' : 'FLAGSHIP PROJECT')}`)
-    lines.push(`${indent}    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem;">`)
-    lines.push(`${indent}      <h3 style="margin: 0 0 0.15rem 0; font-size: 1.02rem; color: ${colors.text};">${escapeHtml(resolve(fp.title))}</h3>`)
-    lines.push(`${indent}      <span style="flex-shrink: 0; white-space: nowrap; font-size: 0.85rem; color: ${colors.primary}; font-weight: 500;">${escapeHtml(resolve(fp.period))}</span>`)
-    lines.push(`${indent}    </div>`)
-    if (fp.techs && fp.techs.length > 0) {
+    lines.push(`${indent}    ${sectionTitle(resolve(config.labels.sections.featuredProject))}`)
+    if (isPdf) {
+      lines.push(`${indent}    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem;">`)
+      lines.push(`${indent}      <h3 style="margin: 0 0 0.15rem 0; font-size: 1.02rem; color: ${colors.text};">${escapeHtml(fpTitle)}</h3>`)
+      lines.push(`${indent}      <span style="flex-shrink: 0; white-space: nowrap; font-size: 0.85rem; color: ${colors.primary}; font-weight: 500;">${escapeHtml(resolve(fp.period))}</span>`)
+      lines.push(`${indent}    </div>`)
+    } else {
+      lines.push(`${indent}    <h3 style="margin: 0 0 0.15rem 0; font-size: 1rem; color: ${colors.text};">${escapeHtml(fpTitle)}</h3>`)
+    }
+    if (fp.techs && fp.techs.length > 0 && isPdf) {
       lines.push(`${indent}    ${renderTechBadges(fp.techs, isPdf, true, lang)}`)
     }
     if (fp.url) {
-      lines.push(`${indent}    <p style="margin: 0.15rem 0; font-size: 0.85rem;"><a href="${escapeHtml(fp.url)}" style="color: ${colors.primary}; text-decoration: underline;">${escapeHtml(fp.url)}</a></p>`)
+      lines.push(`${indent}    <p style="margin: 0.15rem 0; font-size: ${isPdf ? '0.85rem' : '0.9rem'};"><a href="${escapeHtml(fp.url)}" style="color: ${colors.primary}; text-decoration: ${isPdf ? 'underline' : 'none'};">${escapeHtml(fp.url)}</a></p>`)
+    }
+    if (!isPdf) {
+      const meta = fp.type ? [resolve(fp.period), resolve(fp.type)] : [resolve(fp.period)]
+      lines.push(`${indent}    <p style="margin: 0 0 0.25rem 0; color: ${colors.primary}; font-size: 0.9rem; font-weight: 500;">${escapeHtml(meta.join(' · '))}</p>`)
     }
     if (fp.description) {
-      lines.push(`${indent}    <p style="margin: 0 0 0.15rem 0; font-size: 0.95rem;">${escapeHtml(resolve(fp.description))}</p>`)
+      lines.push(`${indent}    <p style="margin: 0 0 0.15rem 0; font-size: ${isPdf ? '0.95rem' : '1rem'};">${escapeHtml(resolve(fp.description))}</p>`)
+    }
+    if (fp.techs && fp.techs.length > 0 && !isPdf) {
+      lines.push(`${indent}    ${renderTechBadges(fp.techs, isPdf, true, lang)}`)
     }
     const bullets = fp.bullets[lang] ?? Object.values(fp.bullets)[0] ?? []
     if (bullets.length > 0) {
