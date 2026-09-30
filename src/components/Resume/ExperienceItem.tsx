@@ -47,7 +47,7 @@ export function ExperienceItem({
       <div className="w-full text-left group relative">
         <div
           className={cn(
-            'py-3 rounded-lg px-3 -mx-3 transition-all duration-300',
+            'py-1 rounded-lg px-3 -mx-3 transition-all duration-300',
             isHighlighted
               ? 'border-2 border-resume-primary/30 bg-resume-primary/5 group-hover:border-resume-primary/50 group-hover:shadow-md'
               : 'group-hover:bg-resume-primary/5'
