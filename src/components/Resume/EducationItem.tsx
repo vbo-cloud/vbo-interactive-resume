@@ -20,8 +20,8 @@ export function EducationItem({ school, degree, specialty, period, logo, badge }
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2 flex-wrap">
           <div className="flex items-center gap-2 flex-wrap min-w-0">
-            <p className="text-base font-semibold text-resume-text">{degree}</p>
-            <span className="text-sm text-resume-text-secondary">- {school}</span>
+            <p className="text-sm font-semibold text-resume-text">{degree}</p>
+            <span className="text-xs text-resume-text-secondary">- {school}</span>
             {badge && (
               <span className="text-xs font-medium px-2 py-0.5 rounded bg-red-400/10 text-red-400">
                 {badge}
@@ -33,7 +33,7 @@ export function EducationItem({ school, degree, specialty, period, logo, badge }
           )}
         </div>
         {specialty && (
-          <p className="text-sm text-resume-primary mt-0.5">{specialty}</p>
+          <p className="text-xs text-resume-primary mt-0.5">{specialty}</p>
         )}
       </div>
     </div>

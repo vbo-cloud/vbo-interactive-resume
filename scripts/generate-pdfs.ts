@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import puppeteer from 'puppeteer'
+import { PDFDocument, PDFName, PDFNull, PDFNumber } from 'pdf-lib'
 import { resumeConfig } from '../src/data/resume-config'
 import { renderResumePdfDocument } from './render-resume-pdf'
 import { resumeVariants, type ResumeVariant } from '../src/data/resume-variants'
@@ -80,13 +81,29 @@ async function printPdf(browser: Awaited<ReturnType<typeof puppeteer.launch>>, h
   // Passed as a string (not a function) so tsc — this file has no "dom" lib — doesn't
   // need to type-check a `document` reference that only ever runs in the page context.
   await page.evaluate('document.fonts.ready')
-  await page.pdf({
-    path: outPath,
+  const pdfBytes = await page.pdf({
     format: 'A4',
     printBackground: true,
     margin: { top: '0mm', bottom: '0mm', left: '0mm', right: '0mm' },
   })
   await page.close()
+  fs.writeFileSync(outPath, await setInitialZoomTo100(pdfBytes))
+}
+
+/**
+ * Most PDF viewers default an opened document to "fit page"/"automatic" zoom, which
+ * shrinks a one-page A4 resume to fit the window instead of showing it at actual
+ * size. Writes the open-time view directly into the PDF's catalog (an /OpenAction
+ * pointing at page 1, XYZ destination, 1.0 = 100% zoom) so it opens at 100% however
+ * the file is opened — a direct link, a re-shared URL, or a downloaded local file —
+ * not just when a URL #zoom=100 fragment happens to be present.
+ */
+async function setInitialZoomTo100(pdfBytes: Uint8Array): Promise<Uint8Array> {
+  const doc = await PDFDocument.load(pdfBytes)
+  const firstPage = doc.getPage(0)
+  const openAction = doc.context.obj([firstPage.ref, PDFName.of('XYZ'), PDFNull, PDFNull, PDFNumber.of(1)])
+  doc.catalog.set(PDFName.of('OpenAction'), openAction)
+  return doc.save()
 }
 
 /** Puts the listed items first (in the given order) and keeps every other item after them, in its original order. */
