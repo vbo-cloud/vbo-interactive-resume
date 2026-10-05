@@ -333,13 +333,13 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
   if (experiences.length > 0) {
     main.push(`<div style="margin-bottom: 1.6rem;">`)
     main.push(mainSectionTitle(resolve(config.labels.sections.experience), colors))
-    main.push(`<div style="display: flex; flex-direction: column; gap: 0.6rem;">`)
+    main.push(`<div style="display: flex; flex-direction: column; gap: 0;">`)
     experiences.forEach((exp, expIndex) => {
       const periodText = reverseDateRange(resolve(exp.period))
       if (expIndex > 0) {
         // Slightly narrower and more subtle than the section heading's border —
         // colored with the sidebar's own background instead of the primary accent.
-        main.push(`<div style="height: 1px; width: 94%; margin: 0 auto 0.2rem auto; background: ${colors.sidebarFrom};"></div>`)
+        main.push(`<div style="height: 1px; width: 94%; margin: 1.1rem auto; background: ${colors.sidebarFrom};"></div>`)
       }
       main.push(`<div>`)
       // Row 1: role (title) - company, then the type badge, date pinned to the right

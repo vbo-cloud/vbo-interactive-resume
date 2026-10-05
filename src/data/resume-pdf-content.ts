@@ -221,7 +221,7 @@ export const pdfHobbies: Hobby[] = [
     title: { en: 'Music', fr: 'Musique' },
     details: [
       { en: 'Mixing', fr: 'Mix' },
-      { en: 'Event Organization', fr: "Organisation d'événements" },
+      { en: 'Organizing events for 50 people or more', fr: "Organisation d'évènements pour 50 personnes et plus" },
     ],
   },
   {
