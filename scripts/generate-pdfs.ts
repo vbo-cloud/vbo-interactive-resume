@@ -120,7 +120,7 @@ function reorder<T>(items: T[], keyOf: (item: T) => string, order?: string[]): T
 function applyVariant(config: ResumeConfig, variant: ResumeVariant): ResumeConfig {
   return {
     ...config,
-    personal: { ...config.personal, title: variant.title },
+    personal: { ...config.personal, title: variant.title, subtitle: variant.subtitle ?? config.personal.subtitle },
     featuredProject: config.featuredProject && {
       ...config.featuredProject,
       role: variant.featuredProjectRole ?? config.featuredProject.role,
