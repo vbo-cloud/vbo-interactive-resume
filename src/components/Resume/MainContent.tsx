@@ -93,6 +93,7 @@ export function MainContent() {
             description={featuredProject.description ? resolve(featuredProject.description) : ''}
             techs={featuredProject.techs ?? []}
             details={{ tasks: resolveArray(featuredProject.bullets) }}
+            featured
             labels={experienceLabels}
           />
         </div>

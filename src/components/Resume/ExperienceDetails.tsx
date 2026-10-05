@@ -5,14 +5,15 @@ interface ExperienceDetailsContentProps {
     mainTasks: string
     training?: string
   }
+  featured?: boolean
 }
 
-export function ExperienceDetailsContent({ tasks, training, labels }: ExperienceDetailsContentProps) {
+export function ExperienceDetailsContent({ tasks, training, labels, featured = false }: ExperienceDetailsContentProps) {
   return (
     <div className="space-y-3">
       {tasks && tasks.length > 0 && (
         <div>
-          <ul className="text-xs text-resume-text-secondary space-y-1">
+          <ul className={`${featured ? 'text-[0.8rem]' : 'text-[0.78rem]'} text-resume-text-secondary space-y-1`}>
             {tasks.map((task, i) => (
               <li key={i} className="flex items-start gap-2">
                 <span className="text-resume-primary">&#8226;</span>
