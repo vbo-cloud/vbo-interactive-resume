@@ -4,12 +4,13 @@ interface EducationItemProps {
   school: string
   degree: string
   specialty?: string
+  details?: string
   period?: string
   logo?: string
   badge?: string
 }
 
-export function EducationItem({ school, degree, specialty, period, logo, badge }: EducationItemProps) {
+export function EducationItem({ school, degree, specialty, details, period, logo, badge }: EducationItemProps) {
   return (
     <div className="flex items-start gap-4">
       {logo && (
@@ -34,6 +35,9 @@ export function EducationItem({ school, degree, specialty, period, logo, badge }
         </div>
         {specialty && (
           <p className="text-xs text-resume-primary mt-0.5">{specialty}</p>
+        )}
+        {details && (
+          <p className="text-xs text-resume-text-secondary mt-0.5">{details}</p>
         )}
       </div>
     </div>

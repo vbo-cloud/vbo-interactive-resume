@@ -415,6 +415,9 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
       if (edu.specialty) {
         main.push(`<p style="margin: 0.15rem 0 0 0; font-size: 0.78rem; color: ${colors.primary};">${escapeHtml(resolve(edu.specialty))}</p>`)
       }
+      if (edu.details) {
+        main.push(`<p style="margin: 0.15rem 0 0 0; font-size: 0.78rem; color: ${colors.textSecondary};">${escapeHtml(resolve(edu.details))}</p>`)
+      }
       main.push(`</div>`)
     }
     main.push(`</div>`)
