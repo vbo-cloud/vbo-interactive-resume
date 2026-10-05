@@ -15,10 +15,10 @@
 @variant dark (&:where(.dark, .dark *));
 
 /**
- * Matches render-resume-pdf.ts's <html style="font-size: 12.5px;"> exactly. Every
+ * Matches render-resume-pdf.ts's <html style="font-size: 12px;"> exactly. Every
  * rem value copied from the PDF onto this site (text sizes, margins, the 0.78rem/
  * 1.6rem/etc arbitrary Tailwind values throughout the Resume components) was tuned
- * against that 12.5px root, not the browser's 16px default — without this, every one
+ * against that 12px root, not the browser's 16px default — without this, every one
  * of those "matched" values rendered ~28% larger here than on the PDF, which was the
  * real reason the page kept coming out taller than the PDF despite the font/spacing
  * clean-ups. rem-based media query breakpoints (Tailwind's md:, etc.) are unaffected:
@@ -26,7 +26,7 @@
  * initial root size, not a page override like this one.
  */
 html {
-  font-size: 12.5px;
+  font-size: 12px;
 }
 
 :root {

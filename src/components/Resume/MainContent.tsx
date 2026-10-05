@@ -172,6 +172,7 @@ export function MainContent() {
               school={resolve(edu.school)}
               degree={resolve(edu.degree)}
               specialty={edu.specialty ? resolve(edu.specialty) : undefined}
+              details={edu.details ? resolve(edu.details) : undefined}
               period={edu.period}
               logo={edu.logo}
               badge={edu.badge ? resolve(edu.badge) : undefined}

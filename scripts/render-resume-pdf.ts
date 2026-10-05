@@ -415,6 +415,9 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
       if (edu.specialty) {
         main.push(`<p style="margin: 0.15rem 0 0 0; font-size: 0.78rem; color: ${colors.primary};">${escapeHtml(resolve(edu.specialty))}</p>`)
       }
+      if (edu.details) {
+        main.push(`<p style="margin: 0.15rem 0 0 0; font-size: 0.78rem; color: ${colors.textSecondary};">${escapeHtml(resolve(edu.details))}</p>`)
+      }
       main.push(`</div>`)
     }
     main.push(`</div>`)
@@ -434,7 +437,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
   const pageBg = `linear-gradient(to right, ${colors.sidebarFrom} 0 ${SIDEBAR_WIDTH_PCT}%, ${colors.bgCard} ${SIDEBAR_WIDTH_PCT}% 100%)`
 
   return `<!DOCTYPE html>
-<html lang="${lang}" style="font-size: 12.5px;">
+<html lang="${lang}" style="font-size: 12px;">
   <head>
     <meta charset="utf-8" />
     <title>CV_VincentBOUTIN</title>
