@@ -478,6 +478,9 @@ export function renderResumeHtml(
       if (edu.specialty) {
         lines.push(`${indent}      <p style="margin: 0; color: ${colors.textSecondary};">${escapeHtml(resolve(edu.specialty))}</p>`)
       }
+      if (edu.details) {
+        lines.push(`${indent}      <p style="margin: 0; color: ${colors.textSecondary};">${escapeHtml(resolve(edu.details))}</p>`)
+      }
       const eduMeta = [resolve(edu.school)]
       if (edu.period) eduMeta.push(edu.period)
       lines.push(`${indent}      <p style="margin: 0; color: ${colors.primary}; font-size: 0.9rem;">${escapeHtml(eduMeta.join(' · '))}</p>`)

@@ -122,14 +122,14 @@ export const pdfExperiences: Experience[] = [
           'Rebuilt navigation (Input System), with profiles replicating 6 CAD software (Unity, Catia, SolidWorks, Inventor, Revit, SketchUp)',
           'Profiled Save/Load performance with Superluminal, fixed ~15 issues, cutting load times by 50-70%',
           'Built the front-end of a Netcode-based multiplayer feature (session, lobby, chat)',
-          'Worked with GitFlow and CI/CD in Agile (Scrum/Kanban) teams',
+          'Technical exchanges with CEA and regular check-ins with cross-functional teams (progress, blockers, direction), using Agile methods (Scrum/Kanban)',
         ],
         fr: [
           "Refactorisation de l'architecture de l'application selon le modèle MVC",
           "Refonte de la navigation (Input System), avec des profils reproduisant 6 logiciels de CAO (Unity, Catia, SolidWorks, Inventor, Revit, SketchUp)",
           "Profilage des performances Save/Load via Superluminal, correction d'une quinzaine de bugs, temps de chargement réduits de 50 à 70%",
           "Développement du front-end d'une fonctionnalité multijoueur Netcode (session, lobby, chat)",
-          "Travail en GitFlow/CI/CD au sein d'équipes Agile (Scrum/Kanban)",
+          'Échanges techniques avec le CEA et suivi régulier avec des équipes pluridisciplinaires (avancement, blocages, orientations), en méthode Agile (Scrum/Kanban)',
         ],
       },
     },
@@ -257,6 +257,10 @@ export const pdfEducation: Education[] = [
     specialty: {
       en: 'Unity, Unreal, C#, C++, OOP, 2D Mathematics, Algorithms, Integration, AI, Networking, Agile Methods',
       fr: 'Unity, Unreal, C#, C++, POO, Mathématiques 2D, Algorithmique, Intégration, IA, Réseau, Méthodes Agiles',
+    },
+    details: {
+      en: 'Lead programmer on the graduation project: team coordination and integration of everyone’s work',
+      fr: 'Lead programmer du projet de fin d’études : coordination des équipes et intégration des travaux de chacun',
     },
     period: '2024',
     badge: { en: 'Jury Honors', fr: 'Félicitations du Jury' },

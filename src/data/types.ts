@@ -79,6 +79,8 @@ export interface Education {
   school: LocalizedString
   degree: LocalizedString
   specialty?: LocalizedString
+  /** Extra line under the specialty (e.g. a role held during the degree) */
+  details?: LocalizedString
   period?: string
   logo?: string
   badge?: LocalizedString
