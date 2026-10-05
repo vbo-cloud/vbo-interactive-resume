@@ -103,7 +103,7 @@ export function MainContent() {
         <h2 className="text-[0.78rem] font-bold tracking-widest text-resume-text mb-[0.9rem] pb-[0.4rem] border-b border-resume-primary/20">
           {resolve(labels.sections.experience)}
         </h2>
-        <div className="space-y-2">
+        <div className="space-y-4">
           {experiences.map((exp, i) => (
             <div key={exp.id}>
               {i > 0 && <div className="h-px w-[94%] mx-auto mb-[0.2rem] bg-resume-sidebar-from" />}

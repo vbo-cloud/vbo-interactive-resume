@@ -333,7 +333,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
   if (experiences.length > 0) {
     main.push(`<div style="margin-bottom: 1.6rem;">`)
     main.push(mainSectionTitle(resolve(config.labels.sections.experience), colors))
-    main.push(`<div style="display: flex; flex-direction: column; gap: 0.6rem;">`)
+    main.push(`<div style="display: flex; flex-direction: column; gap: 1rem;">`)
     experiences.forEach((exp, expIndex) => {
       const periodText = reverseDateRange(resolve(exp.period))
       if (expIndex > 0) {
