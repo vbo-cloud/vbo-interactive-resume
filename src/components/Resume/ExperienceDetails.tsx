@@ -12,7 +12,6 @@ export function ExperienceDetailsContent({ tasks, training, labels }: Experience
     <div className="space-y-3">
       {tasks && tasks.length > 0 && (
         <div>
-          <p className="text-xs font-semibold text-resume-text mb-2">{labels.mainTasks}</p>
           <ul className="text-xs text-resume-text-secondary space-y-1">
             {tasks.map((task, i) => (
               <li key={i} className="flex items-start gap-2">
