@@ -195,39 +195,38 @@ export const pdfExperiences: Experience[] = [
 const azureSubcategories: SkillSubcategory[] = [
   {
     title: { en: 'Governance', fr: 'Gouvernance' },
+    icon: 'shield-check',
     colors: { dark: '#B79CFF', light: '#4B30B0' },
-    items: [{ name: 'Microsoft Entra ID' },
-      { name: 'RBAC' },
-      { name: 'Managed Identity' },
-      { name: 'Azure Policy' },
-      { name: 'Tags' },
-      { name: 'Resource Locks' },],
+    items: [{ name: 'Microsoft Entra ID' }, { name: 'RBAC' }, { name: 'Managed Identity' }, { name: 'Azure Policy' }],
   },
   {
     title: { en: 'FinOps', fr: 'FinOps' },
+    icon: 'coins',
     colors: { dark: '#4ADE80', light: '#0B5F2C' },
-    items: [{ name: 'Cost Management' }, { name: 'Budgets' }, { name: 'Cost Alerts' }, { name: 'Azure Advisor' }],
+    items: [{ name: 'Cost Management' }, { name: 'Cost Alerts' }],
   },
   {
     title: { en: 'Automation', fr: 'Automatisation' },
+    icon: 'terminal',
     colors: { dark: '#F5A55A', light: '#8A3E00' },
     items: [{ name: 'Bicep' }, { name: 'ARM Templates' }, { name: 'Azure CLI' }, { name: 'PowerShell' }],
   },
   {
     title: { en: 'Compute & containers', fr: 'Calcul & conteneurs' },
+    icon: 'box',
     colors: { dark: '#3DD6C6', light: '#075A53' },
     items: [
       { name: 'Virtual Machines' },
       { name: 'App Service' },
       { name: 'Azure Functions' },
       { name: 'Container Apps' },
-      { name: 'ACI' },
       { name: 'ACR' },
       { name: 'AKS' },
     ],
   },
   {
     title: { en: 'Networking & security', fr: 'Réseau & sécurité' },
+    icon: 'network',
     colors: { dark: '#FF8A9A', light: '#9A1A33' },
     items: [
       { name: 'Virtual Network' },
@@ -242,21 +241,25 @@ const azureSubcategories: SkillSubcategory[] = [
   },
   {
     title: { en: 'Data & messaging', fr: 'Données & messagerie' },
+    icon: 'database',
     colors: { dark: '#F2D35B', light: '#664C00' },
     items: [{ name: 'Storage Accounts' }, { name: 'Blob Storage' }, { name: 'PostgreSQL' }, { name: 'Service Bus' }],
   },
   {
     title: { en: 'Observability', fr: 'Observabilité' },
+    icon: 'activity',
     colors: { dark: '#E58AD9', light: '#82246F' },
     items: [{ name: 'Azure Monitor' }, { name: 'Application Insights' }, { name: 'Log Analytics' }, { name: 'Grafana' }],
   },
   {
     title: { en: 'Reliability', fr: 'Fiabilité' },
+    icon: 'life-buoy',
     colors: { dark: '#A8B5C8', light: '#3E4C63' },
     items: [{ name: 'Azure Backup' }, { name: 'Site Recovery' }],
   },
   {
     title: { en: 'AI', fr: 'IA' },
+    icon: 'bot',
     colors: { dark: '#A3E635', light: '#365314' },
     items: [{ name: 'Foundry' }],
   },
@@ -274,7 +277,7 @@ registerTechBadgeColors(
 /**
  * Same techs as the live site's skills, regrouped into a more DevOps-legible split:
  * Cloud is narrowed to Azure, a dedicated DevOps category picks up Terraform/Docker/
- * CI-CD, and Workflow keeps only Git and Agile Methods.
+ * CI-CD plus Git and Agile Methods.
  */
 export const pdfSkills: SkillCategory[] = [
   {
@@ -287,7 +290,13 @@ export const pdfSkills: SkillCategory[] = [
   {
     title: { en: 'DevOps', fr: 'DevOps' },
     type: 'badges',
-    items: [{ name: 'Terraform' }, { name: 'Docker' }, { name: 'CI/CD' }],
+    items: [
+      { name: 'Terraform' },
+      { name: 'Docker' },
+      { name: 'CI/CD' },
+      { name: 'Git' },
+      { name: { en: 'Agile Methods', fr: 'Méthodes Agiles' } },
+    ],
     frame: { colors: { dark: '#F58A3C', light: '#9A4000' }, icon: 'infinity' },
   },
   {
@@ -305,20 +314,8 @@ export const pdfSkills: SkillCategory[] = [
   {
     title: { en: 'AI', fr: 'IA' },
     type: 'badges',
-    items: [{ name: 'OpenAI' }, { name: 'Claude' }, { name: 'LLM' }, { name: 'Agents' }],
+    items: [{ name: 'OpenAI' }, { name: 'Claude' }, { name: 'LLM' }],
     frame: { colors: { dark: '#38BDF8', light: '#075985' }, icon: 'bot' },
-  },
-  {
-    title: { en: 'Observability', fr: 'Observabilité' },
-    type: 'badges',
-    items: [{ name: 'PostHog' }],
-    frame: { colors: { dark: '#FFD43B', light: '#6B5200' }, icon: 'activity' },
-  },
-  {
-    title: { en: 'Workflow', fr: 'Workflow' },
-    type: 'badges',
-    items: [{ name: 'Git' }, { name: { en: 'Agile Methods', fr: 'Méthodes Agiles' } }],
-    frame: { colors: { dark: '#F472B6', light: '#9D174D' }, icon: 'git-branch' },
   },
 ]
 

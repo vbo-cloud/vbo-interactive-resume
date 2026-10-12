@@ -212,7 +212,8 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
           const subColor = sub.colors[mode]
           const names = sub.items.map((item) => (typeof item.name === 'string' ? item.name : resolve(item.name)))
           sidebar.push(`<div>`)
-          sidebar.push(`<p style="margin: 0 0 0.25rem 0; font-size: 0.7rem; font-weight: 600; color: ${subColor};">${escapeHtml(resolve(sub.title))}</p>`)
+          const subIcon = sub.icon ? `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">${SECTION_ICONS[sub.icon]}</svg>` : ''
+          sidebar.push(`<p style="margin: 0 0 0.25rem 0; display: flex; align-items: center; gap: 0.25rem; font-size: 0.7rem; font-weight: 600; color: ${subColor};">${subIcon}${escapeHtml(resolve(sub.title))}</p>`)
           sidebar.push(renderBadges(names, lang, mode, '0.3rem', '0', false, subColor, colors.sidebarFrom))
           sidebar.push(`</div>`)
         }

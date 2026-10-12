@@ -32,7 +32,7 @@ export const resumeVariants: ResumeVariant[] = [
       fr: 'Développeur C# / .NET',
       en: 'C# / .NET Developer',
     },
-    skillsOrder: ['Code', 'Backend', 'AI', 'DevOps', 'Azure', 'Observability', 'Workflow'],
+    skillsOrder: ['Code', 'Backend', 'AI', 'DevOps', 'Azure'],
   },
   {
     id: 'ia',
@@ -44,6 +44,6 @@ export const resumeVariants: ResumeVariant[] = [
       fr: 'Développeur IA / Cloud Azure',
       en: 'AI Developer / Cloud Azure',
     },
-    skillsOrder: ['AI', 'Backend', 'Code', 'Azure', 'DevOps', 'Observability', 'Workflow'],
+    skillsOrder: ['AI', 'Backend', 'Code', 'Azure', 'DevOps'],
   },
 ]

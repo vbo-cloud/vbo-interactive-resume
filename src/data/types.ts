@@ -45,6 +45,8 @@ export interface SkillCategory {
 
 export interface SkillSubcategory {
   title: LocalizedString
+  /** Icon shown before the row title */
+  icon?: SectionIconName
   /** Badge color per theme for this row, checked for contrast on the block's tint */
   colors: { dark: string; light: string }
   items: SkillItem[]
