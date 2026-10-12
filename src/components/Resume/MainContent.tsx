@@ -78,36 +78,34 @@ export function MainContent() {
         </SidebarSection>
       ) : null}
 
-      {/* Flagship project — shown first, same ExperienceItem format as the timeline below */}
-      {featuredProject && labels.sections.featuredProject && (
-        <div className="mb-[1.6rem]">
-          <h2 className="text-[0.78rem] font-bold tracking-widest text-resume-text mb-[0.9rem] pb-[0.4rem] border-b border-resume-primary/20">
-            {resolve(labels.sections.featuredProject)}
-          </h2>
-          <ExperienceItem
-            year={reverseDateRange(resolve(featuredProject.period))}
-            company={resolve(featuredProject.title)}
-            type={featuredProject.type ? resolve(featuredProject.type) : undefined}
-            role={featuredProject.role ? resolve(featuredProject.role) : ''}
-            url={featuredProject.url}
-            description={featuredProject.description ? resolve(featuredProject.description) : ''}
-            techs={featuredProject.techs ?? []}
-            details={{ tasks: resolveArray(featuredProject.bullets) }}
-            featured
-            labels={experienceLabels}
-          />
-        </div>
-      )}
-
-      {/* Experiences */}
+      {/* Experiences — Job Finder (the featured project) leads the timeline */}
       <div className="relative">
         <h2 className="text-[0.78rem] font-bold tracking-widest text-resume-text mb-[0.9rem] pb-[0.4rem] border-b border-resume-primary/20">
           {resolve(labels.sections.experience)}
         </h2>
         <div>
+          {featuredProject && (
+            <ExperienceItem
+              year={reverseDateRange(resolve(featuredProject.period))}
+              company={resolve(featuredProject.title)}
+              type={featuredProject.type ? resolve(featuredProject.type) : undefined}
+              role={featuredProject.role ? resolve(featuredProject.role) : ''}
+              url={featuredProject.url}
+              description={featuredProject.description ? resolve(featuredProject.description) : ''}
+              techs={featuredProject.techs ?? []}
+              details={{
+                taskGroups: featuredProject.taskGroups.map((group) => ({
+                  title: resolve(group.title),
+                  tasks: group.tasks.map((task) => ({ text: resolve(task.text), techs: task.techs })),
+                })),
+              }}
+              featured
+              labels={experienceLabels}
+            />
+          )}
           {experiences.map((exp, i) => (
             <div key={exp.id}>
-              {i > 0 && <div className="h-px w-[94%] mx-auto my-[0.85rem] bg-resume-sidebar-from" />}
+              {(i > 0 || featuredProject) && <div className="h-px w-[94%] mx-auto my-[0.85rem] bg-resume-sidebar-from" />}
               <ExperienceItem
                 year={reverseDateRange(resolve(exp.period))}
                 company={resolve(exp.company)}

@@ -8,19 +8,21 @@ interface SkillGroupBlockProps {
   /** Header badge — also gives the block its tint. */
   header: string
   subcategories: SkillSubcategory[]
+  className?: string
 }
 
 const itemName = (item: SkillItem, resolve: (ls: Record<string, string>) => string) =>
   typeof item.name === 'string' ? item.name : resolve(item.name)
 
 /** One framed block (e.g. "Azure") holding a titled row of badges per sub-category, each row in its own color. */
-export function SkillGroupBlock({ header, subcategories }: SkillGroupBlockProps) {
+export function SkillGroupBlock({ header, subcategories, className }: SkillGroupBlockProps) {
   const { resolve } = useTranslation()
 
   return (
     <BlockFrame
       colors={{ light: getTechBadgeColor(header, 'light'), dark: getTechBadgeColor(header, 'dark') }}
       header={<TechBadge tech={header} showIcon />}
+      className={className}
     >
       {subcategories.map((sub) => (
         <div key={resolve(sub.title)}>

@@ -1,5 +1,14 @@
+import { TechBadge } from './TechBadge'
+
+/** A titled group of task lines, each optionally followed by the badges of the techs involved. */
+export interface ResolvedTaskGroup {
+  title: string
+  tasks: { text: string; techs?: string[] }[]
+}
+
 interface ExperienceDetailsContentProps {
   tasks?: string[]
+  taskGroups?: ResolvedTaskGroup[]
   training?: string[]
   labels: {
     mainTasks: string
@@ -8,9 +17,31 @@ interface ExperienceDetailsContentProps {
   featured?: boolean
 }
 
-export function ExperienceDetailsContent({ tasks, training, labels, featured = false }: ExperienceDetailsContentProps) {
+export function ExperienceDetailsContent({ tasks, taskGroups, training, labels, featured = false }: ExperienceDetailsContentProps) {
   return (
     <div className="space-y-3">
+      {taskGroups?.map((group) => (
+        <div key={group.title}>
+          <p className="text-xs font-semibold text-resume-text mb-1.5">{group.title}</p>
+          <ul className={`${featured ? 'text-[0.8rem]' : 'text-[0.78rem]'} text-resume-text-secondary space-y-1.5`}>
+            {group.tasks.map((task, i) => (
+              <li key={i} className="flex items-start gap-2">
+                <span className="text-resume-primary">&#8226;</span>
+                <div>
+                  <span className="whitespace-pre-line">{task.text}</span>
+                  {task.techs && task.techs.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-1">
+                      {task.techs.map((tech) => (
+                        <TechBadge key={tech} tech={tech} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
       {tasks && tasks.length > 0 && (
         <div>
           <ul className={`${featured ? 'text-[0.8rem]' : 'text-[0.78rem]'} text-resume-text-secondary space-y-1`}>

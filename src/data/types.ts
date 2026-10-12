@@ -84,6 +84,12 @@ export interface Experience {
   portfolioNote?: boolean
 }
 
+/** A titled group of task lines; each line can carry the badges of the techs it involved. */
+export interface FeaturedTaskGroup {
+  title: LocalizedString
+  tasks: { text: LocalizedString; techs?: string[] }[]
+}
+
 // ===== PROJECTS =====
 
 export interface Project {
@@ -212,8 +218,8 @@ export interface ResumeConfig {
     path: string | LocalizedString
   }
   /**
-   * A standout project rendered as its own "Projet phare" section, on both the site
-   * and the PDF — pulled out of experiences so it isn't buried under a job title.
+   * A standout project (Job Finder) rendered as the first entry of the experiences
+   * timeline, on both the site and the PDF, with its tasks split into titled groups.
    */
   featuredProject?: {
     title: LocalizedString
@@ -225,7 +231,7 @@ export interface ResumeConfig {
     url?: string
     description?: LocalizedString
     techs?: (TechName | (string & {}))[]
-    bullets: LocalizedStringArray
+    taskGroups: FeaturedTaskGroup[]
   }
   theme?: {
     preset?: PresetName

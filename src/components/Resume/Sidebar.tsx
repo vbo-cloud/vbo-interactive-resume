@@ -12,6 +12,9 @@ import { SectionTag } from './SectionTag'
 import { SkillGroupBlock } from './SkillGroupBlock'
 import { TechBadge } from './TechBadge'
 
+/** Same visual gap above the first block (under the section heading) as between two blocks. */
+const firstBlockClass = 'mt-4'
+
 export function Sidebar() {
   const { resolve } = useTranslation()
   const { personal, contact, skills, values, hobbies, referents, spokenLanguages, labels } = resumeConfig
@@ -67,11 +70,13 @@ export function Sidebar() {
               key={`${resolve(category.title)}-${i}`}
               header={typeof category.items[0].name === 'string' ? category.items[0].name : resolve(category.items[0].name)}
               subcategories={category.subcategories}
+              className={i === 0 ? firstBlockClass : undefined}
             />
           ) : category.frame && category.type === 'badges' ? (
             <BlockFrame
               key={`${resolve(category.title)}-${i}`}
               colors={category.frame.colors}
+              className={i === 0 ? firstBlockClass : undefined}
               header={<SectionTag label={resolve(category.title)} icon={category.frame.icon} colors={category.frame.colors} />}
             >
               <div className="flex flex-wrap gap-1.5">

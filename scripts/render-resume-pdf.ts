@@ -320,52 +320,53 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
   }
   main.push(`</div>`)
 
-  if (config.featuredProject) {
-    const fp = config.featuredProject
-    main.push(`<div style="margin-bottom: 1.6rem;">`)
-    main.push(mainSectionTitle(lang === 'fr' ? 'PROJET PHARE' : 'FLAGSHIP PROJECT', colors))
-    main.push(`<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem;">`)
-    main.push(`<div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; min-width: 0;">`)
-    if (fp.role) {
-      main.push(`<h3 style="margin: 0; font-size: 0.92rem; font-weight: 600; color: ${colors.text}; text-transform: uppercase;">${escapeHtml(resolve(fp.role))}</h3>`)
-      main.push(`<span style="font-size: 0.92rem; color: ${colors.textSecondary};">- ${escapeHtml(resolve(fp.title))}</span>`)
-    } else {
-      main.push(`<h3 style="margin: 0; font-size: 0.92rem; font-weight: 600; color: ${colors.text};">${escapeHtml(resolve(fp.title))}</h3>`)
-    }
-    if (fp.type) {
-      main.push(`<span style="font-size: 0.68rem; font-weight: 600; padding: 0.1rem 0.45rem; border-radius: 4px; background: ${colors.primary}1a; color: ${colors.primary};">${escapeHtml(resolve(fp.type))}</span>`)
-    }
-    main.push(`</div>`)
-    main.push(`<span style="flex-shrink: 0; white-space: nowrap; font-size: 0.75rem; font-weight: 400; color: ${colors.textSecondary}cc;">${escapeHtml(resolve(fp.period))}</span>`)
-    main.push(`</div>`)
-    if (fp.url) {
-      main.push(`<a href="${escapeHtml(fp.url)}" style="display: inline-block; margin-top: 0.2rem; font-size: 0.75rem; color: ${colors.primaryLight}; text-decoration: none;">${escapeHtml(fp.url)}</a>`)
-    }
-    if (fp.description) {
-      main.push(`<p style="margin: 0.5rem 0 0 0; font-size: 0.82rem; color: ${colors.text};">${escapeHtml(resolve(fp.description))}</p>`)
-    }
-    const bullets = fp.bullets[lang] ?? Object.values(fp.bullets)[0] ?? []
-    if (bullets.length > 0) {
-      main.push(`<ul style="margin: 0.5rem 0 0 0; padding: 0; list-style: none;">`)
-      for (const bullet of bullets) {
-        main.push(`<li style="display: flex; align-items: baseline; gap: 0.4rem; font-size: 0.8rem; color: ${colors.textSecondary}; margin-bottom: 0.25rem;"><span style="color: ${colors.primary};">&bull;</span><span>${escapeHtml(bullet)}</span></li>`)
-      }
-      main.push(`</ul>`)
-    }
-    // Badges last — same order as the experiences below (description, tasks, badges).
-    if (fp.techs && fp.techs.length > 0) {
-      main.push(renderBadges(fp.techs, lang, mode, '0.35rem', '0.55rem'))
-    }
-    main.push(`</div>`)
-  }
-
-  if (experiences.length > 0) {
+  if (experiences.length > 0 || config.featuredProject) {
     main.push(`<div style="margin-bottom: 1.6rem;">`)
     main.push(mainSectionTitle(resolve(config.labels.sections.experience), colors))
     main.push(`<div style="display: flex; flex-direction: column; gap: 0;">`)
+    const fp = config.featuredProject
+    if (fp) {
+      main.push(`<div>`)
+      main.push(`<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem;">`)
+      main.push(`<div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; min-width: 0;">`)
+      if (fp.role) {
+        main.push(`<h3 style="margin: 0; font-size: 0.92rem; font-weight: 600; color: ${colors.text}; text-transform: uppercase;">${escapeHtml(resolve(fp.role))}</h3>`)
+        main.push(`<span style="font-size: 0.92rem; color: ${colors.textSecondary};">- ${escapeHtml(resolve(fp.title))}</span>`)
+      } else {
+        main.push(`<h3 style="margin: 0; font-size: 0.92rem; font-weight: 600; color: ${colors.text};">${escapeHtml(resolve(fp.title))}</h3>`)
+      }
+      if (fp.type) {
+        main.push(`<span style="font-size: 0.68rem; font-weight: 600; padding: 0.1rem 0.45rem; border-radius: 4px; background: ${colors.primary}1a; color: ${colors.primary};">${escapeHtml(resolve(fp.type))}</span>`)
+      }
+      main.push(`</div>`)
+      main.push(`<span style="flex-shrink: 0; white-space: nowrap; font-size: 0.75rem; font-weight: 400; color: ${colors.textSecondary}cc;">${escapeHtml(resolve(fp.period))}</span>`)
+      main.push(`</div>`)
+      if (fp.url) {
+        main.push(`<a href="${escapeHtml(fp.url)}" style="display: inline-block; margin-top: 0.2rem; font-size: 0.75rem; color: ${colors.primaryLight}; text-decoration: none;">${escapeHtml(fp.url)}</a>`)
+      }
+      if (fp.description) {
+        main.push(`<p style="margin: 0.5rem 0 0 0; font-size: 0.82rem; color: ${colors.text};">${escapeHtml(resolve(fp.description))}</p>`)
+      }
+      for (const group of fp.taskGroups) {
+        main.push(`<p style="margin: 0.7rem 0 0.3rem 0; font-size: 0.78rem; font-weight: 600; color: ${colors.text};">${escapeHtml(resolve(group.title))}</p>`)
+        main.push(`<ul style="margin: 0; padding: 0; list-style: none;">`)
+        for (const task of group.tasks) {
+          main.push(`<li style="display: flex; align-items: baseline; gap: 0.4rem; font-size: 0.78rem; color: ${colors.textSecondary}; margin-bottom: 0.3rem;"><span style="color: ${colors.primary};">&bull;</span><div><span>${escapeHtml(resolve(task.text))}</span>`)
+          if (task.techs && task.techs.length > 0) {
+            main.push(renderBadges(task.techs, lang, mode, '0.3rem', '0.25rem'))
+          }
+          main.push(`</div></li>`)
+        }
+        main.push(`</ul>`)
+      }
+      if (fp.techs && fp.techs.length > 0) {
+        main.push(renderBadges(fp.techs, lang, mode, '0.35rem', '0.55rem'))
+      }
+      main.push(`</div>`)
+    }
     experiences.forEach((exp, expIndex) => {
       const periodText = reverseDateRange(resolve(exp.period))
-      if (expIndex > 0) {
+      if (expIndex > 0 || config.featuredProject) {
         // Slightly narrower and more subtle than the section heading's border —
         // colored with the sidebar's own background instead of the primary accent.
         main.push(`<div style="height: 1px; width: 94%; margin: 1.1rem auto; background: ${colors.sidebarFrom};"></div>`)

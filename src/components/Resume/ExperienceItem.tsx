@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { TechBadge } from './TechBadge'
-import { ExperienceDetailsContent } from './ExperienceDetails'
+import { ExperienceDetailsContent, type ResolvedTaskGroup } from './ExperienceDetails'
 
 interface ExperienceItemProps {
   year: string
@@ -13,6 +13,7 @@ interface ExperienceItemProps {
   techs: string[]
   details?: {
     tasks?: string[]
+    taskGroups?: ResolvedTaskGroup[]
     training?: string[]
   }
   subItem?: { title: string; description: string }
@@ -83,15 +84,17 @@ export function ExperienceItem({
 
             {details && (
               <div className="mt-2">
-                <ExperienceDetailsContent tasks={details.tasks} training={details.training} labels={labels} featured={featured} />
+                <ExperienceDetailsContent tasks={details.tasks} taskGroups={details.taskGroups} training={details.training} labels={labels} featured={featured} />
               </div>
             )}
 
-            <div className="flex flex-wrap gap-1.5 mt-2">
-              {techs.map((tech) => (
-                <TechBadge key={tech} tech={tech} />
-              ))}
-            </div>
+            {techs.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {techs.map((tech) => (
+                  <TechBadge key={tech} tech={tech} />
+                ))}
+              </div>
+            )}
 
             {subItem && (
               <div className="mt-3 pl-3 border-l-2 border-resume-primary/20">

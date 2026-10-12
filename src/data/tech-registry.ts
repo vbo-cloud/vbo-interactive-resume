@@ -314,6 +314,15 @@ const TECH_BADGE_COLORS: Record<string, TechThemeColors> = {
 /** Any tech not explicitly listed above — visible and factual, never salient. */
 const NEUTRAL_TECH_BADGE_COLOR: TechThemeColors = { dark: '#D0D4DB', light: '#333333' }
 
+/**
+ * Lets the content layer pin extra techs to a color — used so a badge in the experiences
+ * (right column) always matches the color of the same tech in the skills sidebar (left
+ * column), which is the source of truth for the Azure sub-category colors.
+ */
+export function registerTechBadgeColors(colors: Record<string, TechThemeColors>): void {
+  Object.assign(TECH_BADGE_COLORS, colors)
+}
+
 /** Resolves a tech's badge color for the given theme. Unlisted techs fall back to neutral. */
 export function getTechBadgeColor(name: string, mode: 'dark' | 'light'): string {
   const entry = TECH_BADGE_COLORS[name] ?? NEUTRAL_TECH_BADGE_COLOR

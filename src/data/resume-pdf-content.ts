@@ -1,3 +1,4 @@
+import { registerTechBadgeColors } from './tech-registry'
 import type { ContactItem, Education, Experience, Hobby, Referent, ResumeConfig, SkillCategory, SkillSubcategory } from './types'
 
 /**
@@ -20,55 +21,99 @@ export const pdfPersonal = {
 }
 
 /**
- * Job Finder, pulled out of "experiences" into its own section — the flagship
- * project shouldn't be buried under a job title it never had.
+ * Job Finder, kept apart from "experiences" (it's a personal project, not a job) but
+ * rendered as the first entry of that timeline, with its tasks split into two groups.
  */
 export const pdfFeaturedProject: NonNullable<ResumeConfig['featuredProject']> = {
   title: { en: 'Job Finder', fr: 'Job Finder' },
   type: { en: 'Independent project', fr: 'Projet indépendant' },
-  role: { en: 'DevOps / Cloud Engineer', fr: 'DevOps / Cloud Engineer' },
+  role: { en: 'Architect / DevOps / Cloud Engineer Junior', fr: 'Architect / DevOps / Cloud Engineer Junior' },
   period: { en: '09/2025 - Present', fr: '09/2025 – Aujourd\'hui' },
   url: 'https://jobfinder.vincentboutin.dev',
   description: {
     en: 'Job Finder automates job offer sourcing and profile matching.',
     fr: "Job Finder automatise la veille d'offres d'emploi et la mise en correspondance avec un profil.",
   },
-  techs: [
-    'Azure',
-    'Terraform',
-    'Python',
-    'FastAPI',
-    'PostgreSQL',
-    'pgvector',
-    'OpenAI',
-    'Claude',
-    'Service Bus',
-    'CI/CD',
-    'GitHub',
-    'Docker',
-    'Application Insights',
-    'Log Analytics',
-    'Grafana',
-    'PostHog',
+  techs: [],
+  taskGroups: [
+    {
+      title: { en: 'Built on Azure', fr: 'Mis en place sur Azure' },
+      tasks: [
+        {
+          text: {
+            en: 'Infrastructure as Code: idempotent PowerShell bootstrap (service principals, RBAC, Terraform state), Azure landing zone, reusable Terraform modules',
+            fr: 'Infrastructure as Code : bootstrap PowerShell idempotent (service principals, RBAC, état Terraform), landing zone Azure, modules Terraform réutilisables',
+          },
+          techs: ['Azure', 'PowerShell', 'Azure CLI', 'Terraform'],
+        },
+        {
+          text: {
+            en: 'CI/CD with GitHub Actions: plan and tests per PR, Docker build/push and apply on merge',
+            fr: 'CI/CD GitHub Actions : plan et tests par PR, build/push Docker et apply au merge',
+          },
+          techs: ['GitHub', 'CI/CD', 'Docker', 'Terraform'],
+        },
+        {
+          text: {
+            en: 'Data: PostgreSQL Flexible Server on a private network, pgvector similarity search, versioned schema migrations with Alembic',
+            fr: 'Données : PostgreSQL Flexible Server en accès privé, recherche vectorielle pgvector, migrations de schéma versionnées avec Alembic',
+          },
+          techs: ['PostgreSQL', 'pgvector', 'Alembic'],
+        },
+        {
+          text: {
+            en: 'Architecture: Python multi-agent pipeline (Service Bus, Container App Jobs), semantic matching via pgvector, CV/offer analysis with Azure OpenAI, FastAPI backend, Next.js 14 frontend',
+            fr: 'Architecture : pipeline multi-agents Python (Service Bus, Container App Jobs), matching sémantique pgvector, analyse CV/offres avec Azure OpenAI, backend FastAPI, frontend Next.js 14',
+          },
+          techs: ['Python', 'Service Bus', 'Container Apps', 'PostgreSQL', 'pgvector', 'OpenAI', 'FastAPI', 'Next.js'],
+        },
+        {
+          text: {
+            en: 'Azure Functions: HTTP function shared with my portfolio, relaying emails with anti-spam and per-IP rate limiting, called by the API for user feedback',
+            fr: "Azure Functions : fonction HTTP mutualisée avec mon portfolio, relais d'e-mails avec anti-spam et limitation de débit par IP, appelée par l'API pour les retours utilisateurs",
+          },
+          techs: ['Azure Functions'],
+        },
+        {
+          text: {
+            en: 'Security: private VNet/DNS, Key Vault, least-privilege RBAC, managed identity',
+            fr: 'Sécurité : VNet/DNS privés, Key Vault, RBAC moindre privilège, identité managée',
+          },
+          techs: ['Virtual Network', 'Private DNS', 'Key Vault', 'RBAC', 'Managed Identity'],
+        },
+        {
+          text: {
+            en: 'Observability: Application Insights, Log Analytics, Grafana, Azure Monitor alerts, budget alerts, PostHog analytics',
+            fr: 'Observabilité : App Insights, Log Analytics, Grafana, alertes Azure Monitor, alertes budget, analytics PostHog',
+          },
+          techs: ['Application Insights', 'Log Analytics', 'Grafana', 'Azure Monitor', 'Cost Alerts', 'PostHog'],
+        },
+      ],
+    },
+    {
+      title: { en: 'AI-assisted development workflow', fr: 'Workflow de développement assisté par IA' },
+      tasks: [
+        {
+          text: {
+            en: 'Parallelized AI agents working side by side on the codebase',
+            fr: "Parallélisation d'agents IA travaillant côte à côte sur le code",
+          },
+        },
+        {
+          text: {
+            en: 'Hooks and skills enforcing the project conventions',
+            fr: 'Hooks et skills pour faire respecter les conventions du projet',
+          },
+        },
+        {
+          text: {
+            en: 'Subagents for code review, documentation and code exploration',
+            fr: "Subagents pour la revue de code, la documentation et l'exploration du code",
+          },
+        },
+      ],
+    },
   ],
-  bullets: {
-    en: [
-      'Set up an AI-assisted development workflow: parallelized agents, hooks/skills enforcing conventions, and subagents for code review, documentation and code exploration',
-      'Infrastructure as Code: Azure landing zone, reusable Terraform modules',
-      'CI/CD with GitHub Actions: plan and tests per PR, Docker build/push and apply on merge',
-      'Architecture: Python multi-agent pipeline (Service Bus, Container App Jobs), semantic matching via pgvector, CV/offer analysis with Azure OpenAI, FastAPI backend, Next.js 14 frontend',
-      'Security: private VNet/DNS, Key Vault, least-privilege RBAC, managed identity',
-      'Observability: Application Insights, Log Analytics, Grafana, Azure Monitor alerts, budget alerts, PostHog analytics',
-    ],
-    fr: [
-      "Mise en place d'un workflow de développement assisté par agents IA, parallélisation d'agents, hooks / skills pour le respect des conventions, subagents pour la revue de code, la documentation et l'exploration du code.",
-      'Infrastructure as Code : landing zone Azure, modules Terraform réutilisables',
-      'CI/CD GitHub Actions : plan et tests par PR, build/push Docker et apply au merge',
-      'Architecture : pipeline multi-agents Python (Service Bus, Container App Jobs), matching sémantique pgvector, analyse CV/offres avec Azure OpenAI, backend FastAPI, frontend Next.js 14',
-      'Sécurité : VNet/DNS privés, Key Vault, RBAC moindre privilège, identité managée',
-      'Observabilité : App Insights, Log Analytics, Grafana, alertes Azure Monitor, alertes budget, analytics PostHog',
-    ],
-  },
 }
 
 /**
@@ -119,15 +164,15 @@ export const pdfExperiences: Experience[] = [
       tasks: {
         en: [
           'Refactored the application architecture following the MVC pattern',
-          'Rebuilt navigation (Input System), with profiles replicating 6 CAD software (Unity, Catia, SolidWorks, Inventor, Revit, SketchUp)',
-          'Profiled Save/Load performance with Superluminal, fixed ~15 issues, cutting load times by 50-70%',
+          'Rebuilt navigation (Input System), with profiles replicating 6 CAD software (Catia, SolidWorks, Revit...)',
+          'Profiled Save/Load performance with Superluminal, cutting load times by 50-70%',
           'Built the front-end of a Netcode-based multiplayer feature (session, lobby, chat)',
           'Technical exchanges with CEA and regular check-ins with cross-functional teams (progress, blockers, direction), using Agile methods (Scrum/Kanban)',
         ],
         fr: [
           "Refactorisation de l'architecture de l'application selon le modèle MVC",
-          "Refonte de la navigation (Input System), avec des profils reproduisant 6 logiciels de CAO (Unity, Catia, SolidWorks, Inventor, Revit, SketchUp)",
-          "Profilage des performances Save/Load via Superluminal, correction d'une quinzaine de bugs, temps de chargement réduits de 50 à 70%",
+          "Refonte de la navigation (Input System), avec des profils reproduisant 6 logiciels de CAO (Catia, SolidWorks, Revit...)",
+          "Profilage des performances Save/Load via Superluminal, temps de chargement réduits de 50 à 70%",
           "Développement du front-end d'une fonctionnalité multijoueur Netcode (session, lobby, chat)",
           'Échanges techniques avec le CEA et suivi régulier avec des équipes pluridisciplinaires (avancement, blocages, orientations), en méthode Agile (Scrum/Kanban)',
         ],
@@ -168,7 +213,12 @@ const azureSubcategories: SkillSubcategory[] = [
   {
     title: { en: 'Governance', fr: 'Gouvernance' },
     colors: { dark: '#B79CFF', light: '#4B30B0' },
-    items: [{ name: 'Microsoft Entra ID' }, { name: 'RBAC' }, { name: 'Azure Policy' }, { name: 'Tags' }, { name: 'Resource Locks' }],
+    items: [{ name: 'Microsoft Entra ID' },
+      { name: 'RBAC' },
+      { name: 'Managed Identity' },
+      { name: 'Azure Policy' },
+      { name: 'Tags' },
+      { name: 'Resource Locks' },],
   },
   {
     title: { en: 'FinOps', fr: 'FinOps' },
@@ -178,7 +228,7 @@ const azureSubcategories: SkillSubcategory[] = [
   {
     title: { en: 'Automation', fr: 'Automatisation' },
     colors: { dark: '#F5A55A', light: '#8A3E00' },
-    items: [{ name: 'Bicep' }, { name: 'ARM Templates' }, { name: 'Azure CLI' }, { name: 'Azure PowerShell' }],
+    items: [{ name: 'Bicep' }, { name: 'ARM Templates' }, { name: 'Azure CLI' }, { name: 'PowerShell' }],
   },
   {
     title: { en: 'Compute & containers', fr: 'Calcul & conteneurs' },
@@ -186,6 +236,7 @@ const azureSubcategories: SkillSubcategory[] = [
     items: [
       { name: 'Virtual Machines' },
       { name: 'App Service' },
+      { name: 'Azure Functions' },
       { name: 'Container Apps' },
       { name: 'ACI' },
       { name: 'ACR' },
@@ -199,6 +250,7 @@ const azureSubcategories: SkillSubcategory[] = [
       { name: 'Virtual Network' },
       { name: 'NSG' },
       { name: 'Private Endpoints' },
+      { name: 'Private DNS' },
       { name: 'Azure Firewall' },
       { name: 'Load Balancer' },
       { name: 'Application Gateway' },
@@ -228,6 +280,15 @@ const azureSubcategories: SkillSubcategory[] = [
 ]
 
 /**
+ * Sidebar colors are the source of truth: every tech listed in an Azure sub-category
+ * keeps that row's color wherever else it appears as a badge (e.g. the Job Finder task
+ * lines).
+ */
+registerTechBadgeColors(
+  Object.fromEntries(azureSubcategories.flatMap((sub) => sub.items.map((item) => [item.name as string, sub.colors] as const))),
+)
+
+/**
  * Same techs as the live site's skills, regrouped into a more DevOps-legible split:
  * Cloud is narrowed to Azure, a dedicated DevOps category picks up Terraform/Docker/
  * CI-CD, and Workflow keeps only Git and Agile Methods.
@@ -255,7 +316,7 @@ export const pdfSkills: SkillCategory[] = [
   {
     title: { en: 'Backend', fr: 'Backend' },
     type: 'badges',
-    items: [{ name: 'FastAPI' }, { name: 'pgvector' }],
+    items: [{ name: 'FastAPI' }, { name: 'pgvector' }, { name: 'Alembic' }],
     frame: { colors: { dark: '#1FBFAE', light: '#04766B' }, icon: 'server' },
   },
   {
