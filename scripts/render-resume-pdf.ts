@@ -3,6 +3,7 @@ import path from 'path'
 import type { ResumeConfig } from '../src/data/types'
 import { presets } from '../src/data/presets'
 import { getTechBadgeColor, getTechIcon } from '../src/data/tech-registry'
+import { SECTION_ICONS } from '../src/data/section-icons'
 import { escapeHtml } from './render-resume-html'
 
 /**
@@ -128,8 +129,8 @@ function techIcon(tech: string): string {
  * `withIcon` is only turned on for the skills sidebar (see below) — experience/project
  * tech badges stay text-only, unchanged.
  */
-function renderBadge(tech: string, lang: string, mode: 'dark' | 'light', withIcon = false): string {
-  const color = getTechBadgeColor(tech, mode)
+function renderBadge(tech: string, lang: string, mode: 'dark' | 'light', withIcon = false, colorOverride?: string): string {
+  const color = colorOverride ?? getTechBadgeColor(tech, mode)
   const label = lang === 'fr' ? (TECH_LABEL_FR[tech] ?? tech) : tech
   const icon = withIcon ? techIcon(tech) : ''
   const display = icon ? 'inline-flex; align-items: center; gap: 0.3rem' : 'inline-block'
@@ -143,9 +144,10 @@ function renderBadges(
   gap = '0.35rem',
   marginTop = '0.4rem',
   withIcon = false,
+  colorOverride?: string,
 ): string {
   if (techs.length === 0) return ''
-  return `<div style="display: flex; flex-wrap: wrap; gap: ${gap}; margin-top: ${marginTop};">${techs.map((t) => renderBadge(t, lang, mode, withIcon)).join('')}</div>`
+  return `<div style="display: flex; flex-wrap: wrap; gap: ${gap}; margin-top: ${marginTop};">${techs.map((t) => renderBadge(t, lang, mode, withIcon, colorOverride)).join('')}</div>`
 }
 
 /** Mirrors SidebarSection.tsx: small tracking-widest heading, underlined. */
@@ -223,6 +225,33 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
     sidebar.push(sidebarSectionTitle(resolve(config.labels.sections.skills), colors))
     sidebar.push(`<div style="display: flex; flex-direction: column; gap: 0.6rem;">`)
     for (const cat of skills) {
+      if (cat.subcategories) {
+        // Mirrors SkillGroupBlock.tsx: framed block tinted with the header badge's color
+        const header = typeof cat.items[0].name === 'string' ? cat.items[0].name : resolve(cat.items[0].name)
+        const tint = getTechBadgeColor(header, mode)
+        sidebar.push(`<div style="border-radius: 8px; padding: 0.6rem; background: ${tint}1A; border: 1px solid ${tint}59; display: flex; flex-direction: column; gap: 0.75rem; position: relative; margin-top: 0.75rem; padding-top: 1.35rem;">`)
+        sidebar.push(`<div style="position: absolute; top: -0.75rem; left: 0.6rem; border-radius: 4px; background: ${colors.sidebarFrom};">${renderBadge(header, lang, mode, true)}</div>`)
+        for (const sub of cat.subcategories) {
+          const subColor = sub.colors[mode]
+          const names = sub.items.map((item) => (typeof item.name === 'string' ? item.name : resolve(item.name)))
+          sidebar.push(`<div>`)
+          sidebar.push(`<p style="margin: 0 0 0.25rem 0; font-size: 0.7rem; font-weight: 600; color: ${subColor};">${escapeHtml(resolve(sub.title))}</p>`)
+          sidebar.push(renderBadges(names, lang, mode, '0.3rem', '0', false, subColor))
+          sidebar.push(`</div>`)
+        }
+        sidebar.push(`</div>`)
+        continue
+      }
+      if (cat.frame && cat.type === 'badges') {
+        // Mirrors BlockFrame.tsx + SectionTag.tsx: tinted block, icon + title chip on the top edge
+        const frameColor = cat.frame.colors[mode]
+        const names = cat.items.map((item) => (typeof item.name === 'string' ? item.name : resolve(item.name)))
+        sidebar.push(`<div style="border-radius: 8px; padding: 1.35rem 0.6rem 0.6rem; background: ${frameColor}1A; border: 1px solid ${frameColor}59; position: relative; margin-top: 0.75rem;">`)
+        sidebar.push(`<div style="position: absolute; top: -0.75rem; left: 0.6rem; border-radius: 4px; background: ${colors.sidebarFrom};"><span style="display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.22rem 0.5rem; border-radius: 4px; font-size: 0.72rem; font-weight: 500; line-height: 1.2; background: ${frameColor}24; color: ${colors.text}; border: 1px solid ${frameColor}73;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="${frameColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">${SECTION_ICONS[cat.frame.icon]}</svg>${escapeHtml(resolve(cat.title))}</span></div>`)
+        sidebar.push(renderBadges(names, lang, mode, '0.3rem', '0', true))
+        sidebar.push(`</div>`)
+        continue
+      }
       sidebar.push(`<div>`)
       sidebar.push(`<p style="margin: 0 0 0.3rem 0; font-size: 0.75rem; font-weight: 500; color: ${colors.text};">${escapeHtml(resolve(cat.title))}</p>`)
       if (cat.type === 'badges') {

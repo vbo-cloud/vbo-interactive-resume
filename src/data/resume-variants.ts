@@ -38,7 +38,7 @@ export const resumeVariants: ResumeVariant[] = [
       en: 'C# / .NET developer with a game-programming background and a first professional experience on transport management software. I also designed and single-handedly operate a production Azure platform (Terraform, CI/CD, monitoring), and I am AZ-104 certified. Looking for a C# / .NET developer role in Lyon.',
       fr: "Développeur C# / .NET issu de la programmation de jeux vidéo, avec une première expérience professionnelle sur un logiciel de gestion de transport. J'ai aussi conçu une plateforme Azure que j'exploite seul en production (Terraform, CI/CD, monitoring), et je suis certifié AZ-104. À la recherche d'un poste de développeur C# / .NET à Lyon.",
     },
-    skillsOrder: ['Code', 'Backend', 'AI', 'DevOps', 'Cloud', 'Observability', 'Workflow'],
+    skillsOrder: ['Code', 'Backend', 'AI', 'DevOps', 'Azure', 'Observability', 'Workflow'],
   },
   {
     id: 'ia',
@@ -54,6 +54,6 @@ export const resumeVariants: ResumeVariant[] = [
       fr: 'Développeur IA / Cloud Azure',
       en: 'AI Developer / Cloud Azure',
     },
-    skillsOrder: ['AI', 'Backend', 'Code', 'Cloud', 'DevOps', 'Observability', 'Workflow'],
+    skillsOrder: ['AI', 'Backend', 'Code', 'Azure', 'DevOps', 'Observability', 'Workflow'],
   },
 ]

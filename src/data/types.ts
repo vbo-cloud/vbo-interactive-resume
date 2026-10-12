@@ -16,6 +16,8 @@ export interface ContactItem {
 
 // ===== SKILLS =====
 
+import type { SectionIconName } from './section-icons'
+
 export interface SkillCategory {
   title: LocalizedString
   type: 'badges' | 'text' | 'languages'
@@ -26,6 +28,26 @@ export interface SkillCategory {
    * in experience paragraphs. Omit to render the category as one flat badge row.
    */
   groupSizes?: number[]
+  /**
+   * Renders the category as one framed block (tinted with the color of its first item,
+   * which is also shown as the block's header) holding one titled row of badges per
+   * sub-category. `items` stays the flat list of everything, header first, so the
+   * <noscript> fallback keeps working.
+   */
+  subcategories?: SkillSubcategory[]
+  /**
+   * Frames the category in a block with its title and an icon on the top edge, like the
+   * Azure block, so every category carries the same visual weight. `colors` tints the
+   * frame and the header icon.
+   */
+  frame?: { colors: { dark: string; light: string }; icon: SectionIconName }
+}
+
+export interface SkillSubcategory {
+  title: LocalizedString
+  /** Badge color per theme for this row, checked for contrast on the block's tint */
+  colors: { dark: string; light: string }
+  items: SkillItem[]
 }
 
 export interface SkillItem {

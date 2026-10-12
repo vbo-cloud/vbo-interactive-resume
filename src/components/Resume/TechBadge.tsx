@@ -4,14 +4,16 @@ interface TechBadgeProps {
   tech: string
   /** Override color. If not provided, resolved from tech-registry. Same hex used in both themes. */
   color?: string
+  /** Per-theme override (wins over `color`) — used by the Azure block's sub-category rows. */
+  colors?: { dark: string; light: string }
   /** Show the tech's brand glyph (when one exists) before the label. Off by default — only the skills sidebar turns it on, mirroring the PDF export. */
   showIcon?: boolean
 }
 
 /** Same style recipe for every badge: solid text, 14% tint background, 45% tint border. */
-export function TechBadge({ tech, color: colorOverride, showIcon = false }: TechBadgeProps) {
-  const light = colorOverride ?? getTechBadgeColor(tech, 'light')
-  const dark = colorOverride ?? getTechBadgeColor(tech, 'dark')
+export function TechBadge({ tech, color: colorOverride, colors, showIcon = false }: TechBadgeProps) {
+  const light = colors?.light ?? colorOverride ?? getTechBadgeColor(tech, 'light')
+  const dark = colors?.dark ?? colorOverride ?? getTechBadgeColor(tech, 'dark')
   const icon = showIcon ? getTechIcon(tech) : null
 
   return (

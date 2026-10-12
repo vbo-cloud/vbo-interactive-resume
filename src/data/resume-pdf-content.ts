@@ -1,4 +1,4 @@
-import type { ContactItem, Education, Experience, Hobby, Referent, ResumeConfig, SkillCategory } from './types'
+import type { ContactItem, Education, Experience, Hobby, Referent, ResumeConfig, SkillCategory, SkillSubcategory } from './types'
 
 /**
  * Canonical resume content. resume-config.ts imports most of these exports directly
@@ -164,47 +164,117 @@ export const pdfExperiences: Experience[] = [
   },
 ]
 
+const azureSubcategories: SkillSubcategory[] = [
+  {
+    title: { en: 'Governance', fr: 'Gouvernance' },
+    colors: { dark: '#B79CFF', light: '#4B30B0' },
+    items: [{ name: 'Microsoft Entra ID' }, { name: 'RBAC' }, { name: 'Azure Policy' }, { name: 'Tags' }, { name: 'Resource Locks' }],
+  },
+  {
+    title: { en: 'FinOps', fr: 'FinOps' },
+    colors: { dark: '#4ADE80', light: '#0B5F2C' },
+    items: [{ name: 'Cost Management' }, { name: 'Budgets' }, { name: 'Cost Alerts' }, { name: 'Azure Advisor' }],
+  },
+  {
+    title: { en: 'Automation', fr: 'Automatisation' },
+    colors: { dark: '#F5A55A', light: '#8A3E00' },
+    items: [{ name: 'Bicep' }, { name: 'ARM Templates' }, { name: 'Azure CLI' }, { name: 'Azure PowerShell' }],
+  },
+  {
+    title: { en: 'Compute & containers', fr: 'Calcul & conteneurs' },
+    colors: { dark: '#3DD6C6', light: '#075A53' },
+    items: [
+      { name: 'Virtual Machines' },
+      { name: 'App Service' },
+      { name: 'Container Apps' },
+      { name: 'ACI' },
+      { name: 'ACR' },
+      { name: 'AKS' },
+    ],
+  },
+  {
+    title: { en: 'Networking & security', fr: 'Réseau & sécurité' },
+    colors: { dark: '#FF8A9A', light: '#9A1A33' },
+    items: [
+      { name: 'Virtual Network' },
+      { name: 'NSG' },
+      { name: 'Private Endpoints' },
+      { name: 'Azure Firewall' },
+      { name: 'Load Balancer' },
+      { name: 'Application Gateway' },
+      { name: 'Key Vault' },
+    ],
+  },
+  {
+    title: { en: 'Data & messaging', fr: 'Données & messagerie' },
+    colors: { dark: '#F2D35B', light: '#664C00' },
+    items: [{ name: 'Storage Accounts' }, { name: 'Blob Storage' }, { name: 'PostgreSQL' }, { name: 'Service Bus' }],
+  },
+  {
+    title: { en: 'Observability', fr: 'Observabilité' },
+    colors: { dark: '#E58AD9', light: '#82246F' },
+    items: [{ name: 'Azure Monitor' }, { name: 'Application Insights' }, { name: 'Log Analytics' }, { name: 'Grafana' }],
+  },
+  {
+    title: { en: 'Reliability', fr: 'Fiabilité' },
+    colors: { dark: '#A8B5C8', light: '#3E4C63' },
+    items: [{ name: 'Azure Backup' }, { name: 'Site Recovery' }],
+  },
+  {
+    title: { en: 'AI', fr: 'IA' },
+    colors: { dark: '#A3E635', light: '#365314' },
+    items: [{ name: 'Azure Foundry' }],
+  },
+]
+
 /**
  * Same techs as the live site's skills, regrouped into a more DevOps-legible split:
  * Cloud is narrowed to Azure, a dedicated DevOps category picks up Terraform/Docker/
  * CI-CD, and Workflow keeps only Git and Agile Methods.
  */
 export const pdfSkills: SkillCategory[] = [
-  { title: { en: 'Cloud', fr: 'Cloud' }, type: 'badges', items: [{ name: 'Azure' }] },
+  {
+    title: { en: 'Azure', fr: 'Azure' },
+    type: 'badges',
+    // The header badge first, then every sub-category's badges (flat list for the <noscript> fallback)
+    items: [{ name: 'Azure' }, ...azureSubcategories.flatMap((sub) => sub.items)],
+    subcategories: azureSubcategories,
+  },
   {
     title: { en: 'DevOps', fr: 'DevOps' },
     type: 'badges',
     items: [{ name: 'Terraform' }, { name: 'Docker' }, { name: 'CI/CD' }],
+    frame: { colors: { dark: '#F58A3C', light: '#AE4A00' }, icon: 'infinity' },
   },
   {
     title: { en: 'Code', fr: 'Code' },
     type: 'badges',
     items: [{ name: 'C#' }, { name: 'C++' }, { name: 'Python' }],
+    frame: { colors: { dark: '#C27BC0', light: '#68217A' }, icon: 'code' },
   },
   {
     title: { en: 'Backend', fr: 'Backend' },
     type: 'badges',
-    items: [{ name: 'FastAPI' }, { name: 'PostgreSQL' }, { name: 'pgvector' }, { name: 'Service Bus' }],
+    items: [{ name: 'FastAPI' }, { name: 'pgvector' }],
+    frame: { colors: { dark: '#1FBFAE', light: '#04766B' }, icon: 'server' },
   },
   {
     title: { en: 'AI', fr: 'IA' },
     type: 'badges',
-    items: [{ name: 'OpenAI' }, { name: 'Claude' }, { name: 'Azure Foundry' }, { name: 'LLM' }],
+    items: [{ name: 'OpenAI' }, { name: 'Claude' }, { name: 'LLM' }, { name: 'Agents' }],
+    frame: { colors: { dark: '#D97757', light: '#A45133' }, icon: 'bot' },
   },
   {
     title: { en: 'Observability', fr: 'Observabilité' },
     type: 'badges',
-    items: [
-      { name: 'Application Insights' },
-      { name: 'Log Analytics' },
-      { name: 'Grafana' },
-      { name: 'PostHog' },
-    ],
+    items: [{ name: 'PostHog' }],
+    frame: { colors: { dark: '#FFD43B', light: '#8A6D00' }, icon: 'activity' },
   },
   {
     title: { en: 'Workflow', fr: 'Workflow' },
     type: 'badges',
     items: [{ name: 'Git' }, { name: { en: 'Agile Methods', fr: 'Méthodes Agiles' } }],
+    frame: { colors: { dark: '#4ADE80', light: '#107937' }, icon: 'git-branch' },
   },
 ]
 

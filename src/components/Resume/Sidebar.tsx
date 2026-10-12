@@ -7,6 +7,9 @@ import { ContactItem } from './ContactItem'
 import { ReferentItem } from './ReferentItem'
 import { ProfilePhoto } from './ProfilePhoto'
 import { SkillCategory } from './SkillCategory'
+import { BlockFrame } from './BlockFrame'
+import { SectionTag } from './SectionTag'
+import { SkillGroupBlock } from './SkillGroupBlock'
 import { TechBadge } from './TechBadge'
 
 export function Sidebar() {
@@ -59,7 +62,26 @@ export function Sidebar() {
       {/* Skills */}
       <SidebarSection title={resolve(labels.sections.skills)}>
         <div className="space-y-4">
-          {skills.map((category, i) => (
+          {skills.map((category, i) => category.subcategories ? (
+            <SkillGroupBlock
+              key={`${resolve(category.title)}-${i}`}
+              header={typeof category.items[0].name === 'string' ? category.items[0].name : resolve(category.items[0].name)}
+              subcategories={category.subcategories}
+            />
+          ) : category.frame && category.type === 'badges' ? (
+            <BlockFrame
+              key={`${resolve(category.title)}-${i}`}
+              colors={category.frame.colors}
+              header={<SectionTag label={resolve(category.title)} icon={category.frame.icon} colors={category.frame.colors} />}
+            >
+              <div className="flex flex-wrap gap-1.5">
+                {category.items.map((item) => {
+                  const techName = typeof item.name === 'string' ? item.name : Object.values(item.name)[0]
+                  return <TechBadge key={techName} tech={techName} color={item.color} showIcon />
+                })}
+              </div>
+            </BlockFrame>
+          ) : (
             <SkillCategory key={`${resolve(category.title)}-${i}`} title={resolve(category.title)}>
               {category.type === 'badges' && (
                 <div className="flex flex-wrap gap-1.5">
