@@ -10,7 +10,7 @@ interface SectionTagProps {
 export function SectionTag({ label, icon, colors }: SectionTagProps) {
   return (
     <span
-      className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium border text-resume-text bg-[color-mix(in_srgb,var(--tag-light)_14%,transparent)] border-[color-mix(in_srgb,var(--tag-light)_45%,transparent)] dark:bg-[color-mix(in_srgb,var(--tag-dark)_14%,transparent)] dark:border-[color-mix(in_srgb,var(--tag-dark)_45%,transparent)]"
+      className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium border text-[var(--tag-light)] dark:text-[var(--tag-dark)] bg-[color-mix(in_srgb,var(--tag-light)_14%,transparent)] border-[color-mix(in_srgb,var(--tag-light)_45%,transparent)] dark:bg-[color-mix(in_srgb,var(--tag-dark)_14%,transparent)] dark:border-[color-mix(in_srgb,var(--tag-dark)_45%,transparent)]"
       style={{ '--tag-light': colors.light, '--tag-dark': colors.dark } as React.CSSProperties}
     >
       <svg

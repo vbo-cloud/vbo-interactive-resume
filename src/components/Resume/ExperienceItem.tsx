@@ -67,20 +67,26 @@ export function ExperienceItem({
               </div>
               <span className="text-xs text-resume-text-secondary flex-shrink-0 whitespace-nowrap">{year}</span>
             </div>
-            {url && (
-              <a
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block text-xs text-resume-link hover:underline mt-0.5 break-all"
-              >
-                {url}
-              </a>
-            )}
-            <p className="text-resume-text mt-1 text-[0.8rem]">{description}</p>
+            {/* The link (when there is one) closes the summary sentence, which ends with a colon */}
+            <p className="text-resume-text mt-1 text-[0.8rem]">
+              {description}
+              {url && (
+                <>
+                  {' '}
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-resume-link hover:underline"
+                  >
+                    {url}
+                  </a>
+                </>
+              )}
+            </p>
 
             {details && (
-              <div className="mt-2">
+              <div className={details.taskGroups ? "mt-2" : "mt-1.5"}>
                 <ExperienceDetailsContent tasks={details.tasks} taskGroups={details.taskGroups} training={details.training} labels={labels} />
               </div>
             )}

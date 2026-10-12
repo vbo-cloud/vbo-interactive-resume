@@ -27,8 +27,8 @@ export const pdfFeaturedProject: NonNullable<ResumeConfig['featuredProject']> = 
   period: { en: '09/2025 - Present', fr: '09/2025 – Aujourd\'hui' },
   url: 'https://jobfinder.vincentboutin.dev',
   description: {
-    en: 'Job Finder automates job offer sourcing and profile matching.',
-    fr: "Job Finder automatise la veille d'offres d'emploi et la mise en correspondance avec un profil.",
+    en: 'Job Finder automates job offer sourcing and profile matching:',
+    fr: "Job Finder automatise la veille d'offres d'emploi et le matching avec un profil :",
   },
   techs: [],
   taskGroups: [
@@ -288,7 +288,7 @@ export const pdfSkills: SkillCategory[] = [
     title: { en: 'DevOps', fr: 'DevOps' },
     type: 'badges',
     items: [{ name: 'Terraform' }, { name: 'Docker' }, { name: 'CI/CD' }],
-    frame: { colors: { dark: '#F58A3C', light: '#AE4A00' }, icon: 'infinity' },
+    frame: { colors: { dark: '#F58A3C', light: '#9A4000' }, icon: 'infinity' },
   },
   {
     title: { en: 'Code', fr: 'Code' },
@@ -300,7 +300,7 @@ export const pdfSkills: SkillCategory[] = [
     title: { en: 'Backend', fr: 'Backend' },
     type: 'badges',
     items: [{ name: 'FastAPI' }, { name: 'pgvector' }, { name: 'Alembic' }],
-    frame: { colors: { dark: '#1FBFAE', light: '#04766B' }, icon: 'server' },
+    frame: { colors: { dark: '#1FBFAE', light: '#046358' }, icon: 'server' },
   },
   {
     title: { en: 'AI', fr: 'IA' },
@@ -312,7 +312,7 @@ export const pdfSkills: SkillCategory[] = [
     title: { en: 'Observability', fr: 'Observabilité' },
     type: 'badges',
     items: [{ name: 'PostHog' }],
-    frame: { colors: { dark: '#FFD43B', light: '#8A6D00' }, icon: 'activity' },
+    frame: { colors: { dark: '#FFD43B', light: '#6B5200' }, icon: 'activity' },
   },
   {
     title: { en: 'Workflow', fr: 'Workflow' },

@@ -224,7 +224,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
         const frameColor = cat.frame.colors[mode]
         const names = cat.items.map((item) => (typeof item.name === 'string' ? item.name : resolve(item.name)))
         sidebar.push(`<div style="border-radius: 8px; padding: 1.35rem 0.6rem 0.6rem; background: ${frameColor}1A; border: 1px solid ${frameColor}59; position: relative; margin-top: 0.75rem;">`)
-        sidebar.push(`<div style="position: absolute; top: -0.75rem; left: 0.6rem; border-radius: 4px; background: ${colors.sidebarFrom};"><span style="display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.22rem 0.5rem; border-radius: 4px; font-size: 0.72rem; font-weight: 500; line-height: 1.2; background: ${frameColor}24; color: ${colors.text}; border: 1px solid ${frameColor}73;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="${frameColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">${SECTION_ICONS[cat.frame.icon]}</svg>${escapeHtml(resolve(cat.title))}</span></div>`)
+        sidebar.push(`<div style="position: absolute; top: -0.75rem; left: 0.6rem; border-radius: 4px; background: ${colors.sidebarFrom};"><span style="display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.22rem 0.5rem; border-radius: 4px; font-size: 0.72rem; font-weight: 500; line-height: 1.2; background: ${frameColor}24; color: ${frameColor}; border: 1px solid ${frameColor}73;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="${frameColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">${SECTION_ICONS[cat.frame.icon]}</svg>${escapeHtml(resolve(cat.title))}</span></div>`)
         sidebar.push(renderBadges(names, lang, mode, '0.3rem', '0', true, undefined, colors.sidebarFrom))
         sidebar.push(`</div>`)
         continue
@@ -318,11 +318,10 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
       main.push(`</div>`)
       main.push(`<span style="flex-shrink: 0; white-space: nowrap; font-size: 0.75rem; font-weight: 400; color: ${colors.textSecondary}cc;">${escapeHtml(resolve(fp.period))}</span>`)
       main.push(`</div>`)
-      if (fp.url) {
-        main.push(`<a href="${escapeHtml(fp.url)}" style="display: inline-block; margin-top: 0.2rem; font-size: 0.75rem; color: ${colors.primaryLight}; text-decoration: none;">${escapeHtml(fp.url)}</a>`)
-      }
-      if (fp.description) {
-        main.push(`<p style="margin: 0.55rem 0 0 0; font-size: 0.8rem; color: ${colors.text};">${escapeHtml(resolve(fp.description))}</p>`)
+      // The link closes the summary sentence (which ends with a colon), in the site's link blue
+      if (fp.description || fp.url) {
+        const link = fp.url ? ` <a href="${escapeHtml(fp.url)}" style="color: ${mode === 'dark' ? '#60a5fa' : '#2563eb'}; text-decoration: none;">${escapeHtml(fp.url)}</a>` : ''
+        main.push(`<p style="margin: 0.55rem 0 0 0; font-size: 0.8rem; color: ${colors.text};">${fp.description ? escapeHtml(resolve(fp.description)) : ''}${link}</p>`)
       }
       for (const group of fp.taskGroups) {
         main.push(`<div style="margin-top: 0.55rem;">`)
@@ -384,7 +383,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
       if (exp.details?.tasks) {
         const tasks = exp.details.tasks[lang] ?? Object.values(exp.details.tasks)[0]
         if (tasks && tasks.length > 0) {
-          main.push(`<div style="margin-top: 0.55rem;">`)
+          main.push(`<div style="margin-top: 0.4rem;">`)
           main.push(`<ul style="margin: 0; padding: 0; list-style: none;">`)
           for (const task of tasks) {
             main.push(`<li style="display: flex; align-items: baseline; gap: 0.4rem; font-size: 0.78rem; color: ${colors.textSecondary}; margin-bottom: 0.2rem;"><span style="color: ${colors.primary};">&bull;</span><span>${escapeHtml(task)}</span></li>`)
