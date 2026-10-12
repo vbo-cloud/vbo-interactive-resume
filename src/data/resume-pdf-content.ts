@@ -1,5 +1,5 @@
 import { registerTechBadgeColors } from './tech-registry'
-import type { ContactItem, Education, Experience, Hobby, Referent, ResumeConfig, SkillCategory, SkillSubcategory } from './types'
+import type { ContactItem, Education, Experience, ResumeConfig, SkillCategory, SkillSubcategory } from './types'
 
 /**
  * Canonical resume content. resume-config.ts imports most of these exports directly
@@ -11,13 +11,9 @@ import type { ContactItem, Education, Experience, Hobby, Referent, ResumeConfig,
  * that, PDF-only.
  */
 
-/** Headline + pitch shown under the name. No numbers/skills beyond what's elsewhere in this file. */
+/** Headline shown under the name. */
 export const pdfPersonal = {
   title: { en: 'DevOps / Cloud Engineer Azure — AZ-104 certified', fr: 'DevOps / Cloud Engineer Azure — certifié AZ-104' },
-  subtitle: {
-    en: 'Cloud / DevOps Engineer, AZ-104 certified, coming from a C# development background. I designed and single-handedly operate a production Azure platform, from Terraform infrastructure to monitoring. Strong interest in AI. Looking for a Cloud / DevOps role in Lyon.',
-    fr: "Ingénieur Cloud / DevOps certifié AZ-104, issu du développement C#. J'ai conçu une plateforme Azure que j'exploite seul en production, de l'infrastructure Terraform jusqu'au monitoring. Forte appétence pour l'IA. À la recherche d'un poste Cloud / DevOps à Lyon.",
-  },
 }
 
 /**
@@ -339,46 +335,24 @@ export const pdfSkills: SkillCategory[] = [
   },
 ]
 
-/** Same hobbies as the live site, plus a PDF-only "Video games" entry. */
-export const pdfHobbies: Hobby[] = [
-  {
-    title: { en: 'Sports', fr: 'Sport' },
-    details: [
-      { en: 'Strength Training', fr: 'Musculation' },
-      { en: 'Climbing (Bouldering)', fr: 'Escalade (Bloc)' },
-    ],
-  },
-  {
-    title: { en: 'Music', fr: 'Musique' },
-    details: [
-      { en: 'Mixing', fr: 'Mix' },
-      { en: 'Organizing events for 50 people or more', fr: "Organisation d'évènements pour 50 personnes et plus" },
-    ],
-  },
-  {
-    title: { en: 'Video games', fr: 'Jeux vidéo' },
-    details: [
-      { en: 'Automation', fr: 'Automatisation' },
-      { en: 'Indie games', fr: 'Indépendants' },
-      { en: 'Competitive', fr: 'Compétitifs' },
-    ],
-  },
-]
-
 /** PDF-only "Langues" sidebar section — no equivalent on the live site. */
 export const pdfLanguages: NonNullable<ResumeConfig['spokenLanguages']> = [
   { name: { en: 'French', fr: 'Français' }, level: { en: 'Native', fr: 'Natif' } },
   { name: { en: 'English', fr: 'Anglais' }, level: { en: 'TOEFL B2', fr: 'TOEFL B2' } },
 ]
 
+const azureCertTitles = (lang: 'en' | 'fr') =>
+  azureSubcategories.filter((sub) => sub.title.en !== 'AI').map((sub) => sub.title[lang])
+
 /** Same education list as the live site, but Master Game Programming's specialty gets an added "Agile Methods" line. */
 export const pdfEducation: Education[] = [
   {
     school: { en: 'Microsoft', fr: 'Microsoft' },
     degree: { en: 'AZ-104 Certification', fr: 'Certification AZ-104' },
+    // "Azure" + the sidebar block's row titles (the AI row isn't part of AZ-104), so the two stay in sync
     specialty: {
-      en: 'Azure, Virtual Machines, Networking, Storage, Identity (Azure AD), RBAC, Monitoring, Security, Backup & Recovery, Governance, Azure CLI / PowerShell, ARM templates, Bicep',
-      fr: 'Azure, Machines Virtuelles, Réseau, Stockage, Identité (Azure AD), RBAC, Supervision, Sécurité, Sauvegarde & Restauration, Gouvernance, Azure CLI / PowerShell, ARM templates, Bicep',
+      en: ['Azure', ...azureCertTitles('en')].join(', '),
+      fr: ['Azure', ...azureCertTitles('fr')].join(', '),
     },
     period: '2026',
   },
@@ -396,15 +370,6 @@ export const pdfEducation: Education[] = [
     period: '2024',
     badge: { en: 'Jury Honors', fr: 'Félicitations du Jury' },
   },
-  {
-    school: { en: 'UPEC, Créteil', fr: 'UPEC, Créteil' },
-    degree: { en: "Bachelor's Degree in Sports Science (STAPS)", fr: 'Licence STAPS' },
-    specialty: {
-      en: 'Pedagogy, Group Coaching, Adaptability to Different Audiences, Active Listening, Motivation & Engagement',
-      fr: 'Pédagogie, Coaching de groupe, Adaptabilité à différents publics, Écoute active, Motivation & Engagement',
-    },
-    period: '2016',
-  },
 ]
 
 /** Same contact list as the live site, but Portfolio leads and spells out its URL. */
@@ -414,24 +379,4 @@ export const pdfContact: ContactItem[] = [
   { type: 'email', label: 'contact@vincentboutin.dev' },
   { type: 'phone', label: '+33 6 46 77 05 54' },
   { type: 'location', label: 'Lyon' },
-]
-
-/** Same referents as the live site, but Cédric's title gets a "CTO -" prefix. */
-export const pdfReferents: Referent[] = [
-  {
-    name: 'Samy-Adrien FOUDIL - EDF',
-    href: 'https://www.linkedin.com/in/sfoudil/',
-    title: {
-      en: 'MLOps AWS | Fullstack Python Developer',
-      fr: 'MLOps AWS | Développeur Python Fullstack',
-    },
-  },
-  {
-    name: 'Cédric BEMATOL - LS GROUP',
-    href: 'https://www.linkedin.com/in/cedric-bematol/',
-    title: {
-      en: 'CTO - Senior Software Engineer',
-      fr: 'CTO - Senior Software Engineer',
-    },
-  },
 ]

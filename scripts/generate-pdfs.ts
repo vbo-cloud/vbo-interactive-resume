@@ -5,16 +5,16 @@ import { PDFDocument, PDFName, PDFNull, PDFNumber } from 'pdf-lib'
 import { resumeConfig } from '../src/data/resume-config'
 import { renderResumePdfDocument } from './render-resume-pdf'
 import { resumeVariants, type ResumeVariant } from '../src/data/resume-variants'
-import { pdfPersonal, pdfFeaturedProject, pdfExperiences, pdfSkills, pdfHobbies, pdfLanguages, pdfEducation, pdfContact, pdfReferents } from '../src/data/resume-pdf-content'
+import { pdfPersonal, pdfFeaturedProject, pdfExperiences, pdfSkills, pdfLanguages, pdfEducation, pdfContact } from '../src/data/resume-pdf-content'
 import type { ResumeConfig } from '../src/data/types'
 
 /** Base name of every generated PDF, also used as the PDF document title. */
 const FILE_PREFIX = 'CV_VincentBOUTIN'
 
 /**
- * Generates one downloadable PDF per language from resume-config, so referents, theme,
+ * Generates one downloadable PDF per language from resume-config, so the theme,
  * etc. shown on the site and in the PDF never drift apart. Contact, experiences,
- * education, skills, hobbies and spoken languages are layered with the PDF-only
+ * education, skills and spoken languages are layered with the PDF-only
  * versions from resume-pdf-content.ts (see pdfConfig below) — that content difference
  * must never leak back into what the live site shows.
  *
@@ -33,14 +33,12 @@ async function main() {
   // site or the noscript fallback, so this never affects what's deployed there.
   const pdfConfig: ResumeConfig = {
     ...resumeConfig,
-    personal: { ...resumeConfig.personal, title: pdfPersonal.title, subtitle: pdfPersonal.subtitle },
+    personal: { ...resumeConfig.personal, title: pdfPersonal.title },
     contact: pdfContact,
-    referents: pdfReferents,
     featuredProject: pdfFeaturedProject,
     experiences: pdfExperiences,
     education: pdfEducation,
     skills: pdfSkills,
-    hobbies: pdfHobbies,
     spokenLanguages: pdfLanguages,
   }
 
@@ -120,7 +118,7 @@ function reorder<T>(items: T[], keyOf: (item: T) => string, order?: string[]): T
 function applyVariant(config: ResumeConfig, variant: ResumeVariant): ResumeConfig {
   return {
     ...config,
-    personal: { ...config.personal, title: variant.title, subtitle: variant.subtitle ?? config.personal.subtitle },
+    personal: { ...config.personal, title: variant.title },
     featuredProject: config.featuredProject && {
       ...config.featuredProject,
       role: variant.featuredProjectRole ?? config.featuredProject.role,
