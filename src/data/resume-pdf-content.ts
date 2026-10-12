@@ -37,22 +37,22 @@ export const pdfFeaturedProject: NonNullable<ResumeConfig['featuredProject']> = 
       tasks: [
         {
           text: {
-            en: 'Infrastructure as Code: idempotent PowerShell bootstrap (service principals, RBAC, Terraform state), Azure landing zone, reusable Terraform modules',
-            fr: 'Infrastructure as Code : bootstrap PowerShell idempotent (service principals, RBAC, état Terraform), landing zone Azure, modules Terraform réutilisables',
+            en: 'Infrastructure as Code: idempotent PowerShell bootstrap, Azure landing zone, reusable Terraform modules',
+            fr: 'Infrastructure as Code : bootstrap PowerShell idempotent, landing zone Azure, modules Terraform réutilisables',
           },
           techs: ['Azure', 'PowerShell', 'Azure CLI', 'Terraform'],
         },
         {
           text: {
-            en: 'CI/CD with GitHub Actions: plan and tests per PR, Docker build/push and apply on merge',
-            fr: 'CI/CD GitHub Actions : plan et tests par PR, build/push Docker et apply au merge',
+            en: 'CI/CD with GitHub Actions: plan and unit tests per PR, Docker build/push and apply on merge',
+            fr: 'CI/CD GitHub Actions : plan et tests unitaires par PR, build/push Docker et apply au merge',
           },
           techs: ['GitHub', 'CI/CD', 'Docker', 'Terraform'],
         },
         {
           text: {
-            en: 'Data: PostgreSQL Flexible Server and Blob Storage on a private network, pgvector similarity search, versioned schema migrations with Alembic',
-            fr: 'Données : PostgreSQL Flexible Server et Blob Storage en accès privé, recherche vectorielle pgvector, migrations de schéma versionnées avec Alembic',
+            en: 'Data: PostgreSQL Flexible Server and Blob Storage, pgvector similarity search, schema migrations with Alembic',
+            fr: 'Données : PostgreSQL Flexible Server et Blob Storage, recherche vectorielle pgvector, migrations de schéma avec Alembic',
           },
           techs: ['PostgreSQL', 'Blob Storage', 'pgvector', 'Alembic'],
         },
@@ -189,13 +189,13 @@ export const pdfExperiences: Experience[] = [
     details: {
       tasks: {
         en: [
-          'Built a 250+ item test checklist validated across 4 VR headsets before each release',
+          'Created a 250+ item test checklist to be validated across 4 VR headsets before each release',
           'Prototyped a Behavior Tree (Unity UI Builder) to simplify VR training creation',
           'Built a tool to play 360° training videos at up to 5x speed, moving QA out of the headset',
           'Delivered custom features and VR experiences on client request (Wimbledon, Andra)',
         ],
         fr: [
-          "Cahier de recette de plus de 250 items, validé sur 4 casques VR avant chaque mise en production",
+          "Création d'un cahier de recette de plus de 250 items, à valider sur 4 casques VR avant chaque mise en production",
           "Prototypage d'un Behavior Tree (Unity UI Builder) pour simplifier la création de formations VR",
           "Outil de lecture des vidéos de formation à 360° jusqu'à 5x la vitesse normale, QA déplacée hors casque",
           "Livraison de fonctionnalités et d'expériences VR sur mesure, à la demande des clients (Wimbledon, Andra)",
