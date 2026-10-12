@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { useTranslation } from '@/lib/i18n'
 import { resumeConfig } from '@/data/resume-config'
 import { SidebarSection } from './SidebarSection'
@@ -132,14 +133,18 @@ export function Sidebar() {
       {/* Spoken languages */}
       {spokenLanguages && spokenLanguages.length > 0 && labels.sections.languages && (
         <SidebarSection title={resolve(labels.sections.languages)}>
-          <div className="space-y-1">
+          {/* All languages on one line, separated by a bullet */}
+          <p className="text-sm flex justify-between gap-2">
             {spokenLanguages.map((item, i) => (
-              <p key={`${resolve(item.name)}-${i}`} className="text-sm">
-                <span className="font-medium text-resume-text">{resolve(item.name)}</span>
-                <span className="text-resume-text-secondary"> : {resolve(item.level)}</span>
-              </p>
+              <Fragment key={`${resolve(item.name)}-${i}`}>
+                {i > 0 && <span className="text-resume-primary">&#8226;</span>}
+                <span className="whitespace-nowrap">
+                  <span className="font-medium text-resume-text">{resolve(item.name)}</span>
+                  <span className="text-resume-text-secondary"> : {resolve(item.level)}</span>
+                </span>
+              </Fragment>
             ))}
-          </div>
+          </p>
         </SidebarSection>
       )}
 

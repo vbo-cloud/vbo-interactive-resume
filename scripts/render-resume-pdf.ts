@@ -262,11 +262,11 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
   if (spokenLanguages && spokenLanguages.length > 0) {
     sidebar.push(`<section style="margin-bottom: 1.2rem;">`)
     sidebar.push(sidebarSectionTitle(lang === 'fr' ? 'LANGUES' : 'LANGUAGES', colors))
-    sidebar.push(`<div style="display: flex; flex-direction: column; gap: 0.2rem;">`)
-    for (const item of spokenLanguages) {
-      sidebar.push(`<p style="margin: 0; font-size: 0.8rem;"><span style="font-weight: 500; color: ${colors.text};">${escapeHtml(resolve(item.name))}</span><span style="color: ${colors.textSecondary};"> : ${escapeHtml(resolve(item.level))}</span></p>`)
-    }
-    sidebar.push(`</div>`)
+    // All languages on one line, separated by a bullet
+    // Each language is wrapped in one span so "name : level" stays together as a single flex item
+    const langParts = spokenLanguages.map((item) => `<span style="white-space: nowrap;"><span style="font-weight: 500; color: ${colors.text};">${escapeHtml(resolve(item.name))}</span><span style="color: ${colors.textSecondary};"> : ${escapeHtml(resolve(item.level))}</span></span>`)
+    // First language flush left, last flush right, bullet in between
+    sidebar.push(`<p style="margin: 0; font-size: 0.8rem; display: flex; justify-content: space-between; gap: 0.5rem;">${langParts.join(`<span style="color: ${colors.primary};">&bull;</span>`)}</p>`)
     sidebar.push(`</section>`)
   }
 

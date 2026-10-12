@@ -197,7 +197,7 @@ const azureSubcategories: SkillSubcategory[] = [
     title: { en: 'Governance', fr: 'Gouvernance' },
     icon: 'shield-check',
     colors: { dark: '#B79CFF', light: '#4B30B0' },
-    items: [{ name: 'Microsoft Entra ID' }, { name: 'RBAC' }, { name: 'Managed Identity' }, { name: 'Azure Policy' }],
+    items: [{ name: 'Microsoft Entra ID' }, { name: 'RBAC' }, { name: 'Tags' }, { name: 'Managed Identity' }, { name: 'Azure Policy' }],
   },
   {
     title: { en: 'FinOps', fr: 'FinOps' },
@@ -220,6 +220,7 @@ const azureSubcategories: SkillSubcategory[] = [
       { name: 'App Service' },
       { name: 'Azure Functions' },
       { name: 'Container Apps' },
+      { name: 'ACI' },
       { name: 'ACR' },
       { name: 'AKS' },
     ],
