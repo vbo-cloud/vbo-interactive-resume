@@ -88,6 +88,8 @@ export interface Experience {
 export interface FeaturedTaskGroup {
   title: LocalizedString
   tasks: { text: LocalizedString; techs?: string[] }[]
+  /** Renders the tasks as one running paragraph (labels in bold, separated by " · ") instead of a bullet list, to save space. */
+  paragraph?: boolean
 }
 
 // ===== PROJECTS =====

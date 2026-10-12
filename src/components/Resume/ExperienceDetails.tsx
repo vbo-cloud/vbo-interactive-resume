@@ -4,6 +4,7 @@ import { TechBadge } from './TechBadge'
 /** A titled group of task lines, each optionally followed by the badges of the techs involved. */
 export interface ResolvedTaskGroup {
   title: string
+  paragraph?: boolean
   tasks: { text: string; techs?: string[] }[]
 }
 
@@ -24,6 +25,20 @@ export function ExperienceDetailsContent({ tasks, taskGroups, training, labels, 
       {taskGroups?.map((group) => (
         <div key={group.title}>
           <p className={`${featured ? 'text-[0.8rem]' : 'text-[0.78rem]'} font-semibold text-resume-text mb-1.5`}>{group.title}</p>
+          {group.paragraph ? (
+            <p className={`${featured ? 'text-[0.8rem]' : 'text-[0.78rem]'} text-resume-text-secondary`}>
+              {group.tasks.map((task, i) => {
+                const { label, rest } = splitTaskLabel(task.text)
+                return (
+                  <span key={i}>
+                    {i > 0 && ' · '}
+                    {label && <strong className="font-semibold text-resume-text">{label} </strong>}
+                    {rest}
+                  </span>
+                )
+              })}
+            </p>
+          ) : (
           <ul className={`${featured ? 'text-[0.8rem]' : 'text-[0.78rem]'} text-resume-text-secondary space-y-1.5`}>
             {group.tasks.map((task, i) => {
               const { label, rest } = splitTaskLabel(task.text)
@@ -47,6 +62,7 @@ export function ExperienceDetailsContent({ tasks, taskGroups, training, labels, 
               )
             })}
           </ul>
+          )}
         </div>
       ))}
       {tasks && tasks.length > 0 && (

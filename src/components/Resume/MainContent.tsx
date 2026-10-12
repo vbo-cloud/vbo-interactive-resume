@@ -96,6 +96,7 @@ export function MainContent() {
               details={{
                 taskGroups: featuredProject.taskGroups.map((group) => ({
                   title: resolve(group.title),
+                  paragraph: group.paragraph,
                   tasks: group.tasks.map((task) => ({ text: resolve(task.text), techs: task.techs })),
                 })),
               }}

@@ -65,17 +65,17 @@ export const pdfFeaturedProject: NonNullable<ResumeConfig['featuredProject']> = 
         },
         {
           text: {
-            en: 'Azure Functions: serverless function that emails the contact-form messages and user feedback, with anti-spam and per-IP rate limiting',
-            fr: "Azure Functions : fonction serverless qui envoie par e-mail les messages du formulaire de contact et les retours utilisateurs, avec anti-spam et limitation de débit par IP",
+            en: 'Azure Functions: serverless function that emails the contact-form messages and user feedback',
+            fr: "Azure Functions : fonction serverless qui envoie par e-mail les messages du formulaire de contact et les retours utilisateurs",
           },
           techs: ['Azure Functions'],
         },
         {
           text: {
-            en: 'Security: private VNet/DNS, Key Vault, least-privilege RBAC, managed identity',
-            fr: 'Sécurité : VNet/DNS privés, Key Vault, RBAC moindre privilège, identité managée',
+            en: 'Security: private VNet/DNS, Key Vault, RBAC, managed identity, user authentication with Entra External ID',
+            fr: 'Sécurité : VNet/DNS privés, Key Vault, RBAC, identité managée, authentification des utilisateurs avec Entra External ID',
           },
-          techs: ['Virtual Network', 'Private DNS', 'Key Vault', 'RBAC', 'Managed Identity'],
+          techs: ['Virtual Network', 'Private DNS', 'Key Vault', 'RBAC', 'Managed Identity', 'Microsoft Entra ID'],
         },
         {
           text: {
@@ -88,23 +88,12 @@ export const pdfFeaturedProject: NonNullable<ResumeConfig['featuredProject']> = 
     },
     {
       title: { en: 'AI-assisted development workflow', fr: 'Workflow de développement assisté par IA' },
+      paragraph: true,
       tasks: [
         {
           text: {
-            en: 'Parallel agents: several AI agents working side by side on the codebase',
-            fr: 'Agents en parallèle : plusieurs agents IA travaillant côte à côte sur le code',
-          },
-        },
-        {
-          text: {
-            en: 'Hooks and skills: enforcing the project conventions',
-            fr: 'Hooks et skills : respect des conventions du projet',
-          },
-        },
-        {
-          text: {
-            en: 'Subagents: code review, documentation and code exploration',
-            fr: "Subagents : revue de code, documentation et exploration du code",
+            en: 'Set up AI agents working in parallel on the codebase, with subagents for review, documentation and project exploration, control hooks, and skills embedding the Azure and Terraform, Python, SQL, front-end and Git conventions.',
+            fr: "Mise en place d'agents IA travaillant en parallèle sur le code, avec des subagents pour la revue, la documentation et l'exploration du projet, des hooks de contrôle, et des skills qui intègrent les conventions Azure et Terraform, Python, SQL, front-end et Git.",
           },
         },
       ],

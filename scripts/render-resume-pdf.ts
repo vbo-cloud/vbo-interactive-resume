@@ -351,6 +351,14 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
       }
       for (const group of fp.taskGroups) {
         main.push(`<p style="margin: 0.7rem 0 0.3rem 0; font-size: 0.78rem; font-weight: 600; color: ${colors.text};">${escapeHtml(resolve(group.title))}</p>`)
+        if (group.paragraph) {
+          const parts = group.tasks.map((task) => {
+            const { label, rest } = splitTaskLabel(resolve(task.text))
+            return (label ? `<strong style="font-weight: 600; color: ${colors.text};">${escapeHtml(label)}</strong> ` : '') + escapeHtml(rest)
+          })
+          main.push(`<p style="margin: 0 0 0.3rem 0; font-size: 0.78rem; color: ${colors.textSecondary};">${parts.join(' &middot; ')}</p>`)
+          continue
+        }
         main.push(`<ul style="margin: 0; padding: 0; list-style: none;">`)
         for (const task of group.tasks) {
           main.push(`<li style="display: flex; align-items: baseline; gap: 0.4rem; font-size: 0.78rem; color: ${colors.textSecondary}; margin-bottom: 0.3rem;"><span style="color: ${colors.primary};">&bull;</span><div><span>${(() => { const { label, rest } = splitTaskLabel(resolve(task.text)); return (label ? `<strong style="font-weight: 600; color: ${colors.text};">${escapeHtml(label)}</strong> ` : '') + escapeHtml(rest) })()}</span>`)
