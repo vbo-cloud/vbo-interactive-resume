@@ -3,7 +3,7 @@ import { TechBadge } from './TechBadge'
 
 /** A titled group of task lines, each optionally followed by the badges of the techs involved. */
 export interface ResolvedTaskGroup {
-  title: string
+  title?: string
   paragraph?: boolean
   tasks: { text: string; techs?: string[] }[]
 }
@@ -16,17 +16,16 @@ interface ExperienceDetailsContentProps {
     mainTasks: string
     training?: string
   }
-  featured?: boolean
 }
 
-export function ExperienceDetailsContent({ tasks, taskGroups, training, labels, featured = false }: ExperienceDetailsContentProps) {
+export function ExperienceDetailsContent({ tasks, taskGroups, training, labels }: ExperienceDetailsContentProps) {
   return (
     <div className="space-y-3">
-      {taskGroups?.map((group) => (
-        <div key={group.title}>
-          <p className={`${featured ? 'text-[0.8rem]' : 'text-[0.78rem]'} font-semibold text-resume-text mb-1.5`}>{group.title}</p>
+      {taskGroups?.map((group, groupIndex) => (
+        <div key={groupIndex}>
+          {group.title && <p className="text-[0.78rem] font-semibold text-resume-text mb-1.5">{group.title}</p>}
           {group.paragraph ? (
-            <p className={`${featured ? 'text-[0.8rem]' : 'text-[0.78rem]'} text-resume-text-secondary`}>
+            <p className="text-[0.78rem] text-resume-text-secondary">
               {group.tasks.map((task, i) => {
                 const { label, rest } = splitTaskLabel(task.text)
                 return (
@@ -39,7 +38,7 @@ export function ExperienceDetailsContent({ tasks, taskGroups, training, labels, 
               })}
             </p>
           ) : (
-          <ul className={`${featured ? 'text-[0.8rem]' : 'text-[0.78rem]'} text-resume-text-secondary space-y-1.5`}>
+          <ul className="text-[0.78rem] text-resume-text-secondary space-y-1.5">
             {group.tasks.map((task, i) => {
               const { label, rest } = splitTaskLabel(task.text)
               return (
@@ -67,7 +66,7 @@ export function ExperienceDetailsContent({ tasks, taskGroups, training, labels, 
       ))}
       {tasks && tasks.length > 0 && (
         <div>
-          <ul className={`${featured ? 'text-[0.8rem]' : 'text-[0.78rem]'} text-resume-text-secondary space-y-1`}>
+          <ul className="text-[0.78rem] text-resume-text-secondary space-y-1">
             {tasks.map((task, i) => (
               <li key={i} className="flex items-start gap-2">
                 <span className="text-resume-primary">&#8226;</span>

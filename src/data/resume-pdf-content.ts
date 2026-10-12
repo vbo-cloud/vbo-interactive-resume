@@ -33,7 +33,6 @@ export const pdfFeaturedProject: NonNullable<ResumeConfig['featuredProject']> = 
   techs: [],
   taskGroups: [
     {
-      title: { en: 'Built on Azure', fr: 'Mis en place sur Azure' },
       tasks: [
         {
           text: {
@@ -87,13 +86,12 @@ export const pdfFeaturedProject: NonNullable<ResumeConfig['featuredProject']> = 
       ],
     },
     {
-      title: { en: 'AI-assisted development workflow', fr: 'Workflow de développement assisté par IA' },
       paragraph: true,
       tasks: [
         {
           text: {
-            en: 'Set up AI agents working in parallel on the codebase, with subagents for review, documentation and project exploration, control hooks, and skills embedding the Azure and Terraform, Python, SQL, front-end and Git conventions.',
-            fr: "Mise en place d'agents IA travaillant en parallèle sur le code, avec des subagents pour la revue, la documentation et l'exploration du projet, des hooks de contrôle, et des skills qui intègrent les conventions Azure et Terraform, Python, SQL, front-end et Git.",
+            en: 'Set up an AI-assisted development workflow: AI agents working in parallel on the codebase, with subagents for review, documentation and project exploration, control hooks, and skills embedding the Azure, Terraform, Python, SQL, Next.js and Git conventions.',
+            fr: "Mise en place d'un workflow de développement assisté par IA : Agents travaillant en parallèle sur le code, avec des subagents pour la revue, la documentation et l'exploration du projet, des hooks de contrôle, et des skills qui intègrent les conventions Azure, Terraform, Python, SQL, Next.js et Git.",
           },
         },
       ],
@@ -330,14 +328,23 @@ export const pdfLanguages: NonNullable<ResumeConfig['spokenLanguages']> = [
   { name: { en: 'English', fr: 'Anglais' }, level: { en: 'TOEFL B2', fr: 'TOEFL B2' } },
 ]
 
+// "Data & messaging" is shortened to "Data" here: messaging (Service Bus) isn't part of AZ-104.
+const certTitleOverrides: Record<string, { en: string; fr: string }> = {
+  'Data & messaging': { en: 'Data', fr: 'Données' },
+}
 const azureCertTitles = (lang: 'en' | 'fr') =>
-  azureSubcategories.filter((sub) => sub.title.en !== 'AI').map((sub) => sub.title[lang])
+  azureSubcategories
+    .filter((sub) => sub.title.en !== 'AI')
+    .map((sub) => certTitleOverrides[sub.title.en as string]?.[lang] ?? sub.title[lang])
 
 /** Same education list as the live site, but Master Game Programming's specialty gets an added "Agile Methods" line. */
 export const pdfEducation: Education[] = [
   {
     school: { en: 'Microsoft', fr: 'Microsoft' },
-    degree: { en: 'AZ-104 Certification', fr: 'Certification AZ-104' },
+    degree: {
+      en: 'AZ-104 Certification (Azure Administrator Associate)',
+      fr: 'Certification AZ-104 (Azure Administrator Associate)',
+    },
     // "Azure" + the sidebar block's row titles (the AI row isn't part of AZ-104), so the two stay in sync
     specialty: {
       en: ['Azure', ...azureCertTitles('en')].join(', '),

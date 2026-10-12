@@ -392,7 +392,9 @@ export function renderResumeHtml(
       lines.push(`${indent}    ${renderTechBadges(fp.techs, isPdf, true, lang)}`)
     }
     for (const group of fp.taskGroups) {
-      lines.push(`${indent}    <h4 style="margin: 0.5rem 0 0 0; font-size: 0.95rem; color: ${colors.text};">${escapeHtml(resolve(group.title))}</h4>`)
+      if (group.title) {
+        lines.push(`${indent}    <h4 style="margin: 0.5rem 0 0 0; font-size: 0.95rem; color: ${colors.text};">${escapeHtml(resolve(group.title))}</h4>`)
+      }
       lines.push(`${indent}    <ul style="margin: 0.3rem 0 0 1rem; padding: 0;">`)
       for (const task of group.tasks) {
         const techs = task.techs && task.techs.length > 0 ? ` <span style="color: ${colors.textSecondary};">(${escapeHtml(task.techs.join(', '))})</span>` : ''

@@ -36,18 +36,6 @@ function iconSlot(name: string | null, color: string): string {
   return `<span style="display: inline-block; width: 14px; height: 14px; margin-right: 0.5rem; vertical-align: -2px; color: ${color}; flex-shrink: 0;">${svg ?? ''}</span>`
 }
 
-function getImageDataUri(fileName: string): string | null {
-  try {
-    const imgPath = path.resolve(process.cwd(), 'public', 'images', fileName)
-    const buffer = fs.readFileSync(imgPath)
-    const ext = path.extname(fileName).slice(1).toLowerCase()
-    const mime = ext === 'jpg' ? 'jpeg' : ext
-    return `data:image/${mime};base64,${buffer.toString('base64')}`
-  } catch {
-    return null
-  }
-}
-
 /**
  * Self-hosted, embedded as base64 so headless Chrome never depends on a network
  * fetch or a relative path resolving against the printed HTML's base URL. Not
@@ -169,21 +157,8 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
 
   const s: string[] = []
 
-  // ----- Sidebar (Sidebar.tsx: photo, contact, referents, skills, values, hobbies) -----
+  // ----- Sidebar (Sidebar.tsx: contact, referents, skills, values, hobbies) -----
   const sidebar: string[] = []
-
-  const photoDataUri = getImageDataUri(personal.photo?.split('/').pop() ?? 'photo.jpg')
-  sidebar.push(`<div style="display: flex; justify-content: center; margin-bottom: 1.1rem;">`)
-  if (photoDataUri) {
-    sidebar.push(
-      `<div style="width: 96px; height: 96px; border-radius: 50%; overflow: hidden; border: 3px solid ${colors.bg}66; box-shadow: 0 6px 16px rgba(0,0,0,0.4);"><img src="${photoDataUri}" alt="${escapeHtml(personal.name)}" style="width: 100%; height: 100%; object-fit: cover;" /></div>`,
-    )
-  } else {
-    sidebar.push(
-      `<div style="width: 96px; height: 96px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, ${colors.primary}, ${colors.primaryLight}); border: 3px solid ${colors.bg}66; box-shadow: 0 6px 16px rgba(0,0,0,0.4); font-size: 2.2rem;">${personal.photoBackEmoji ?? '👨‍💻'}</div>`,
-    )
-  }
-  sidebar.push(`</div>`)
 
   if (personal.subtitle) {
     sidebar.push(`<p style="margin: 0 0 1.2rem 0; font-size: 0.76rem; font-style: italic; line-height: 1.5; text-align: justify; color: ${colors.textSecondary};">${escapeHtml(resolve(personal.subtitle))}</p>`)
@@ -332,10 +307,10 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
       main.push(`<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem;">`)
       main.push(`<div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; min-width: 0;">`)
       if (fp.role) {
-        main.push(`<h3 style="margin: 0; font-size: 0.92rem; font-weight: 600; color: ${colors.text}; text-transform: uppercase;">${escapeHtml(resolve(fp.role))}</h3>`)
-        main.push(`<span style="font-size: 0.92rem; color: ${colors.textSecondary};">- ${escapeHtml(resolve(fp.title))}</span>`)
+        main.push(`<h3 style="margin: 0; font-size: 0.86rem; font-weight: 600; color: ${colors.text}; text-transform: uppercase;">${escapeHtml(resolve(fp.role))}</h3>`)
+        main.push(`<span style="font-size: 0.86rem; color: ${colors.textSecondary};">- ${escapeHtml(resolve(fp.title))}</span>`)
       } else {
-        main.push(`<h3 style="margin: 0; font-size: 0.92rem; font-weight: 600; color: ${colors.text};">${escapeHtml(resolve(fp.title))}</h3>`)
+        main.push(`<h3 style="margin: 0; font-size: 0.86rem; font-weight: 600; color: ${colors.text};">${escapeHtml(resolve(fp.title))}</h3>`)
       }
       if (fp.type) {
         main.push(`<span style="font-size: 0.68rem; font-weight: 600; padding: 0.1rem 0.45rem; border-radius: 4px; background: ${colors.primary}1a; color: ${colors.primary};">${escapeHtml(resolve(fp.type))}</span>`)
@@ -347,16 +322,20 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
         main.push(`<a href="${escapeHtml(fp.url)}" style="display: inline-block; margin-top: 0.2rem; font-size: 0.75rem; color: ${colors.primaryLight}; text-decoration: none;">${escapeHtml(fp.url)}</a>`)
       }
       if (fp.description) {
-        main.push(`<p style="margin: 0.5rem 0 0 0; font-size: 0.82rem; color: ${colors.text};">${escapeHtml(resolve(fp.description))}</p>`)
+        main.push(`<p style="margin: 0.55rem 0 0 0; font-size: 0.8rem; color: ${colors.text};">${escapeHtml(resolve(fp.description))}</p>`)
       }
       for (const group of fp.taskGroups) {
-        main.push(`<p style="margin: 0.7rem 0 0.3rem 0; font-size: 0.78rem; font-weight: 600; color: ${colors.text};">${escapeHtml(resolve(group.title))}</p>`)
+        main.push(`<div style="margin-top: 0.55rem;">`)
+        if (group.title) {
+          main.push(`<p style="margin: 0 0 0.3rem 0; font-size: 0.78rem; font-weight: 600; color: ${colors.text};">${escapeHtml(resolve(group.title))}</p>`)
+        }
         if (group.paragraph) {
           const parts = group.tasks.map((task) => {
             const { label, rest } = splitTaskLabel(resolve(task.text))
             return (label ? `<strong style="font-weight: 600; color: ${colors.text};">${escapeHtml(label)}</strong> ` : '') + escapeHtml(rest)
           })
-          main.push(`<p style="margin: 0 0 0.3rem 0; font-size: 0.78rem; color: ${colors.textSecondary};">${parts.join(' &middot; ')}</p>`)
+          main.push(`<p style="margin: 0; font-size: 0.78rem; color: ${colors.textSecondary};">${parts.join(' &middot; ')}</p>`)
+          main.push(`</div>`)
           continue
         }
         main.push(`<ul style="margin: 0; padding: 0; list-style: none;">`)
@@ -368,6 +347,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
           main.push(`</div></li>`)
         }
         main.push(`</ul>`)
+        main.push(`</div>`)
       }
       if (fp.techs && fp.techs.length > 0) {
         main.push(renderBadges(fp.techs, lang, mode, '0.35rem', '0.55rem', false, undefined, colors.bgCard))
@@ -379,7 +359,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
       if (expIndex > 0 || config.featuredProject) {
         // Slightly narrower and more subtle than the section heading's border —
         // colored with the sidebar's own background instead of the primary accent.
-        main.push(`<div style="height: 1px; width: 94%; margin: 1.1rem auto; background: ${colors.sidebarFrom};"></div>`)
+        main.push(`<div style="height: 1px; width: 94%; margin: 0.85rem auto; background: ${colors.sidebarFrom};"></div>`)
       }
       main.push(`<div>`)
       // Row 1: role (title) - company, then the type badge, date pinned to the right

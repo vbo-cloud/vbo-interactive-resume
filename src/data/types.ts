@@ -86,7 +86,8 @@ export interface Experience {
 
 /** A titled group of task lines; each line can carry the badges of the techs it involved. */
 export interface FeaturedTaskGroup {
-  title: LocalizedString
+  /** Optional heading above the group; omit it when the group's own lines already say what it is. */
+  title?: LocalizedString
   tasks: { text: LocalizedString; techs?: string[] }[]
   /** Renders the tasks as one running paragraph (labels in bold, separated by " · ") instead of a bullet list, to save space. */
   paragraph?: boolean

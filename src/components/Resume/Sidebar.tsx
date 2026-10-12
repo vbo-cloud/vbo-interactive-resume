@@ -1,11 +1,8 @@
 import { useTranslation } from '@/lib/i18n'
 import { resumeConfig } from '@/data/resume-config'
-import { assetUrl } from '@/lib/utils'
-import { detectedAssets } from 'virtual:detected-assets'
 import { SidebarSection } from './SidebarSection'
 import { ContactItem } from './ContactItem'
 import { ReferentItem } from './ReferentItem'
-import { ProfilePhoto } from './ProfilePhoto'
 import { SkillCategory } from './SkillCategory'
 import { BlockFrame } from './BlockFrame'
 import { SectionTag } from './SectionTag'
@@ -24,15 +21,6 @@ export function Sidebar() {
       className="md:w-[29%] bg-gradient-to-b from-resume-sidebar-from to-resume-sidebar-to p-8"
       style={{ '--badge-base': 'var(--color-resume-sidebar-from)' } as React.CSSProperties}
     >
-      {/* Photo / Profile image — priority: config > auto-detected > emoji fallback */}
-      {/* Hidden on mobile: shown next to the name in MainContent instead */}
-      <ProfilePhoto
-        photo={(personal.photo || detectedAssets.photo) ? assetUrl(personal.photo || detectedAssets.photo!) : undefined}
-        name={personal.name}
-        emoji={personal.photoBackEmoji}
-        className="hidden md:flex justify-center mb-[1.1rem]"
-      />
-
       {/* Subtitle — hidden on mobile: shown under the tagline in MainContent instead */}
       {personal.subtitle && (
         <p className="hidden md:block text-xs text-resume-text-secondary italic leading-relaxed text-justify mb-[1.2rem]">

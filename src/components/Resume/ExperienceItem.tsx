@@ -22,8 +22,6 @@ interface ExperienceItemProps {
     training?: string
   }
   isHighlighted?: boolean
-  /** Flagship project: slightly larger text, same as the PDF */
-  featured?: boolean
 }
 
 export function ExperienceItem({
@@ -38,7 +36,6 @@ export function ExperienceItem({
   subItem,
   labels,
   isHighlighted = false,
-  featured = false,
 }: ExperienceItemProps) {
   return (
     <motion.div
@@ -60,8 +57,8 @@ export function ExperienceItem({
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2 flex-wrap">
               <div className="flex items-center gap-2 flex-wrap min-w-0">
-                <h3 className={cn('font-semibold text-resume-text uppercase', featured ? 'text-[0.92rem]' : 'text-[0.86rem]')}>{role}</h3>
-                <span className={cn('text-resume-text-secondary', featured ? 'text-[0.92rem]' : 'text-[0.86rem]')}>- {company}</span>
+                <h3 className="font-semibold text-resume-text uppercase text-[0.86rem]">{role}</h3>
+                <span className="text-resume-text-secondary text-[0.86rem]">- {company}</span>
                 {type && (
                   <span className="text-xs px-2 py-0.5 bg-resume-primary/10 text-resume-primary rounded">
                     {type}
@@ -80,11 +77,11 @@ export function ExperienceItem({
                 {url}
               </a>
             )}
-            <p className={cn('text-resume-text mt-1', featured ? 'text-[0.82rem]' : 'text-[0.8rem]')}>{description}</p>
+            <p className="text-resume-text mt-1 text-[0.8rem]">{description}</p>
 
             {details && (
               <div className="mt-2">
-                <ExperienceDetailsContent tasks={details.tasks} taskGroups={details.taskGroups} training={details.training} labels={labels} featured={featured} />
+                <ExperienceDetailsContent tasks={details.tasks} taskGroups={details.taskGroups} training={details.training} labels={labels} />
               </div>
             )}
 
