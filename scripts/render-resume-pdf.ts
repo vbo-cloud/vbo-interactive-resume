@@ -4,6 +4,7 @@ import type { ResumeConfig } from '../src/data/types'
 import { presets } from '../src/data/presets'
 import { getTechBadgeColor, getTechIcon } from '../src/data/tech-registry'
 import { SECTION_ICONS } from '../src/data/section-icons'
+import { splitTaskLabel } from '../src/data/task-label'
 import { escapeHtml } from './render-resume-html'
 
 /**
@@ -129,12 +130,12 @@ function techIcon(tech: string): string {
  * `withIcon` is only turned on for the skills sidebar (see below) — experience/project
  * tech badges stay text-only, unchanged.
  */
-function renderBadge(tech: string, lang: string, mode: 'dark' | 'light', withIcon = false, colorOverride?: string): string {
+function renderBadge(tech: string, lang: string, mode: 'dark' | 'light', withIcon = false, colorOverride?: string, base?: string): string {
   const color = colorOverride ?? getTechBadgeColor(tech, mode)
   const label = lang === 'fr' ? (TECH_LABEL_FR[tech] ?? tech) : tech
   const icon = withIcon ? techIcon(tech) : ''
   const display = icon ? 'inline-flex; align-items: center; gap: 0.3rem' : 'inline-block'
-  return `<span style="display: ${display}; padding: 0.22rem 0.5rem; border-radius: 4px; font-size: 0.72rem; font-weight: 500; line-height: 1.2; background: ${color}24; color: ${color}; border: 1px solid ${color}73;">${icon}${escapeHtml(label)}</span>`
+  return `<span style="display: ${display}; padding: 0.22rem 0.5rem; border-radius: 4px; font-size: 0.72rem; font-weight: 500; line-height: 1.2; background: ${base ? `linear-gradient(${color}24, ${color}24), ${base}` : `${color}24`}; color: ${color}; border: 1px solid ${color}73;">${icon}${escapeHtml(label)}</span>`
 }
 
 function renderBadges(
@@ -145,9 +146,10 @@ function renderBadges(
   marginTop = '0.4rem',
   withIcon = false,
   colorOverride?: string,
+  base?: string,
 ): string {
   if (techs.length === 0) return ''
-  return `<div style="display: flex; flex-wrap: wrap; gap: ${gap}; margin-top: ${marginTop};">${techs.map((t) => renderBadge(t, lang, mode, withIcon, colorOverride)).join('')}</div>`
+  return `<div style="display: flex; flex-wrap: wrap; gap: ${gap}; margin-top: ${marginTop};">${techs.map((t) => renderBadge(t, lang, mode, withIcon, colorOverride, base)).join('')}</div>`
 }
 
 /** Mirrors SidebarSection.tsx: small tracking-widest heading, underlined. */
@@ -230,13 +232,13 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
         const header = typeof cat.items[0].name === 'string' ? cat.items[0].name : resolve(cat.items[0].name)
         const tint = getTechBadgeColor(header, mode)
         sidebar.push(`<div style="border-radius: 8px; padding: 0.6rem; background: ${tint}1A; border: 1px solid ${tint}59; display: flex; flex-direction: column; gap: 0.75rem; position: relative; margin-top: 0.75rem; padding-top: 1.35rem;">`)
-        sidebar.push(`<div style="position: absolute; top: -0.75rem; left: 0.6rem; border-radius: 4px; background: ${colors.sidebarFrom};">${renderBadge(header, lang, mode, true)}</div>`)
+        sidebar.push(`<div style="position: absolute; top: -0.75rem; left: 0.6rem; border-radius: 4px; background: ${colors.sidebarFrom};">${renderBadge(header, lang, mode, true, undefined, colors.sidebarFrom)}</div>`)
         for (const sub of cat.subcategories) {
           const subColor = sub.colors[mode]
           const names = sub.items.map((item) => (typeof item.name === 'string' ? item.name : resolve(item.name)))
           sidebar.push(`<div>`)
           sidebar.push(`<p style="margin: 0 0 0.25rem 0; font-size: 0.7rem; font-weight: 600; color: ${subColor};">${escapeHtml(resolve(sub.title))}</p>`)
-          sidebar.push(renderBadges(names, lang, mode, '0.3rem', '0', false, subColor))
+          sidebar.push(renderBadges(names, lang, mode, '0.3rem', '0', false, subColor, colors.sidebarFrom))
           sidebar.push(`</div>`)
         }
         sidebar.push(`</div>`)
@@ -248,7 +250,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
         const names = cat.items.map((item) => (typeof item.name === 'string' ? item.name : resolve(item.name)))
         sidebar.push(`<div style="border-radius: 8px; padding: 1.35rem 0.6rem 0.6rem; background: ${frameColor}1A; border: 1px solid ${frameColor}59; position: relative; margin-top: 0.75rem;">`)
         sidebar.push(`<div style="position: absolute; top: -0.75rem; left: 0.6rem; border-radius: 4px; background: ${colors.sidebarFrom};"><span style="display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.22rem 0.5rem; border-radius: 4px; font-size: 0.72rem; font-weight: 500; line-height: 1.2; background: ${frameColor}24; color: ${colors.text}; border: 1px solid ${frameColor}73;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="${frameColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">${SECTION_ICONS[cat.frame.icon]}</svg>${escapeHtml(resolve(cat.title))}</span></div>`)
-        sidebar.push(renderBadges(names, lang, mode, '0.3rem', '0', true))
+        sidebar.push(renderBadges(names, lang, mode, '0.3rem', '0', true, undefined, colors.sidebarFrom))
         sidebar.push(`</div>`)
         continue
       }
@@ -256,7 +258,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
       sidebar.push(`<p style="margin: 0 0 0.3rem 0; font-size: 0.75rem; font-weight: 500; color: ${colors.text};">${escapeHtml(resolve(cat.title))}</p>`)
       if (cat.type === 'badges') {
         const items = cat.items.map((item) => (typeof item.name === 'string' ? item.name : resolve(item.name)))
-        sidebar.push(renderBadges(items, lang, mode, '0.3rem', '0.4rem', true))
+        sidebar.push(renderBadges(items, lang, mode, '0.3rem', '0.4rem', true, undefined, colors.sidebarFrom))
       } else {
         const items = cat.items.map((item) => {
           const name = typeof item.name === 'string' ? item.name : resolve(item.name)
@@ -351,16 +353,16 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
         main.push(`<p style="margin: 0.7rem 0 0.3rem 0; font-size: 0.78rem; font-weight: 600; color: ${colors.text};">${escapeHtml(resolve(group.title))}</p>`)
         main.push(`<ul style="margin: 0; padding: 0; list-style: none;">`)
         for (const task of group.tasks) {
-          main.push(`<li style="display: flex; align-items: baseline; gap: 0.4rem; font-size: 0.78rem; color: ${colors.textSecondary}; margin-bottom: 0.3rem;"><span style="color: ${colors.primary};">&bull;</span><div><span>${escapeHtml(resolve(task.text))}</span>`)
+          main.push(`<li style="display: flex; align-items: baseline; gap: 0.4rem; font-size: 0.78rem; color: ${colors.textSecondary}; margin-bottom: 0.3rem;"><span style="color: ${colors.primary};">&bull;</span><div><span>${(() => { const { label, rest } = splitTaskLabel(resolve(task.text)); return (label ? `<strong style="font-weight: 600; color: ${colors.text};">${escapeHtml(label)}</strong> ` : '') + escapeHtml(rest) })()}</span>`)
           if (task.techs && task.techs.length > 0) {
-            main.push(renderBadges(task.techs, lang, mode, '0.3rem', '0.25rem'))
+            main.push(renderBadges(task.techs, lang, mode, '0.3rem', '0.25rem', false, undefined, colors.bgCard))
           }
           main.push(`</div></li>`)
         }
         main.push(`</ul>`)
       }
       if (fp.techs && fp.techs.length > 0) {
-        main.push(renderBadges(fp.techs, lang, mode, '0.35rem', '0.55rem'))
+        main.push(renderBadges(fp.techs, lang, mode, '0.35rem', '0.55rem', false, undefined, colors.bgCard))
       }
       main.push(`</div>`)
     }
@@ -404,7 +406,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
         }
       }
       if (exp.techs.length > 0) {
-        main.push(renderBadges(exp.techs, lang, mode, '0.35rem', '0.55rem'))
+        main.push(renderBadges(exp.techs, lang, mode, '0.35rem', '0.55rem', false, undefined, colors.bgCard))
       }
       if (exp.subItem) {
         main.push(`<div style="margin-top: 0.5rem; padding-left: 0.6rem; border-left: 2px solid ${colors.primary}33;">`)

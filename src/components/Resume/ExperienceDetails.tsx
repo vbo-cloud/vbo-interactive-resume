@@ -1,3 +1,4 @@
+import { splitTaskLabel } from '@/data/task-label'
 import { TechBadge } from './TechBadge'
 
 /** A titled group of task lines, each optionally followed by the badges of the techs involved. */
@@ -22,13 +23,18 @@ export function ExperienceDetailsContent({ tasks, taskGroups, training, labels, 
     <div className="space-y-3">
       {taskGroups?.map((group) => (
         <div key={group.title}>
-          <p className="text-xs font-semibold text-resume-text mb-1.5">{group.title}</p>
+          <p className={`${featured ? 'text-[0.8rem]' : 'text-[0.78rem]'} font-semibold text-resume-text mb-1.5`}>{group.title}</p>
           <ul className={`${featured ? 'text-[0.8rem]' : 'text-[0.78rem]'} text-resume-text-secondary space-y-1.5`}>
-            {group.tasks.map((task, i) => (
+            {group.tasks.map((task, i) => {
+              const { label, rest } = splitTaskLabel(task.text)
+              return (
               <li key={i} className="flex items-start gap-2">
                 <span className="text-resume-primary">&#8226;</span>
                 <div>
-                  <span className="whitespace-pre-line">{task.text}</span>
+                  <span className="whitespace-pre-line">
+                    {label && <strong className="font-semibold text-resume-text">{label} </strong>}
+                    {rest}
+                  </span>
                   {task.techs && task.techs.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mt-1">
                       {task.techs.map((tech) => (
@@ -38,7 +44,8 @@ export function ExperienceDetailsContent({ tasks, taskGroups, training, labels, 
                   )}
                 </div>
               </li>
-            ))}
+              )
+            })}
           </ul>
         </div>
       ))}

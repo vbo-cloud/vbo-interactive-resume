@@ -20,7 +20,10 @@ export function Sidebar() {
   const { personal, contact, skills, values, hobbies, referents, spokenLanguages, labels } = resumeConfig
 
   return (
-    <div className="md:w-[29%] bg-gradient-to-b from-resume-sidebar-from to-resume-sidebar-to p-8">
+    <div
+      className="md:w-[29%] bg-gradient-to-b from-resume-sidebar-from to-resume-sidebar-to p-8"
+      style={{ '--badge-base': 'var(--color-resume-sidebar-from)' } as React.CSSProperties}
+    >
       {/* Photo / Profile image — priority: config > auto-detected > emoji fallback */}
       {/* Hidden on mobile: shown next to the name in MainContent instead */}
       <ProfilePhoto

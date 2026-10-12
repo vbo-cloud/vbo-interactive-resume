@@ -294,8 +294,8 @@ const TECH_BADGE_COLORS: Record<string, TechThemeColors> = {
   'PostgreSQL': { dark: '#7AA6DA', light: '#336791' },
   'pgvector': { dark: '#7AA6DA', light: '#336791' },
   'Oracle Database': { dark: '#E36A5A', light: '#B74030' },
-  'OpenAI': { dark: '#9B8CFF', light: '#6D55CD' },
-  'Claude': { dark: '#D97757', light: '#A45133' },
+  'OpenAI': { dark: '#9B8CFF', light: '#5B43BD' },
+  'Claude': { dark: '#E5896A', light: '#8F4529' },
   'Grafana': { dark: '#F58A3C', light: '#AE4A00' },
   'PostHog': { dark: '#6684FF', light: '#1D4AFF' },
   'Next.js': { dark: '#E6EDF3', light: '#111111' },
@@ -305,10 +305,10 @@ const TECH_BADGE_COLORS: Record<string, TechThemeColors> = {
   'Unreal': { dark: '#D0D4DB', light: '#333333' },
   'Netcode': { dark: '#9AA0A6', light: '#5F6368' },
   'AR': { dark: '#9AA0A6', light: '#5F6368' },
-  'Agile Methods': { dark: '#4ADE80', light: '#107937' },
+  'Agile Methods': { dark: '#4ADE80', light: '#0B5F2C' },
   // fr label for the same skill — badge text isn't language-resolved everywhere
   // it's read from, so classify both to keep the color lookup correct.
-  'Méthodes Agiles': { dark: '#4ADE80', light: '#107937' },
+  'Méthodes Agiles': { dark: '#4ADE80', light: '#0B5F2C' },
 }
 
 /** Any tech not explicitly listed above — visible and factual, never salient. */

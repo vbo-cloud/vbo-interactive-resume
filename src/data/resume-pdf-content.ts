@@ -55,22 +55,22 @@ export const pdfFeaturedProject: NonNullable<ResumeConfig['featuredProject']> = 
         },
         {
           text: {
-            en: 'Data: PostgreSQL Flexible Server on a private network, pgvector similarity search, versioned schema migrations with Alembic',
-            fr: 'Données : PostgreSQL Flexible Server en accès privé, recherche vectorielle pgvector, migrations de schéma versionnées avec Alembic',
+            en: 'Data: PostgreSQL Flexible Server and Blob Storage on a private network, pgvector similarity search, versioned schema migrations with Alembic',
+            fr: 'Données : PostgreSQL Flexible Server et Blob Storage en accès privé, recherche vectorielle pgvector, migrations de schéma versionnées avec Alembic',
           },
-          techs: ['PostgreSQL', 'pgvector', 'Alembic'],
+          techs: ['PostgreSQL', 'Blob Storage', 'pgvector', 'Alembic'],
         },
         {
           text: {
-            en: 'Architecture: Python multi-agent pipeline (Service Bus, Container App Jobs), semantic matching via pgvector, CV/offer analysis with Azure OpenAI, FastAPI backend, Next.js 14 frontend',
-            fr: 'Architecture : pipeline multi-agents Python (Service Bus, Container App Jobs), matching sémantique pgvector, analyse CV/offres avec Azure OpenAI, backend FastAPI, frontend Next.js 14',
+            en: 'Architecture: Python multi-agent pipeline (Service Bus, Container App Jobs), semantic matching via pgvector, CV/offer analysis with Foundry, FastAPI backend, Next.js 14 frontend',
+            fr: 'Architecture : pipeline multi-agents Python (Service Bus, Container App Jobs), matching sémantique pgvector, analyse CV/offres avec Foundry, backend FastAPI, frontend Next.js 14',
           },
-          techs: ['Python', 'Service Bus', 'Container Apps', 'PostgreSQL', 'pgvector', 'OpenAI', 'FastAPI', 'Next.js'],
+          techs: ['Python', 'Service Bus', 'Container Apps', 'PostgreSQL', 'pgvector', 'Foundry', 'FastAPI', 'Next.js'],
         },
         {
           text: {
-            en: 'Azure Functions: HTTP function shared with my portfolio, relaying emails with anti-spam and per-IP rate limiting, called by the API for user feedback',
-            fr: "Azure Functions : fonction HTTP mutualisée avec mon portfolio, relais d'e-mails avec anti-spam et limitation de débit par IP, appelée par l'API pour les retours utilisateurs",
+            en: 'Azure Functions: serverless function that emails the contact-form messages and user feedback, with anti-spam and per-IP rate limiting',
+            fr: "Azure Functions : fonction serverless qui envoie par e-mail les messages du formulaire de contact et les retours utilisateurs, avec anti-spam et limitation de débit par IP",
           },
           techs: ['Azure Functions'],
         },
@@ -95,20 +95,20 @@ export const pdfFeaturedProject: NonNullable<ResumeConfig['featuredProject']> = 
       tasks: [
         {
           text: {
-            en: 'Parallelized AI agents working side by side on the codebase',
-            fr: "Parallélisation d'agents IA travaillant côte à côte sur le code",
+            en: 'Parallel agents: several AI agents working side by side on the codebase',
+            fr: 'Agents en parallèle : plusieurs agents IA travaillant côte à côte sur le code',
           },
         },
         {
           text: {
-            en: 'Hooks and skills enforcing the project conventions',
-            fr: 'Hooks et skills pour faire respecter les conventions du projet',
+            en: 'Hooks and skills: enforcing the project conventions',
+            fr: 'Hooks et skills : respect des conventions du projet',
           },
         },
         {
           text: {
-            en: 'Subagents for code review, documentation and code exploration',
-            fr: "Subagents pour la revue de code, la documentation et l'exploration du code",
+            en: 'Subagents: code review, documentation and code exploration',
+            fr: "Subagents : revue de code, documentation et exploration du code",
           },
         },
       ],
@@ -275,7 +275,7 @@ const azureSubcategories: SkillSubcategory[] = [
   {
     title: { en: 'AI', fr: 'IA' },
     colors: { dark: '#A3E635', light: '#365314' },
-    items: [{ name: 'Azure Foundry' }],
+    items: [{ name: 'Foundry' }],
   },
 ]
 
@@ -323,7 +323,7 @@ export const pdfSkills: SkillCategory[] = [
     title: { en: 'AI', fr: 'IA' },
     type: 'badges',
     items: [{ name: 'OpenAI' }, { name: 'Claude' }, { name: 'LLM' }, { name: 'Agents' }],
-    frame: { colors: { dark: '#D97757', light: '#A45133' }, icon: 'bot' },
+    frame: { colors: { dark: '#38BDF8', light: '#075985' }, icon: 'bot' },
   },
   {
     title: { en: 'Observability', fr: 'Observabilité' },
@@ -335,7 +335,7 @@ export const pdfSkills: SkillCategory[] = [
     title: { en: 'Workflow', fr: 'Workflow' },
     type: 'badges',
     items: [{ name: 'Git' }, { name: { en: 'Agile Methods', fr: 'Méthodes Agiles' } }],
-    frame: { colors: { dark: '#4ADE80', light: '#107937' }, icon: 'git-branch' },
+    frame: { colors: { dark: '#F472B6', light: '#9D174D' }, icon: 'git-branch' },
   },
 ]
 

@@ -10,6 +10,12 @@ interface TechBadgeProps {
   showIcon?: boolean
 }
 
+/**
+ * Solid base under the 14% tint, so a badge never lets the block/card behind it show
+ * through. Defaults to the card background; the sidebar overrides --badge-base.
+ */
+const BADGE_BASE = 'var(--badge-base, var(--color-resume-bg-card))'
+
 /** Same style recipe for every badge: solid text, 14% tint background, 45% tint border. */
 export function TechBadge({ tech, color: colorOverride, colors, showIcon = false }: TechBadgeProps) {
   const light = colors?.light ?? colorOverride ?? getTechBadgeColor(tech, 'light')
@@ -22,7 +28,8 @@ export function TechBadge({ tech, color: colorOverride, colors, showIcon = false
       <span
         className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium border dark:hidden"
         style={{
-          backgroundColor: `${light}24`,
+          backgroundColor: BADGE_BASE,
+          backgroundImage: `linear-gradient(${light}24, ${light}24)`,
           color: light,
           borderColor: `${light}73`,
         }}
@@ -38,7 +45,8 @@ export function TechBadge({ tech, color: colorOverride, colors, showIcon = false
       <span
         className="hidden dark:inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium border"
         style={{
-          backgroundColor: `${dark}24`,
+          backgroundColor: BADGE_BASE,
+          backgroundImage: `linear-gradient(${dark}24, ${dark}24)`,
           color: dark,
           borderColor: `${dark}73`,
         }}
