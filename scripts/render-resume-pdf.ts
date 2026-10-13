@@ -140,20 +140,18 @@ function renderBadges(
   return `<div style="display: flex; flex-wrap: wrap; gap: ${gap}; margin-top: ${marginTop};">${techs.map((t) => renderBadge(t, lang, mode, withIcon, colorOverride, base)).join('')}</div>`
 }
 
-/** Mirrors SidebarSection.tsx: small tracking-widest heading, underlined. */
-function sidebarSectionTitle(label: string, colors: ReturnType<typeof resolveThemeColors>): string {
-  return `<h3 style="font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; color: ${colors.text}; margin: 0 0 0.6rem 0; padding-bottom: 0.3rem; border-bottom: 1px solid ${colors.primary}33;">${escapeHtml(label)}</h3>`
-}
-
 /** Mirrors MainContent.tsx's section headings ("EXPERIENCE", "EDUCATION", ...). */
-function mainSectionTitle(label: string, colors: ReturnType<typeof resolveThemeColors>): string {
-  return `<h2 style="font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; color: ${colors.text}; margin: 0 0 0.9rem 0; padding-bottom: 0.4rem; border-bottom: 1px solid ${colors.primary}33;">${escapeHtml(label)}</h2>`
+function mainSectionTitle(label: string, colors: ReturnType<typeof resolveThemeColors>, marginBottom = '0.9rem'): string {
+  return `<h2 style="font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; color: ${colors.text}; margin: 0 0 ${marginBottom} 0; padding-bottom: 0.4rem; border-bottom: 1px solid ${colors.primary}33;">${escapeHtml(label)}</h2>`
 }
 
 export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode: 'dark' | 'light' = 'light'): string {
   const resolve = (ls: Record<string, string>) => ls[lang] ?? Object.values(ls)[0] ?? ''
   const colors = resolveThemeColors(config, mode)
   const { personal, contact, skills, experiences, education, values, hobbies, referents, spokenLanguages } = config
+
+  // Sidebar headings (Contact, Skills, Languages) share the main column's heading size
+  const sideTitle = (label: string, c: typeof colors) => mainSectionTitle(label, c, '0.6rem')
 
   const s: string[] = []
 
@@ -166,7 +164,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
 
   if (contact.length > 0) {
     sidebar.push(`<section style="margin-bottom: 1.2rem;">`)
-    sidebar.push(sidebarSectionTitle(resolve(config.labels.sections.contact), colors))
+    sidebar.push(sideTitle(resolve(config.labels.sections.contact), colors))
     sidebar.push(`<ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.55rem;">`)
     for (const c of contact) {
       const slot = iconSlot(c.type in INLINE_ICONS ? c.type : null, colors.primary)
@@ -181,7 +179,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
 
   if (referents?.length && config.labels.sections.referent) {
     sidebar.push(`<section style="margin-bottom: 1.2rem;">`)
-    sidebar.push(sidebarSectionTitle(resolve(config.labels.sections.referent), colors))
+    sidebar.push(sideTitle(resolve(config.labels.sections.referent), colors))
     sidebar.push(`<div style="display: flex; flex-direction: column; gap: 0.6rem;">`)
     for (const referent of referents) {
       const slot = iconSlot(referent.href ? 'linkedin' : null, colors.primary)
@@ -199,14 +197,14 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
 
   if (skills.length > 0) {
     sidebar.push(`<section style="margin-bottom: 1.2rem;">`)
-    sidebar.push(sidebarSectionTitle(resolve(config.labels.sections.skills), colors))
-    sidebar.push(`<div style="display: flex; flex-direction: column; gap: 0.6rem;">`)
+    sidebar.push(sideTitle(resolve(config.labels.sections.skills), colors))
+    sidebar.push(`<div style="display: flex; flex-direction: column; gap: calc(0.6rem - 1px);">`)
     for (const cat of skills) {
       if (cat.subcategories) {
         // Mirrors SkillGroupBlock.tsx: framed block tinted with the header badge's color
         const header = typeof cat.items[0].name === 'string' ? cat.items[0].name : resolve(cat.items[0].name)
         const tint = getTechBadgeColor(header, mode)
-        sidebar.push(`<div style="border-radius: 8px; padding: 0.6rem; background: ${tint}1A; border: 1px solid ${tint}59; display: flex; flex-direction: column; gap: 0.75rem; position: relative; margin-top: 0.75rem; padding-top: 1.35rem;">`)
+        sidebar.push(`<div style="border-radius: 8px; padding: 0.6rem; background: ${tint}1A; border: 1px solid ${tint}59; display: flex; flex-direction: column; gap: calc(0.75rem - 1px); position: relative; margin-top: 0.75rem; padding-top: calc(1.35rem - 3px);">`)
         sidebar.push(`<div style="position: absolute; top: -0.75rem; left: 0.6rem; border-radius: 4px; background: ${colors.sidebarFrom};">${renderBadge(header, lang, mode, true, undefined, colors.sidebarFrom)}</div>`)
         for (const sub of cat.subcategories) {
           const subColor = sub.colors[mode]
@@ -250,7 +248,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
 
   if (values && values.length > 0 && config.labels.sections.values) {
     sidebar.push(`<section style="margin-bottom: 1.2rem;">`)
-    sidebar.push(sidebarSectionTitle(resolve(config.labels.sections.values), colors))
+    sidebar.push(sideTitle(resolve(config.labels.sections.values), colors))
     sidebar.push(`<div style="display: flex; flex-direction: column; gap: 0.2rem;">`)
     for (const v of values) {
       sidebar.push(`<p style="margin: 0; font-size: 0.8rem; color: ${colors.textSecondary};">${escapeHtml(resolve(v))}</p>`)
@@ -260,8 +258,9 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
   }
 
   if (spokenLanguages && spokenLanguages.length > 0) {
-    sidebar.push(`<section style="margin-bottom: 1.2rem;">`)
-    sidebar.push(sidebarSectionTitle(lang === 'fr' ? 'LANGUES' : 'LANGUAGES', colors))
+    // Last block of the sidebar: no trailing gap, it only costs page height
+    sidebar.push(`<section style="margin-bottom: ${hobbies?.length ? '1.2rem' : '0'};">`)
+    sidebar.push(sideTitle(lang === 'fr' ? 'LANGUES' : 'LANGUAGES', colors))
     // All languages on one line, separated by a bullet
     // Each language is wrapped in one span so "name : level" stays together as a single flex item
     const langParts = spokenLanguages.map((item) => `<span style="white-space: nowrap;"><span style="font-weight: 500; color: ${colors.text};">${escapeHtml(resolve(item.name))}</span><span style="color: ${colors.textSecondary};"> : ${escapeHtml(resolve(item.level))}</span></span>`)
@@ -272,7 +271,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
 
   if (hobbies && hobbies.length > 0 && config.labels.sections.hobbies) {
     sidebar.push(`<section>`)
-    sidebar.push(sidebarSectionTitle(resolve(config.labels.sections.hobbies), colors))
+    sidebar.push(sideTitle(resolve(config.labels.sections.hobbies), colors))
     sidebar.push(`<div style="display: flex; flex-direction: column; gap: 0.5rem;">`)
     for (const hobby of hobbies) {
       const details = (hobby.details ?? []).map((d) => resolve(d)).join(' - ')
