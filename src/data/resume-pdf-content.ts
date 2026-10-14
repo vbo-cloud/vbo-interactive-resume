@@ -1,4 +1,5 @@
-import type { ContactItem, Education, Experience, Hobby, Referent, ResumeConfig, SkillCategory } from './types'
+import { registerTechBadgeColors } from './tech-registry'
+import type { ContactItem, Education, Experience, ResumeConfig, SkillCategory, SkillSubcategory } from './types'
 
 /**
  * Canonical resume content. resume-config.ts imports most of these exports directly
@@ -10,65 +11,92 @@ import type { ContactItem, Education, Experience, Hobby, Referent, ResumeConfig,
  * that, PDF-only.
  */
 
-/** Headline + pitch shown under the name. No numbers/skills beyond what's elsewhere in this file. */
+/** Headline shown under the name. */
 export const pdfPersonal = {
   title: { en: 'DevOps / Cloud Engineer Azure — AZ-104 certified', fr: 'DevOps / Cloud Engineer Azure — certifié AZ-104' },
-  subtitle: {
-    en: 'Cloud / DevOps Engineer, AZ-104 certified, coming from a C# development background. I designed and single-handedly operate a production Azure platform, from Terraform infrastructure to monitoring. Strong interest in AI. Looking for a Cloud / DevOps role in Lyon.',
-    fr: "Ingénieur Cloud / DevOps certifié AZ-104, issu du développement C#. J'ai conçu une plateforme Azure que j'exploite seul en production, de l'infrastructure Terraform jusqu'au monitoring. Forte appétence pour l'IA. À la recherche d'un poste Cloud / DevOps à Lyon.",
-  },
 }
 
 /**
- * Job Finder, pulled out of "experiences" into its own section — the flagship
- * project shouldn't be buried under a job title it never had.
+ * Job Finder, kept apart from "experiences" (it's a personal project, not a job) but
+ * rendered as the first entry of that timeline, with its tasks split into two groups.
  */
 export const pdfFeaturedProject: NonNullable<ResumeConfig['featuredProject']> = {
   title: { en: 'Job Finder', fr: 'Job Finder' },
   type: { en: 'Independent project', fr: 'Projet indépendant' },
-  role: { en: 'DevOps / Cloud Engineer', fr: 'DevOps / Cloud Engineer' },
+  role: { en: 'Architect / DevOps / Cloud Engineer Junior', fr: 'Architect / DevOps / Cloud Engineer Junior' },
   period: { en: '09/2025 - Present', fr: '09/2025 – Aujourd\'hui' },
   url: 'https://jobfinder.vincentboutin.dev',
   description: {
-    en: 'Job Finder automates job offer sourcing and profile matching.',
-    fr: "Job Finder automatise la veille d'offres d'emploi et la mise en correspondance avec un profil.",
+    en: 'Job Finder automates job offer sourcing and profile matching:',
+    fr: "Job Finder automatise la veille d'offres d'emploi et le matching avec un profil :",
   },
-  techs: [
-    'Azure',
-    'Terraform',
-    'Python',
-    'FastAPI',
-    'PostgreSQL',
-    'pgvector',
-    'OpenAI',
-    'Claude',
-    'Service Bus',
-    'CI/CD',
-    'GitHub',
-    'Docker',
-    'Application Insights',
-    'Log Analytics',
-    'Grafana',
-    'PostHog',
+  techs: [],
+  taskGroups: [
+    {
+      tasks: [
+        {
+          text: {
+            en: 'Infrastructure as Code: idempotent PowerShell bootstrap, Azure landing zone, reusable Terraform modules',
+            fr: 'Infrastructure as Code : bootstrap PowerShell idempotent, landing zone Azure, modules Terraform réutilisables',
+          },
+          techs: ['Azure', 'PowerShell', 'Azure CLI', 'Terraform'],
+        },
+        {
+          text: {
+            en: 'CI/CD with GitHub Actions: plan and unit tests per PR, Docker build/push and apply on merge',
+            fr: 'CI/CD GitHub Actions : plan et tests unitaires par PR, build/push Docker et apply au merge',
+          },
+          techs: ['GitHub', 'CI/CD', 'Docker', 'Terraform'],
+        },
+        {
+          text: {
+            en: 'Data: PostgreSQL Flexible Server and Blob Storage, pgvector similarity search, schema migrations with Alembic',
+            fr: 'Données : PostgreSQL Flexible Server et Blob Storage, recherche vectorielle pgvector, migrations de schéma avec Alembic',
+          },
+          techs: ['PostgreSQL', 'Blob Storage', 'pgvector', 'Alembic'],
+        },
+        {
+          text: {
+            en: 'Architecture: Python multi-agent pipeline (Service Bus, Container App Jobs), semantic matching via pgvector, CV/offer analysis with Foundry, FastAPI backend, Next.js 14 frontend',
+            fr: 'Architecture : pipeline multi-agents Python (Service Bus, Container App Jobs), matching sémantique pgvector, analyse CV/offres avec Foundry, backend FastAPI, frontend Next.js 14',
+          },
+          techs: ['Python', 'Service Bus', 'Container Apps', 'PostgreSQL', 'pgvector', 'Foundry', 'FastAPI', 'Next.js'],
+        },
+        {
+          text: {
+            en: 'Azure Functions: serverless function that emails the contact-form messages and user feedback',
+            fr: "Azure Functions : fonction serverless qui envoie par e-mail les messages du formulaire de contact et les retours utilisateurs",
+          },
+          techs: ['Azure Functions'],
+        },
+        {
+          text: {
+            en: 'Security: private VNet/DNS, Key Vault, RBAC, managed identity, user authentication with Entra External ID',
+            fr: 'Sécurité : VNet/DNS privés, Key Vault, RBAC, identité managée, authentification des utilisateurs avec Entra External ID',
+          },
+          techs: ['Virtual Network', 'Private DNS', 'Key Vault', 'RBAC', 'Managed Identity', 'Microsoft Entra ID'],
+        },
+        {
+          text: {
+            en: 'Observability: Application Insights, Log Analytics, Grafana, Azure Monitor alerts, budget alerts, PostHog analytics',
+            fr: 'Observabilité : App Insights, Log Analytics, Grafana, alertes Azure Monitor, alertes budget, analytics PostHog',
+          },
+          techs: ['Application Insights', 'Log Analytics', 'Grafana', 'Azure Monitor', 'Cost Alerts', 'PostHog'],
+        },
+      ],
+    },
+    {
+      paragraph: true,
+      tasks: [
+        {
+          text: {
+            en: 'Set up an AI-assisted development workflow: AI agents working in parallel on the codebase, with subagents for review, documentation and project exploration, control hooks, and skills embedding the Azure, Terraform, Python, SQL, Next.js and Git conventions.',
+            fr: "Mise en place d'un workflow de développement assisté par IA : Agents travaillant en parallèle sur le code, avec des subagents pour la revue, la documentation et l'exploration du projet, des hooks de contrôle, et des skills qui intègrent les conventions Azure, Terraform, Python, SQL, Next.js et Git.",
+          },
+        },
+      ],
+    },
   ],
-  bullets: {
-    en: [
-      'Set up an AI-assisted development workflow: parallelized agents, hooks/skills enforcing conventions, and subagents for code review, documentation and code exploration',
-      'Infrastructure as Code: Azure landing zone, reusable Terraform modules',
-      'CI/CD with GitHub Actions: plan and tests per PR, Docker build/push and apply on merge',
-      'Architecture: Python multi-agent pipeline (Service Bus, Container App Jobs), semantic matching via pgvector, CV/offer analysis with Azure OpenAI, FastAPI backend, Next.js 14 frontend',
-      'Security: private VNet/DNS, Key Vault, least-privilege RBAC, managed identity',
-      'Observability: Application Insights, Log Analytics, Grafana, Azure Monitor alerts, budget alerts, PostHog analytics',
-    ],
-    fr: [
-      "Mise en place d'un workflow de développement assisté par agents IA, parallélisation d'agents, hooks / skills pour le respect des conventions, subagents pour la revue de code, la documentation et l'exploration du code.",
-      'Infrastructure as Code : landing zone Azure, modules Terraform réutilisables',
-      'CI/CD GitHub Actions : plan et tests par PR, build/push Docker et apply au merge',
-      'Architecture : pipeline multi-agents Python (Service Bus, Container App Jobs), matching sémantique pgvector, analyse CV/offres avec Azure OpenAI, backend FastAPI, frontend Next.js 14',
-      'Sécurité : VNet/DNS privés, Key Vault, RBAC moindre privilège, identité managée',
-      'Observabilité : App Insights, Log Analytics, Grafana, alertes Azure Monitor, alertes budget, analytics PostHog',
-    ],
-  },
 }
 
 /**
@@ -119,15 +147,15 @@ export const pdfExperiences: Experience[] = [
       tasks: {
         en: [
           'Refactored the application architecture following the MVC pattern',
-          'Rebuilt navigation (Input System), with profiles replicating 6 CAD software (Unity, Catia, SolidWorks, Inventor, Revit, SketchUp)',
-          'Profiled Save/Load performance with Superluminal, fixed ~15 issues, cutting load times by 50-70%',
+          'Rebuilt navigation (Input System), with profiles replicating 6 CAD software (Catia, SolidWorks, Revit...)',
+          'Profiled Save/Load performance with Superluminal, cutting load times by 50-70%',
           'Built the front-end of a Netcode-based multiplayer feature (session, lobby, chat)',
           'Technical exchanges with CEA and regular check-ins with cross-functional teams (progress, blockers, direction), using Agile methods (Scrum/Kanban)',
         ],
         fr: [
           "Refactorisation de l'architecture de l'application selon le modèle MVC",
-          "Refonte de la navigation (Input System), avec des profils reproduisant 6 logiciels de CAO (Unity, Catia, SolidWorks, Inventor, Revit, SketchUp)",
-          "Profilage des performances Save/Load via Superluminal, correction d'une quinzaine de bugs, temps de chargement réduits de 50 à 70%",
+          "Refonte de la navigation (Input System), avec des profils reproduisant 6 logiciels de CAO (Catia, SolidWorks, Revit...)",
+          "Profilage des performances Save/Load via Superluminal, temps de chargement réduits de 50 à 70%",
           "Développement du front-end d'une fonctionnalité multijoueur Netcode (session, lobby, chat)",
           'Échanges techniques avec le CEA et suivi régulier avec des équipes pluridisciplinaires (avancement, blocages, orientations), en méthode Agile (Scrum/Kanban)',
         ],
@@ -148,13 +176,13 @@ export const pdfExperiences: Experience[] = [
     details: {
       tasks: {
         en: [
-          'Built a 250+ item test checklist validated across 4 VR headsets before each release',
+          'Created a 250+ item test checklist to be validated across 4 VR headsets before each release',
           'Prototyped a Behavior Tree (Unity UI Builder) to simplify VR training creation',
           'Built a tool to play 360° training videos at up to 5x speed, moving QA out of the headset',
           'Delivered custom features and VR experiences on client request (Wimbledon, Andra)',
         ],
         fr: [
-          "Cahier de recette de plus de 250 items, validé sur 4 casques VR avant chaque mise en production",
+          "Création d'un cahier de recette de plus de 250 items, à valider sur 4 casques VR avant chaque mise en production",
           "Prototypage d'un Behavior Tree (Unity UI Builder) pour simplifier la création de formations VR",
           "Outil de lecture des vidéos de formation à 360° jusqu'à 5x la vitesse normale, QA déplacée hors casque",
           "Livraison de fonctionnalités et d'expériences VR sur mesure, à la demande des clients (Wimbledon, Andra)",
@@ -164,73 +192,131 @@ export const pdfExperiences: Experience[] = [
   },
 ]
 
+const azureSubcategories: SkillSubcategory[] = [
+  {
+    title: { en: 'Governance', fr: 'Gouvernance' },
+    icon: 'shield-check',
+    colors: { dark: '#B79CFF', light: '#4B30B0' },
+    items: [{ name: 'Microsoft Entra ID' }, { name: 'RBAC' }, { name: 'Tags' }, { name: 'Managed Identity' }, { name: 'Azure Policy' }],
+  },
+  {
+    title: { en: 'FinOps', fr: 'FinOps' },
+    icon: 'coins',
+    colors: { dark: '#4ADE80', light: '#0B5F2C' },
+    items: [{ name: 'Cost Management' }, { name: 'Cost Alerts' }],
+  },
+  {
+    title: { en: 'Automation', fr: 'Automatisation' },
+    icon: 'terminal',
+    colors: { dark: '#F5A55A', light: '#8A3E00' },
+    items: [{ name: 'Bicep' }, { name: 'ARM Templates' }, { name: 'Azure CLI' }, { name: 'PowerShell' }],
+  },
+  {
+    title: { en: 'Compute & containers', fr: 'Calcul & conteneurs' },
+    icon: 'box',
+    colors: { dark: '#3DD6C6', light: '#075A53' },
+    items: [
+      { name: 'Virtual Machines' },
+      { name: 'App Service' },
+      { name: 'Azure Functions' },
+      { name: 'Container Apps' },
+      { name: 'ACI' },
+      { name: 'ACR' },
+      { name: 'AKS' },
+    ],
+  },
+  {
+    title: { en: 'Networking & security', fr: 'Réseau & sécurité' },
+    icon: 'network',
+    colors: { dark: '#FF8A9A', light: '#9A1A33' },
+    items: [
+      { name: 'Virtual Network' },
+      { name: 'NSG' },
+      { name: 'Private Endpoints' },
+      { name: 'Private DNS' },
+      { name: 'Azure Firewall' },
+      { name: 'Load Balancer' },
+      { name: 'Application Gateway' },
+      { name: 'Key Vault' },
+    ],
+  },
+  {
+    title: { en: 'Data & messaging', fr: 'Données & messagerie' },
+    icon: 'database',
+    colors: { dark: '#F2D35B', light: '#664C00' },
+    items: [{ name: 'Storage Accounts' }, { name: 'Blob Storage' }, { name: 'PostgreSQL' }, { name: 'Service Bus' }],
+  },
+  {
+    title: { en: 'Observability', fr: 'Observabilité' },
+    icon: 'activity',
+    colors: { dark: '#E58AD9', light: '#82246F' },
+    items: [{ name: 'Azure Monitor' }, { name: 'Application Insights' }, { name: 'Log Analytics' }, { name: 'Grafana' }],
+  },
+  {
+    title: { en: 'Reliability', fr: 'Fiabilité' },
+    icon: 'life-buoy',
+    colors: { dark: '#A8B5C8', light: '#3E4C63' },
+    items: [{ name: 'Azure Backup' }, { name: 'Site Recovery' }],
+  },
+  {
+    title: { en: 'AI', fr: 'IA' },
+    icon: 'bot',
+    colors: { dark: '#A3E635', light: '#365314' },
+    items: [{ name: 'Foundry' }],
+  },
+]
+
+/**
+ * Sidebar colors are the source of truth: every tech listed in an Azure sub-category
+ * keeps that row's color wherever else it appears as a badge (e.g. the Job Finder task
+ * lines).
+ */
+registerTechBadgeColors(
+  Object.fromEntries(azureSubcategories.flatMap((sub) => sub.items.map((item) => [item.name as string, sub.colors] as const))),
+)
+
 /**
  * Same techs as the live site's skills, regrouped into a more DevOps-legible split:
  * Cloud is narrowed to Azure, a dedicated DevOps category picks up Terraform/Docker/
- * CI-CD, and Workflow keeps only Git and Agile Methods.
+ * CI-CD plus Git and Agile Methods.
  */
 export const pdfSkills: SkillCategory[] = [
-  { title: { en: 'Cloud', fr: 'Cloud' }, type: 'badges', items: [{ name: 'Azure' }] },
+  {
+    title: { en: 'Azure', fr: 'Azure' },
+    type: 'badges',
+    // The header badge first, then every sub-category's badges (flat list for the <noscript> fallback)
+    items: [{ name: 'Azure' }, ...azureSubcategories.flatMap((sub) => sub.items)],
+    subcategories: azureSubcategories,
+  },
   {
     title: { en: 'DevOps', fr: 'DevOps' },
     type: 'badges',
-    items: [{ name: 'Terraform' }, { name: 'Docker' }, { name: 'CI/CD' }],
+    items: [
+      { name: 'Terraform' },
+      { name: 'Docker' },
+      { name: 'CI/CD' },
+      { name: 'Git' },
+      { name: { en: 'Agile Methods', fr: 'Méthodes Agiles' } },
+    ],
+    frame: { colors: { dark: '#F58A3C', light: '#9A4000' }, icon: 'infinity' },
   },
   {
     title: { en: 'Code', fr: 'Code' },
     type: 'badges',
     items: [{ name: 'C#' }, { name: 'C++' }, { name: 'Python' }],
+    frame: { colors: { dark: '#C27BC0', light: '#68217A' }, icon: 'code' },
   },
   {
     title: { en: 'Backend', fr: 'Backend' },
     type: 'badges',
-    items: [{ name: 'FastAPI' }, { name: 'PostgreSQL' }, { name: 'pgvector' }, { name: 'Service Bus' }],
+    items: [{ name: 'FastAPI' }, { name: 'pgvector' }, { name: 'Alembic' }],
+    frame: { colors: { dark: '#1FBFAE', light: '#046358' }, icon: 'server' },
   },
   {
     title: { en: 'AI', fr: 'IA' },
     type: 'badges',
-    items: [{ name: 'OpenAI' }, { name: 'Claude' }, { name: 'Azure Foundry' }, { name: 'LLM' }],
-  },
-  {
-    title: { en: 'Observability', fr: 'Observabilité' },
-    type: 'badges',
-    items: [
-      { name: 'Application Insights' },
-      { name: 'Log Analytics' },
-      { name: 'Grafana' },
-      { name: 'PostHog' },
-    ],
-  },
-  {
-    title: { en: 'Workflow', fr: 'Workflow' },
-    type: 'badges',
-    items: [{ name: 'Git' }, { name: { en: 'Agile Methods', fr: 'Méthodes Agiles' } }],
-  },
-]
-
-/** Same hobbies as the live site, plus a PDF-only "Video games" entry. */
-export const pdfHobbies: Hobby[] = [
-  {
-    title: { en: 'Sports', fr: 'Sport' },
-    details: [
-      { en: 'Strength Training', fr: 'Musculation' },
-      { en: 'Climbing (Bouldering)', fr: 'Escalade (Bloc)' },
-    ],
-  },
-  {
-    title: { en: 'Music', fr: 'Musique' },
-    details: [
-      { en: 'Mixing', fr: 'Mix' },
-      { en: 'Organizing events for 50 people or more', fr: "Organisation d'évènements pour 50 personnes et plus" },
-    ],
-  },
-  {
-    title: { en: 'Video games', fr: 'Jeux vidéo' },
-    details: [
-      { en: 'Automation', fr: 'Automatisation' },
-      { en: 'Indie games', fr: 'Indépendants' },
-      { en: 'Competitive', fr: 'Compétitifs' },
-    ],
+    items: [{ name: 'OpenAI' }, { name: 'Claude' }, { name: 'LLM' }],
+    frame: { colors: { dark: '#38BDF8', light: '#075985' }, icon: 'bot' },
   },
 ]
 
@@ -240,14 +326,27 @@ export const pdfLanguages: NonNullable<ResumeConfig['spokenLanguages']> = [
   { name: { en: 'English', fr: 'Anglais' }, level: { en: 'TOEFL B2', fr: 'TOEFL B2' } },
 ]
 
+// "Data & messaging" is shortened to "Data" here: messaging (Service Bus) isn't part of AZ-104.
+const certTitleOverrides: Record<string, { en: string; fr: string }> = {
+  'Data & messaging': { en: 'Data', fr: 'Données' },
+}
+const azureCertTitles = (lang: 'en' | 'fr') =>
+  azureSubcategories
+    .filter((sub) => sub.title.en !== 'AI')
+    .map((sub) => certTitleOverrides[sub.title.en as string]?.[lang] ?? sub.title[lang])
+
 /** Same education list as the live site, but Master Game Programming's specialty gets an added "Agile Methods" line. */
 export const pdfEducation: Education[] = [
   {
     school: { en: 'Microsoft', fr: 'Microsoft' },
-    degree: { en: 'AZ-104 Certification', fr: 'Certification AZ-104' },
+    degree: {
+      en: 'AZ-104 Certification (Azure Administrator Associate)',
+      fr: 'Certification AZ-104 (Azure Administrator Associate)',
+    },
+    // "Azure" + the sidebar block's row titles (the AI row isn't part of AZ-104), so the two stay in sync
     specialty: {
-      en: 'Azure, Virtual Machines, Networking, Storage, Identity (Azure AD), RBAC, Monitoring, Security, Backup & Recovery, Governance, Azure CLI / PowerShell, ARM templates, Bicep',
-      fr: 'Azure, Machines Virtuelles, Réseau, Stockage, Identité (Azure AD), RBAC, Supervision, Sécurité, Sauvegarde & Restauration, Gouvernance, Azure CLI / PowerShell, ARM templates, Bicep',
+      en: ['Azure', ...azureCertTitles('en')].join(', '),
+      fr: ['Azure', ...azureCertTitles('fr')].join(', '),
     },
     period: '2026',
   },
@@ -265,15 +364,6 @@ export const pdfEducation: Education[] = [
     period: '2024',
     badge: { en: 'Jury Honors', fr: 'Félicitations du Jury' },
   },
-  {
-    school: { en: 'UPEC, Créteil', fr: 'UPEC, Créteil' },
-    degree: { en: "Bachelor's Degree in Sports Science (STAPS)", fr: 'Licence STAPS' },
-    specialty: {
-      en: 'Pedagogy, Group Coaching, Adaptability to Different Audiences, Active Listening, Motivation & Engagement',
-      fr: 'Pédagogie, Coaching de groupe, Adaptabilité à différents publics, Écoute active, Motivation & Engagement',
-    },
-    period: '2016',
-  },
 ]
 
 /** Same contact list as the live site, but Portfolio leads and spells out its URL. */
@@ -283,24 +373,4 @@ export const pdfContact: ContactItem[] = [
   { type: 'email', label: 'contact@vincentboutin.dev' },
   { type: 'phone', label: '+33 6 46 77 05 54' },
   { type: 'location', label: 'Lyon' },
-]
-
-/** Same referents as the live site, but Cédric's title gets a "CTO -" prefix. */
-export const pdfReferents: Referent[] = [
-  {
-    name: 'Samy-Adrien FOUDIL - EDF',
-    href: 'https://www.linkedin.com/in/sfoudil/',
-    title: {
-      en: 'MLOps AWS | Fullstack Python Developer',
-      fr: 'MLOps AWS | Développeur Python Fullstack',
-    },
-  },
-  {
-    name: 'Cédric BEMATOL - LS GROUP',
-    href: 'https://www.linkedin.com/in/cedric-bematol/',
-    title: {
-      en: 'CTO - Senior Software Engineer',
-      fr: 'CTO - Senior Software Engineer',
-    },
-  },
 ]
