@@ -1,11 +1,9 @@
 import { useTranslation } from '@/lib/i18n'
 import { resumeConfig } from '@/data/resume-config'
-import { assetUrl, reverseDateRange } from '@/lib/utils'
-import { detectedAssets } from 'virtual:detected-assets'
+import { reverseDateRange } from '@/lib/utils'
 import { ExperienceItem } from './ExperienceItem'
 import { ProjectItem } from './ProjectItem'
 import { EducationItem } from './EducationItem'
-import { ProfilePhoto } from './ProfilePhoto'
 import { SidebarSection } from './SidebarSection'
 import { ContactItem } from './ContactItem'
 import { ReferentItem } from './ReferentItem'
@@ -24,14 +22,6 @@ export function MainContent() {
       {/* Header */}
       <div className="mb-[1.6rem]">
         <div className="flex items-center gap-4 md:block">
-          {/* Photo — mobile only, shown to the left of the name; desktop photo lives in Sidebar */}
-          <ProfilePhoto
-            photo={(personal.photo || detectedAssets.photo) ? assetUrl(personal.photo || detectedAssets.photo!) : undefined}
-            name={personal.name}
-            emoji={personal.photoBackEmoji}
-            size="sm"
-            className="md:hidden"
-          />
           <h1 className="flex-1 text-left md:text-center text-2xl md:text-[1.55rem] font-bold tracking-[0.1em] text-resume-text">
             {personal.name.toUpperCase()}
           </h1>
@@ -78,36 +68,34 @@ export function MainContent() {
         </SidebarSection>
       ) : null}
 
-      {/* Flagship project — shown first, same ExperienceItem format as the timeline below */}
-      {featuredProject && labels.sections.featuredProject && (
-        <div className="mb-[1.6rem]">
-          <h2 className="text-[0.78rem] font-bold tracking-widest text-resume-text mb-[0.9rem] pb-[0.4rem] border-b border-resume-primary/20">
-            {resolve(labels.sections.featuredProject)}
-          </h2>
-          <ExperienceItem
-            year={reverseDateRange(resolve(featuredProject.period))}
-            company={resolve(featuredProject.title)}
-            type={featuredProject.type ? resolve(featuredProject.type) : undefined}
-            role={featuredProject.role ? resolve(featuredProject.role) : ''}
-            url={featuredProject.url}
-            description={featuredProject.description ? resolve(featuredProject.description) : ''}
-            techs={featuredProject.techs ?? []}
-            details={{ tasks: resolveArray(featuredProject.bullets) }}
-            featured
-            labels={experienceLabels}
-          />
-        </div>
-      )}
-
-      {/* Experiences */}
+      {/* Experiences — Job Finder (the featured project) leads the timeline */}
       <div className="relative">
         <h2 className="text-[0.78rem] font-bold tracking-widest text-resume-text mb-[0.9rem] pb-[0.4rem] border-b border-resume-primary/20">
           {resolve(labels.sections.experience)}
         </h2>
         <div>
+          {featuredProject && (
+            <ExperienceItem
+              year={reverseDateRange(resolve(featuredProject.period))}
+              company={resolve(featuredProject.title)}
+              type={featuredProject.type ? resolve(featuredProject.type) : undefined}
+              role={featuredProject.role ? resolve(featuredProject.role) : ''}
+              url={featuredProject.url}
+              description={featuredProject.description ? resolve(featuredProject.description) : ''}
+              techs={featuredProject.techs ?? []}
+              details={{
+                taskGroups: featuredProject.taskGroups.map((group) => ({
+                  title: group.title ? resolve(group.title) : undefined,
+                  paragraph: group.paragraph,
+                  tasks: group.tasks.map((task) => ({ text: resolve(task.text), techs: task.techs })),
+                })),
+              }}
+              labels={experienceLabels}
+            />
+          )}
           {experiences.map((exp, i) => (
             <div key={exp.id}>
-              {i > 0 && <div className="h-px w-[94%] mx-auto my-[0.85rem] bg-resume-sidebar-from" />}
+              {(i > 0 || featuredProject) && <div className="h-px w-[94%] mx-auto my-[0.65rem] bg-resume-sidebar-from" />}
               <ExperienceItem
                 year={reverseDateRange(resolve(exp.period))}
                 company={resolve(exp.company)}

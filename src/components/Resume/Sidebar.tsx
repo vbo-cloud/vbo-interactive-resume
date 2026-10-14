@@ -1,29 +1,27 @@
+import { Fragment } from 'react'
 import { useTranslation } from '@/lib/i18n'
 import { resumeConfig } from '@/data/resume-config'
-import { assetUrl } from '@/lib/utils'
-import { detectedAssets } from 'virtual:detected-assets'
 import { SidebarSection } from './SidebarSection'
 import { ContactItem } from './ContactItem'
 import { ReferentItem } from './ReferentItem'
-import { ProfilePhoto } from './ProfilePhoto'
 import { SkillCategory } from './SkillCategory'
+import { BlockFrame } from './BlockFrame'
+import { SectionTag } from './SectionTag'
+import { SkillGroupBlock } from './SkillGroupBlock'
 import { TechBadge } from './TechBadge'
+
+/** Same visual gap above the first block (under the section heading) as between two blocks. */
+const firstBlockClass = 'mt-4'
 
 export function Sidebar() {
   const { resolve } = useTranslation()
   const { personal, contact, skills, values, hobbies, referents, spokenLanguages, labels } = resumeConfig
 
   return (
-    <div className="md:w-[29%] bg-gradient-to-b from-resume-sidebar-from to-resume-sidebar-to p-8">
-      {/* Photo / Profile image — priority: config > auto-detected > emoji fallback */}
-      {/* Hidden on mobile: shown next to the name in MainContent instead */}
-      <ProfilePhoto
-        photo={(personal.photo || detectedAssets.photo) ? assetUrl(personal.photo || detectedAssets.photo!) : undefined}
-        name={personal.name}
-        emoji={personal.photoBackEmoji}
-        className="hidden md:flex justify-center mb-[1.1rem]"
-      />
-
+    <div
+      className="md:w-[29%] bg-gradient-to-b from-resume-sidebar-from to-resume-sidebar-to p-8"
+      style={{ '--badge-base': 'var(--color-resume-sidebar-from)' } as React.CSSProperties}
+    >
       {/* Subtitle — hidden on mobile: shown under the tagline in MainContent instead */}
       {personal.subtitle && (
         <p className="hidden md:block text-xs text-resume-text-secondary italic leading-relaxed text-justify mb-[1.2rem]">
@@ -59,7 +57,28 @@ export function Sidebar() {
       {/* Skills */}
       <SidebarSection title={resolve(labels.sections.skills)}>
         <div className="space-y-4">
-          {skills.map((category, i) => (
+          {skills.map((category, i) => category.subcategories ? (
+            <SkillGroupBlock
+              key={`${resolve(category.title)}-${i}`}
+              header={typeof category.items[0].name === 'string' ? category.items[0].name : resolve(category.items[0].name)}
+              subcategories={category.subcategories}
+              className={i === 0 ? firstBlockClass : undefined}
+            />
+          ) : category.frame && category.type === 'badges' ? (
+            <BlockFrame
+              key={`${resolve(category.title)}-${i}`}
+              colors={category.frame.colors}
+              className={i === 0 ? firstBlockClass : undefined}
+              header={<SectionTag label={resolve(category.title)} icon={category.frame.icon} colors={category.frame.colors} />}
+            >
+              <div className="flex flex-wrap gap-1.5">
+                {category.items.map((item) => {
+                  const techName = typeof item.name === 'string' ? item.name : Object.values(item.name)[0]
+                  return <TechBadge key={techName} tech={techName} color={item.color} showIcon />
+                })}
+              </div>
+            </BlockFrame>
+          ) : (
             <SkillCategory key={`${resolve(category.title)}-${i}`} title={resolve(category.title)}>
               {category.type === 'badges' && (
                 <div className="flex flex-wrap gap-1.5">
@@ -114,14 +133,18 @@ export function Sidebar() {
       {/* Spoken languages */}
       {spokenLanguages && spokenLanguages.length > 0 && labels.sections.languages && (
         <SidebarSection title={resolve(labels.sections.languages)}>
-          <div className="space-y-1">
+          {/* All languages on one line, separated by a bullet */}
+          <p className="text-sm flex justify-between gap-2">
             {spokenLanguages.map((item, i) => (
-              <p key={`${resolve(item.name)}-${i}`} className="text-sm">
-                <span className="font-medium text-resume-text">{resolve(item.name)}</span>
-                <span className="text-resume-text-secondary"> : {resolve(item.level)}</span>
-              </p>
+              <Fragment key={`${resolve(item.name)}-${i}`}>
+                {i > 0 && <span className="text-resume-primary">&#8226;</span>}
+                <span className="whitespace-nowrap">
+                  <span className="font-medium text-resume-text">{resolve(item.name)}</span>
+                  <span className="text-resume-text-secondary"> : {resolve(item.level)}</span>
+                </span>
+              </Fragment>
             ))}
-          </div>
+          </p>
         </SidebarSection>
       )}
 

@@ -11,8 +11,6 @@ export interface ResumeVariant {
   id: string
   /** Replaces personal.title (the headline under the name) */
   title: LocalizedString
-  /** Replaces personal.subtitle (the pitch under the headline) so it matches the headline's angle */
-  subtitle?: LocalizedString
   /**
    * Replaces featuredProject.role (the Job Finder role badge) — kept equivalent to
    * `title` so the flagship project reads as the same role the CV is targeting.
@@ -34,11 +32,7 @@ export const resumeVariants: ResumeVariant[] = [
       fr: 'Développeur C# / .NET',
       en: 'C# / .NET Developer',
     },
-    subtitle: {
-      en: 'C# / .NET developer with a game-programming background and a first professional experience on transport management software. I also designed and single-handedly operate a production Azure platform (Terraform, CI/CD, monitoring), and I am AZ-104 certified. Looking for a C# / .NET developer role in Lyon.',
-      fr: "Développeur C# / .NET issu de la programmation de jeux vidéo, avec une première expérience professionnelle sur un logiciel de gestion de transport. J'ai aussi conçu une plateforme Azure que j'exploite seul en production (Terraform, CI/CD, monitoring), et je suis certifié AZ-104. À la recherche d'un poste de développeur C# / .NET à Lyon.",
-    },
-    skillsOrder: ['Code', 'Backend', 'AI', 'DevOps', 'Cloud', 'Observability', 'Workflow'],
+    skillsOrder: ['Code', 'Backend', 'AI', 'DevOps', 'Azure'],
   },
   {
     id: 'ia',
@@ -46,14 +40,10 @@ export const resumeVariants: ResumeVariant[] = [
       fr: "Concepteur d'applications IA / Cloud Azure",
       en: 'AI Application Engineer / Azure Cloud',
     },
-    subtitle: {
-      en: 'AI application engineer on Azure, AZ-104 certified, coming from a C# development background. I designed and single-handedly operate a production multi-agent AI platform. Looking for an AI / Cloud role in Lyon.',
-      fr: "Concepteur d'applications IA sur Azure, certifié AZ-104, issu du développement C#. J'ai conçu une plateforme IA multi-agents que j'exploite seul en production. À la recherche d'un poste IA / Cloud à Lyon.",
-    },
     featuredProjectRole: {
       fr: 'Développeur IA / Cloud Azure',
       en: 'AI Developer / Cloud Azure',
     },
-    skillsOrder: ['AI', 'Backend', 'Code', 'Cloud', 'DevOps', 'Observability', 'Workflow'],
+    skillsOrder: ['AI', 'Backend', 'Code', 'Azure', 'DevOps'],
   },
 ]

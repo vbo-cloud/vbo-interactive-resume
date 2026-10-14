@@ -2,12 +2,10 @@ import type { ResumeConfig } from './types'
 import {
   pdfPersonal,
   pdfContact,
-  pdfReferents,
   pdfSkills,
   pdfFeaturedProject,
   pdfExperiences,
   pdfEducation,
-  pdfHobbies,
   pdfLanguages,
 } from './resume-pdf-content'
 
@@ -27,7 +25,6 @@ export const resumeConfig: ResumeConfig = {
     photo: '/images/photo.jpg',
     photoBackEmoji: '☁️',
     title: pdfPersonal.title,
-    subtitle: pdfPersonal.subtitle,
     location: 'Lyon',
   },
 
@@ -51,9 +48,6 @@ export const resumeConfig: ResumeConfig = {
   // ===== CONTACT =====
   contact: pdfContact,
 
-  // ===== REFERENTS =====
-  referents: pdfReferents,
-
   // ===== SKILLS =====
   skills: pdfSkills,
 
@@ -73,9 +67,6 @@ export const resumeConfig: ResumeConfig = {
   // ===== EDUCATION =====
   education: pdfEducation,
 
-  // ===== HOBBIES =====
-  hobbies: pdfHobbies,
-
   // ===== LANGUAGES (spoken) =====
   spokenLanguages: pdfLanguages,
 
@@ -90,7 +81,7 @@ export const resumeConfig: ResumeConfig = {
   // ===== THEME =====
   theme: {
     preset: 'minimal', // 'minimal' | 'warm' | 'ocean' | 'forest' | 'slate' | 'lilac'
-    defaultMode: 'dark',
+    defaultMode: 'light',
   },
 
   // ===== UI LABELS =====

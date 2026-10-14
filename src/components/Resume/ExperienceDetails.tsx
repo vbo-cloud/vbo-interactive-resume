@@ -1,19 +1,72 @@
+import { splitTaskLabel } from '@/data/task-label'
+import { TechBadge } from './TechBadge'
+
+/** A titled group of task lines, each optionally followed by the badges of the techs involved. */
+export interface ResolvedTaskGroup {
+  title?: string
+  paragraph?: boolean
+  tasks: { text: string; techs?: string[] }[]
+}
+
 interface ExperienceDetailsContentProps {
   tasks?: string[]
+  taskGroups?: ResolvedTaskGroup[]
   training?: string[]
   labels: {
     mainTasks: string
     training?: string
   }
-  featured?: boolean
 }
 
-export function ExperienceDetailsContent({ tasks, training, labels, featured = false }: ExperienceDetailsContentProps) {
+export function ExperienceDetailsContent({ tasks, taskGroups, training, labels }: ExperienceDetailsContentProps) {
   return (
     <div className="space-y-3">
+      {taskGroups?.map((group, groupIndex) => (
+        <div key={groupIndex}>
+          {group.title && <p className="text-[0.78rem] font-semibold text-resume-text mb-1.5">{group.title}</p>}
+          {group.paragraph ? (
+            <p className="text-[0.78rem] text-resume-text-secondary">
+              {group.tasks.map((task, i) => {
+                const { label, rest } = splitTaskLabel(task.text)
+                return (
+                  <span key={i}>
+                    {i > 0 && ' · '}
+                    {label && <strong className="font-semibold text-resume-text">{label} </strong>}
+                    {rest}
+                  </span>
+                )
+              })}
+            </p>
+          ) : (
+          <ul className="text-[0.78rem] text-resume-text-secondary space-y-1.5">
+            {group.tasks.map((task, i) => {
+              const { label, rest } = splitTaskLabel(task.text)
+              return (
+              <li key={i} className="flex items-start gap-2">
+                <span className="text-resume-primary">&#8226;</span>
+                <div>
+                  <span className="whitespace-pre-line">
+                    {label && <strong className="font-semibold text-resume-text">{label} </strong>}
+                    {rest}
+                  </span>
+                  {task.techs && task.techs.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-1">
+                      {task.techs.map((tech) => (
+                        <TechBadge key={tech} tech={tech} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </li>
+              )
+            })}
+          </ul>
+          )}
+        </div>
+      ))}
       {tasks && tasks.length > 0 && (
         <div>
-          <ul className={`${featured ? 'text-[0.8rem]' : 'text-[0.78rem]'} text-resume-text-secondary space-y-1`}>
+          <ul className="text-[0.78rem] text-resume-text-secondary space-y-1">
             {tasks.map((task, i) => (
               <li key={i} className="flex items-start gap-2">
                 <span className="text-resume-primary">&#8226;</span>

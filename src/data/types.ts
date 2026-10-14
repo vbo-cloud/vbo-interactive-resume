@@ -16,6 +16,8 @@ export interface ContactItem {
 
 // ===== SKILLS =====
 
+import type { SectionIconName } from './section-icons'
+
 export interface SkillCategory {
   title: LocalizedString
   type: 'badges' | 'text' | 'languages'
@@ -26,6 +28,28 @@ export interface SkillCategory {
    * in experience paragraphs. Omit to render the category as one flat badge row.
    */
   groupSizes?: number[]
+  /**
+   * Renders the category as one framed block (tinted with the color of its first item,
+   * which is also shown as the block's header) holding one titled row of badges per
+   * sub-category. `items` stays the flat list of everything, header first, so the
+   * <noscript> fallback keeps working.
+   */
+  subcategories?: SkillSubcategory[]
+  /**
+   * Frames the category in a block with its title and an icon on the top edge, like the
+   * Azure block, so every category carries the same visual weight. `colors` tints the
+   * frame and the header icon.
+   */
+  frame?: { colors: { dark: string; light: string }; icon: SectionIconName }
+}
+
+export interface SkillSubcategory {
+  title: LocalizedString
+  /** Icon shown before the row title */
+  icon?: SectionIconName
+  /** Badge color per theme for this row, checked for contrast on the block's tint */
+  colors: { dark: string; light: string }
+  items: SkillItem[]
 }
 
 export interface SkillItem {
@@ -60,6 +84,15 @@ export interface Experience {
   }
   /** PDF only: adds an italic "Full detail on my portfolio" line at the end of the entry, portfolio linked. */
   portfolioNote?: boolean
+}
+
+/** A titled group of task lines; each line can carry the badges of the techs it involved. */
+export interface FeaturedTaskGroup {
+  /** Optional heading above the group; omit it when the group's own lines already say what it is. */
+  title?: LocalizedString
+  tasks: { text: LocalizedString; techs?: string[] }[]
+  /** Renders the tasks as one running paragraph (labels in bold, separated by " · ") instead of a bullet list, to save space. */
+  paragraph?: boolean
 }
 
 // ===== PROJECTS =====
@@ -190,8 +223,8 @@ export interface ResumeConfig {
     path: string | LocalizedString
   }
   /**
-   * A standout project rendered as its own "Projet phare" section, on both the site
-   * and the PDF — pulled out of experiences so it isn't buried under a job title.
+   * A standout project (Job Finder) rendered as the first entry of the experiences
+   * timeline, on both the site and the PDF, with its tasks split into titled groups.
    */
   featuredProject?: {
     title: LocalizedString
@@ -203,7 +236,7 @@ export interface ResumeConfig {
     url?: string
     description?: LocalizedString
     techs?: (TechName | (string & {}))[]
-    bullets: LocalizedStringArray
+    taskGroups: FeaturedTaskGroup[]
   }
   theme?: {
     preset?: PresetName

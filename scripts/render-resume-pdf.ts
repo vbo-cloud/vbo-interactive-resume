@@ -3,6 +3,8 @@ import path from 'path'
 import type { ResumeConfig } from '../src/data/types'
 import { presets } from '../src/data/presets'
 import { getTechBadgeColor, getTechIcon } from '../src/data/tech-registry'
+import { SECTION_ICONS } from '../src/data/section-icons'
+import { splitTaskLabel } from '../src/data/task-label'
 import { escapeHtml } from './render-resume-html'
 
 /**
@@ -32,18 +34,6 @@ const INLINE_ICONS: Record<string, string> = {
 function iconSlot(name: string | null, color: string): string {
   const svg = name ? INLINE_ICONS[name] : undefined
   return `<span style="display: inline-block; width: 14px; height: 14px; margin-right: 0.5rem; vertical-align: -2px; color: ${color}; flex-shrink: 0;">${svg ?? ''}</span>`
-}
-
-function getImageDataUri(fileName: string): string | null {
-  try {
-    const imgPath = path.resolve(process.cwd(), 'public', 'images', fileName)
-    const buffer = fs.readFileSync(imgPath)
-    const ext = path.extname(fileName).slice(1).toLowerCase()
-    const mime = ext === 'jpg' ? 'jpeg' : ext
-    return `data:image/${mime};base64,${buffer.toString('base64')}`
-  } catch {
-    return null
-  }
 }
 
 /**
@@ -128,12 +118,12 @@ function techIcon(tech: string): string {
  * `withIcon` is only turned on for the skills sidebar (see below) — experience/project
  * tech badges stay text-only, unchanged.
  */
-function renderBadge(tech: string, lang: string, mode: 'dark' | 'light', withIcon = false): string {
-  const color = getTechBadgeColor(tech, mode)
+function renderBadge(tech: string, lang: string, mode: 'dark' | 'light', withIcon = false, colorOverride?: string, base?: string): string {
+  const color = colorOverride ?? getTechBadgeColor(tech, mode)
   const label = lang === 'fr' ? (TECH_LABEL_FR[tech] ?? tech) : tech
   const icon = withIcon ? techIcon(tech) : ''
   const display = icon ? 'inline-flex; align-items: center; gap: 0.3rem' : 'inline-block'
-  return `<span style="display: ${display}; padding: 0.22rem 0.5rem; border-radius: 4px; font-size: 0.72rem; font-weight: 500; line-height: 1.2; background: ${color}24; color: ${color}; border: 1px solid ${color}73;">${icon}${escapeHtml(label)}</span>`
+  return `<span style="display: ${display}; padding: 0.22rem 0.5rem; border-radius: 4px; font-size: 0.72rem; font-weight: 500; line-height: 1.2; background: ${base ? `linear-gradient(${color}24, ${color}24), ${base}` : `${color}24`}; color: ${color}; border: 1px solid ${color}73;">${icon}${escapeHtml(label)}</span>`
 }
 
 function renderBadges(
@@ -143,19 +133,16 @@ function renderBadges(
   gap = '0.35rem',
   marginTop = '0.4rem',
   withIcon = false,
+  colorOverride?: string,
+  base?: string,
 ): string {
   if (techs.length === 0) return ''
-  return `<div style="display: flex; flex-wrap: wrap; gap: ${gap}; margin-top: ${marginTop};">${techs.map((t) => renderBadge(t, lang, mode, withIcon)).join('')}</div>`
-}
-
-/** Mirrors SidebarSection.tsx: small tracking-widest heading, underlined. */
-function sidebarSectionTitle(label: string, colors: ReturnType<typeof resolveThemeColors>): string {
-  return `<h3 style="font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; color: ${colors.text}; margin: 0 0 0.6rem 0; padding-bottom: 0.3rem; border-bottom: 1px solid ${colors.primary}33;">${escapeHtml(label)}</h3>`
+  return `<div style="display: flex; flex-wrap: wrap; gap: ${gap}; margin-top: ${marginTop};">${techs.map((t) => renderBadge(t, lang, mode, withIcon, colorOverride, base)).join('')}</div>`
 }
 
 /** Mirrors MainContent.tsx's section headings ("EXPERIENCE", "EDUCATION", ...). */
-function mainSectionTitle(label: string, colors: ReturnType<typeof resolveThemeColors>): string {
-  return `<h2 style="font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; color: ${colors.text}; margin: 0 0 0.9rem 0; padding-bottom: 0.4rem; border-bottom: 1px solid ${colors.primary}33;">${escapeHtml(label)}</h2>`
+function mainSectionTitle(label: string, colors: ReturnType<typeof resolveThemeColors>, marginBottom = '0.9rem'): string {
+  return `<h2 style="font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; color: ${colors.text}; margin: 0 0 ${marginBottom} 0; padding-bottom: 0.4rem; border-bottom: 1px solid ${colors.primary}33;">${escapeHtml(label)}</h2>`
 }
 
 export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode: 'dark' | 'light' = 'light'): string {
@@ -163,23 +150,13 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
   const colors = resolveThemeColors(config, mode)
   const { personal, contact, skills, experiences, education, values, hobbies, referents, spokenLanguages } = config
 
+  // Sidebar headings (Contact, Skills, Languages) share the main column's heading size
+  const sideTitle = (label: string, c: typeof colors) => mainSectionTitle(label, c, '0.6rem')
+
   const s: string[] = []
 
-  // ----- Sidebar (Sidebar.tsx: photo, contact, referents, skills, values, hobbies) -----
+  // ----- Sidebar (Sidebar.tsx: contact, referents, skills, values, hobbies) -----
   const sidebar: string[] = []
-
-  const photoDataUri = getImageDataUri(personal.photo?.split('/').pop() ?? 'photo.jpg')
-  sidebar.push(`<div style="display: flex; justify-content: center; margin-bottom: 1.1rem;">`)
-  if (photoDataUri) {
-    sidebar.push(
-      `<div style="width: 96px; height: 96px; border-radius: 50%; overflow: hidden; border: 3px solid ${colors.bg}66; box-shadow: 0 6px 16px rgba(0,0,0,0.4);"><img src="${photoDataUri}" alt="${escapeHtml(personal.name)}" style="width: 100%; height: 100%; object-fit: cover;" /></div>`,
-    )
-  } else {
-    sidebar.push(
-      `<div style="width: 96px; height: 96px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, ${colors.primary}, ${colors.primaryLight}); border: 3px solid ${colors.bg}66; box-shadow: 0 6px 16px rgba(0,0,0,0.4); font-size: 2.2rem;">${personal.photoBackEmoji ?? '👨‍💻'}</div>`,
-    )
-  }
-  sidebar.push(`</div>`)
 
   if (personal.subtitle) {
     sidebar.push(`<p style="margin: 0 0 1.2rem 0; font-size: 0.76rem; font-style: italic; line-height: 1.5; text-align: justify; color: ${colors.textSecondary};">${escapeHtml(resolve(personal.subtitle))}</p>`)
@@ -187,7 +164,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
 
   if (contact.length > 0) {
     sidebar.push(`<section style="margin-bottom: 1.2rem;">`)
-    sidebar.push(sidebarSectionTitle(resolve(config.labels.sections.contact), colors))
+    sidebar.push(sideTitle(resolve(config.labels.sections.contact), colors))
     sidebar.push(`<ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.55rem;">`)
     for (const c of contact) {
       const slot = iconSlot(c.type in INLINE_ICONS ? c.type : null, colors.primary)
@@ -202,7 +179,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
 
   if (referents?.length && config.labels.sections.referent) {
     sidebar.push(`<section style="margin-bottom: 1.2rem;">`)
-    sidebar.push(sidebarSectionTitle(resolve(config.labels.sections.referent), colors))
+    sidebar.push(sideTitle(resolve(config.labels.sections.referent), colors))
     sidebar.push(`<div style="display: flex; flex-direction: column; gap: 0.6rem;">`)
     for (const referent of referents) {
       const slot = iconSlot(referent.href ? 'linkedin' : null, colors.primary)
@@ -220,14 +197,42 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
 
   if (skills.length > 0) {
     sidebar.push(`<section style="margin-bottom: 1.2rem;">`)
-    sidebar.push(sidebarSectionTitle(resolve(config.labels.sections.skills), colors))
-    sidebar.push(`<div style="display: flex; flex-direction: column; gap: 0.6rem;">`)
+    sidebar.push(sideTitle(resolve(config.labels.sections.skills), colors))
+    sidebar.push(`<div style="display: flex; flex-direction: column; gap: calc(0.6rem - 1px);">`)
     for (const cat of skills) {
+      if (cat.subcategories) {
+        // Mirrors SkillGroupBlock.tsx: framed block tinted with the header badge's color
+        const header = typeof cat.items[0].name === 'string' ? cat.items[0].name : resolve(cat.items[0].name)
+        const tint = getTechBadgeColor(header, mode)
+        sidebar.push(`<div style="border-radius: 8px; padding: 0.6rem; background: ${tint}1A; border: 1px solid ${tint}59; display: flex; flex-direction: column; gap: calc(0.75rem - 1px); position: relative; margin-top: 0.75rem; padding-top: calc(1.35rem - 3px);">`)
+        sidebar.push(`<div style="position: absolute; top: -0.75rem; left: 0.6rem; border-radius: 4px; background: ${colors.sidebarFrom};">${renderBadge(header, lang, mode, true, undefined, colors.sidebarFrom)}</div>`)
+        for (const sub of cat.subcategories) {
+          const subColor = sub.colors[mode]
+          const names = sub.items.map((item) => (typeof item.name === 'string' ? item.name : resolve(item.name)))
+          sidebar.push(`<div>`)
+          const subIcon = sub.icon ? `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">${SECTION_ICONS[sub.icon]}</svg>` : ''
+          sidebar.push(`<p style="margin: 0 0 0.25rem 0; display: flex; align-items: center; gap: 0.25rem; font-size: 0.7rem; font-weight: 600; color: ${subColor};">${subIcon}${escapeHtml(resolve(sub.title))}</p>`)
+          sidebar.push(renderBadges(names, lang, mode, '0.3rem', '0', false, subColor, colors.sidebarFrom))
+          sidebar.push(`</div>`)
+        }
+        sidebar.push(`</div>`)
+        continue
+      }
+      if (cat.frame && cat.type === 'badges') {
+        // Mirrors BlockFrame.tsx + SectionTag.tsx: tinted block, icon + title chip on the top edge
+        const frameColor = cat.frame.colors[mode]
+        const names = cat.items.map((item) => (typeof item.name === 'string' ? item.name : resolve(item.name)))
+        sidebar.push(`<div style="border-radius: 8px; padding: 1.35rem 0.6rem 0.6rem; background: ${frameColor}1A; border: 1px solid ${frameColor}59; position: relative; margin-top: 0.75rem;">`)
+        sidebar.push(`<div style="position: absolute; top: -0.75rem; left: 0.6rem; border-radius: 4px; background: ${colors.sidebarFrom};"><span style="display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.22rem 0.5rem; border-radius: 4px; font-size: 0.72rem; font-weight: 500; line-height: 1.2; background: ${frameColor}24; color: ${frameColor}; border: 1px solid ${frameColor}73;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="${frameColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">${SECTION_ICONS[cat.frame.icon]}</svg>${escapeHtml(resolve(cat.title))}</span></div>`)
+        sidebar.push(renderBadges(names, lang, mode, '0.3rem', '0', true, undefined, colors.sidebarFrom))
+        sidebar.push(`</div>`)
+        continue
+      }
       sidebar.push(`<div>`)
       sidebar.push(`<p style="margin: 0 0 0.3rem 0; font-size: 0.75rem; font-weight: 500; color: ${colors.text};">${escapeHtml(resolve(cat.title))}</p>`)
       if (cat.type === 'badges') {
         const items = cat.items.map((item) => (typeof item.name === 'string' ? item.name : resolve(item.name)))
-        sidebar.push(renderBadges(items, lang, mode, '0.3rem', '0.4rem', true))
+        sidebar.push(renderBadges(items, lang, mode, '0.3rem', '0.4rem', true, undefined, colors.sidebarFrom))
       } else {
         const items = cat.items.map((item) => {
           const name = typeof item.name === 'string' ? item.name : resolve(item.name)
@@ -243,7 +248,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
 
   if (values && values.length > 0 && config.labels.sections.values) {
     sidebar.push(`<section style="margin-bottom: 1.2rem;">`)
-    sidebar.push(sidebarSectionTitle(resolve(config.labels.sections.values), colors))
+    sidebar.push(sideTitle(resolve(config.labels.sections.values), colors))
     sidebar.push(`<div style="display: flex; flex-direction: column; gap: 0.2rem;">`)
     for (const v of values) {
       sidebar.push(`<p style="margin: 0; font-size: 0.8rem; color: ${colors.textSecondary};">${escapeHtml(resolve(v))}</p>`)
@@ -253,19 +258,20 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
   }
 
   if (spokenLanguages && spokenLanguages.length > 0) {
-    sidebar.push(`<section style="margin-bottom: 1.2rem;">`)
-    sidebar.push(sidebarSectionTitle(lang === 'fr' ? 'LANGUES' : 'LANGUAGES', colors))
-    sidebar.push(`<div style="display: flex; flex-direction: column; gap: 0.2rem;">`)
-    for (const item of spokenLanguages) {
-      sidebar.push(`<p style="margin: 0; font-size: 0.8rem;"><span style="font-weight: 500; color: ${colors.text};">${escapeHtml(resolve(item.name))}</span><span style="color: ${colors.textSecondary};"> : ${escapeHtml(resolve(item.level))}</span></p>`)
-    }
-    sidebar.push(`</div>`)
+    // Last block of the sidebar: no trailing gap, it only costs page height
+    sidebar.push(`<section style="margin-bottom: ${hobbies?.length ? '1.2rem' : '0'};">`)
+    sidebar.push(sideTitle(lang === 'fr' ? 'LANGUES' : 'LANGUAGES', colors))
+    // All languages on one line, separated by a bullet
+    // Each language is wrapped in one span so "name : level" stays together as a single flex item
+    const langParts = spokenLanguages.map((item) => `<span style="white-space: nowrap;"><span style="font-weight: 500; color: ${colors.text};">${escapeHtml(resolve(item.name))}</span><span style="color: ${colors.textSecondary};"> : ${escapeHtml(resolve(item.level))}</span></span>`)
+    // First language flush left, last flush right, bullet in between
+    sidebar.push(`<p style="margin: 0; font-size: 0.8rem; display: flex; justify-content: space-between; gap: 0.5rem;">${langParts.join(`<span style="color: ${colors.primary};">&bull;</span>`)}</p>`)
     sidebar.push(`</section>`)
   }
 
   if (hobbies && hobbies.length > 0 && config.labels.sections.hobbies) {
     sidebar.push(`<section>`)
-    sidebar.push(sidebarSectionTitle(resolve(config.labels.sections.hobbies), colors))
+    sidebar.push(sideTitle(resolve(config.labels.sections.hobbies), colors))
     sidebar.push(`<div style="display: flex; flex-direction: column; gap: 0.5rem;">`)
     for (const hobby of hobbies) {
       const details = (hobby.details ?? []).map((d) => resolve(d)).join(' - ')
@@ -291,55 +297,68 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
   }
   main.push(`</div>`)
 
-  if (config.featuredProject) {
-    const fp = config.featuredProject
-    main.push(`<div style="margin-bottom: 1.6rem;">`)
-    main.push(mainSectionTitle(lang === 'fr' ? 'PROJET PHARE' : 'FLAGSHIP PROJECT', colors))
-    main.push(`<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem;">`)
-    main.push(`<div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; min-width: 0;">`)
-    if (fp.role) {
-      main.push(`<h3 style="margin: 0; font-size: 0.92rem; font-weight: 600; color: ${colors.text}; text-transform: uppercase;">${escapeHtml(resolve(fp.role))}</h3>`)
-      main.push(`<span style="font-size: 0.92rem; color: ${colors.textSecondary};">- ${escapeHtml(resolve(fp.title))}</span>`)
-    } else {
-      main.push(`<h3 style="margin: 0; font-size: 0.92rem; font-weight: 600; color: ${colors.text};">${escapeHtml(resolve(fp.title))}</h3>`)
-    }
-    if (fp.type) {
-      main.push(`<span style="font-size: 0.68rem; font-weight: 600; padding: 0.1rem 0.45rem; border-radius: 4px; background: ${colors.primary}1a; color: ${colors.primary};">${escapeHtml(resolve(fp.type))}</span>`)
-    }
-    main.push(`</div>`)
-    main.push(`<span style="flex-shrink: 0; white-space: nowrap; font-size: 0.75rem; font-weight: 400; color: ${colors.textSecondary}cc;">${escapeHtml(resolve(fp.period))}</span>`)
-    main.push(`</div>`)
-    if (fp.url) {
-      main.push(`<a href="${escapeHtml(fp.url)}" style="display: inline-block; margin-top: 0.2rem; font-size: 0.75rem; color: ${colors.primaryLight}; text-decoration: none;">${escapeHtml(fp.url)}</a>`)
-    }
-    if (fp.description) {
-      main.push(`<p style="margin: 0.5rem 0 0 0; font-size: 0.82rem; color: ${colors.text};">${escapeHtml(resolve(fp.description))}</p>`)
-    }
-    const bullets = fp.bullets[lang] ?? Object.values(fp.bullets)[0] ?? []
-    if (bullets.length > 0) {
-      main.push(`<ul style="margin: 0.5rem 0 0 0; padding: 0; list-style: none;">`)
-      for (const bullet of bullets) {
-        main.push(`<li style="display: flex; align-items: baseline; gap: 0.4rem; font-size: 0.8rem; color: ${colors.textSecondary}; margin-bottom: 0.25rem;"><span style="color: ${colors.primary};">&bull;</span><span>${escapeHtml(bullet)}</span></li>`)
-      }
-      main.push(`</ul>`)
-    }
-    // Badges last — same order as the experiences below (description, tasks, badges).
-    if (fp.techs && fp.techs.length > 0) {
-      main.push(renderBadges(fp.techs, lang, mode, '0.35rem', '0.55rem'))
-    }
-    main.push(`</div>`)
-  }
-
-  if (experiences.length > 0) {
+  if (experiences.length > 0 || config.featuredProject) {
     main.push(`<div style="margin-bottom: 1.6rem;">`)
     main.push(mainSectionTitle(resolve(config.labels.sections.experience), colors))
     main.push(`<div style="display: flex; flex-direction: column; gap: 0;">`)
+    const fp = config.featuredProject
+    if (fp) {
+      main.push(`<div>`)
+      main.push(`<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem;">`)
+      main.push(`<div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; min-width: 0;">`)
+      if (fp.role) {
+        main.push(`<h3 style="margin: 0; font-size: 0.86rem; font-weight: 600; color: ${colors.text}; text-transform: uppercase;">${escapeHtml(resolve(fp.role))}</h3>`)
+        main.push(`<span style="font-size: 0.86rem; color: ${colors.textSecondary};">- ${escapeHtml(resolve(fp.title))}</span>`)
+      } else {
+        main.push(`<h3 style="margin: 0; font-size: 0.86rem; font-weight: 600; color: ${colors.text};">${escapeHtml(resolve(fp.title))}</h3>`)
+      }
+      if (fp.type) {
+        main.push(`<span style="font-size: 0.68rem; font-weight: 600; padding: 0.1rem 0.45rem; border-radius: 4px; background: ${colors.primary}1a; color: ${colors.primary};">${escapeHtml(resolve(fp.type))}</span>`)
+      }
+      main.push(`</div>`)
+      main.push(`<span style="flex-shrink: 0; white-space: nowrap; font-size: 0.75rem; font-weight: 400; color: ${colors.textSecondary}cc;">${escapeHtml(resolve(fp.period))}</span>`)
+      main.push(`</div>`)
+      // The link closes the summary sentence (which ends with a colon), in the site's link blue
+      if (fp.description || fp.url) {
+        const link = fp.url ? ` <a href="${escapeHtml(fp.url)}" style="color: ${mode === 'dark' ? '#60a5fa' : '#2563eb'}; text-decoration: none;">${escapeHtml(fp.url)}</a>` : ''
+        main.push(`<p style="margin: 0.55rem 0 0 0; font-size: 0.8rem; color: ${colors.text};">${fp.description ? escapeHtml(resolve(fp.description)) : ''}${link}</p>`)
+      }
+      for (const group of fp.taskGroups) {
+        main.push(`<div style="margin-top: 0.55rem;">`)
+        if (group.title) {
+          main.push(`<p style="margin: 0 0 0.3rem 0; font-size: 0.78rem; font-weight: 600; color: ${colors.text};">${escapeHtml(resolve(group.title))}</p>`)
+        }
+        if (group.paragraph) {
+          const parts = group.tasks.map((task) => {
+            const { label, rest } = splitTaskLabel(resolve(task.text))
+            return (label ? `<strong style="font-weight: 600; color: ${colors.text};">${escapeHtml(label)}</strong> ` : '') + escapeHtml(rest)
+          })
+          main.push(`<p style="margin: 0; font-size: 0.78rem; color: ${colors.textSecondary};">${parts.join(' &middot; ')}</p>`)
+          main.push(`</div>`)
+          continue
+        }
+        main.push(`<ul style="margin: 0; padding: 0; list-style: none;">`)
+        for (const task of group.tasks) {
+          main.push(`<li style="display: flex; align-items: baseline; gap: 0.4rem; font-size: 0.78rem; color: ${colors.textSecondary}; margin-bottom: 0.3rem;"><span style="color: ${colors.primary};">&bull;</span><div><span>${(() => { const { label, rest } = splitTaskLabel(resolve(task.text)); return (label ? `<strong style="font-weight: 600; color: ${colors.text};">${escapeHtml(label)}</strong> ` : '') + escapeHtml(rest) })()}</span>`)
+          if (task.techs && task.techs.length > 0) {
+            main.push(renderBadges(task.techs, lang, mode, '0.3rem', '0.25rem', false, undefined, colors.bgCard))
+          }
+          main.push(`</div></li>`)
+        }
+        main.push(`</ul>`)
+        main.push(`</div>`)
+      }
+      if (fp.techs && fp.techs.length > 0) {
+        main.push(renderBadges(fp.techs, lang, mode, '0.35rem', '0.55rem', false, undefined, colors.bgCard))
+      }
+      main.push(`</div>`)
+    }
     experiences.forEach((exp, expIndex) => {
       const periodText = reverseDateRange(resolve(exp.period))
-      if (expIndex > 0) {
+      if (expIndex > 0 || config.featuredProject) {
         // Slightly narrower and more subtle than the section heading's border —
         // colored with the sidebar's own background instead of the primary accent.
-        main.push(`<div style="height: 1px; width: 94%; margin: 1.1rem auto; background: ${colors.sidebarFrom};"></div>`)
+        main.push(`<div style="height: 1px; width: 94%; margin: 0.85rem auto; background: ${colors.sidebarFrom};"></div>`)
       }
       main.push(`<div>`)
       // Row 1: role (title) - company, then the type badge, date pinned to the right
@@ -364,7 +383,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
       if (exp.details?.tasks) {
         const tasks = exp.details.tasks[lang] ?? Object.values(exp.details.tasks)[0]
         if (tasks && tasks.length > 0) {
-          main.push(`<div style="margin-top: 0.55rem;">`)
+          main.push(`<div style="margin-top: 0.4rem;">`)
           main.push(`<ul style="margin: 0; padding: 0; list-style: none;">`)
           for (const task of tasks) {
             main.push(`<li style="display: flex; align-items: baseline; gap: 0.4rem; font-size: 0.78rem; color: ${colors.textSecondary}; margin-bottom: 0.2rem;"><span style="color: ${colors.primary};">&bull;</span><span>${escapeHtml(task)}</span></li>`)
@@ -374,7 +393,7 @@ export function renderResumePdfDocument(config: ResumeConfig, lang: string, mode
         }
       }
       if (exp.techs.length > 0) {
-        main.push(renderBadges(exp.techs, lang, mode, '0.35rem', '0.55rem'))
+        main.push(renderBadges(exp.techs, lang, mode, '0.35rem', '0.55rem', false, undefined, colors.bgCard))
       }
       if (exp.subItem) {
         main.push(`<div style="margin-top: 0.5rem; padding-left: 0.6rem; border-left: 2px solid ${colors.primary}33;">`)

@@ -294,8 +294,8 @@ const TECH_BADGE_COLORS: Record<string, TechThemeColors> = {
   'PostgreSQL': { dark: '#7AA6DA', light: '#336791' },
   'pgvector': { dark: '#7AA6DA', light: '#336791' },
   'Oracle Database': { dark: '#E36A5A', light: '#B74030' },
-  'OpenAI': { dark: '#9B8CFF', light: '#6D55CD' },
-  'Claude': { dark: '#D97757', light: '#A45133' },
+  'OpenAI': { dark: '#9B8CFF', light: '#5B43BD' },
+  'Claude': { dark: '#E5896A', light: '#8F4529' },
   'Grafana': { dark: '#F58A3C', light: '#AE4A00' },
   'PostHog': { dark: '#6684FF', light: '#1D4AFF' },
   'Next.js': { dark: '#E6EDF3', light: '#111111' },
@@ -305,14 +305,23 @@ const TECH_BADGE_COLORS: Record<string, TechThemeColors> = {
   'Unreal': { dark: '#D0D4DB', light: '#333333' },
   'Netcode': { dark: '#9AA0A6', light: '#5F6368' },
   'AR': { dark: '#9AA0A6', light: '#5F6368' },
-  'Agile Methods': { dark: '#4ADE80', light: '#107937' },
+  'Agile Methods': { dark: '#4ADE80', light: '#0B5F2C' },
   // fr label for the same skill — badge text isn't language-resolved everywhere
   // it's read from, so classify both to keep the color lookup correct.
-  'Méthodes Agiles': { dark: '#4ADE80', light: '#107937' },
+  'Méthodes Agiles': { dark: '#4ADE80', light: '#0B5F2C' },
 }
 
 /** Any tech not explicitly listed above — visible and factual, never salient. */
 const NEUTRAL_TECH_BADGE_COLOR: TechThemeColors = { dark: '#D0D4DB', light: '#333333' }
+
+/**
+ * Lets the content layer pin extra techs to a color — used so a badge in the experiences
+ * (right column) always matches the color of the same tech in the skills sidebar (left
+ * column), which is the source of truth for the Azure sub-category colors.
+ */
+export function registerTechBadgeColors(colors: Record<string, TechThemeColors>): void {
+  Object.assign(TECH_BADGE_COLORS, colors)
+}
 
 /** Resolves a tech's badge color for the given theme. Unlisted techs fall back to neutral. */
 export function getTechBadgeColor(name: string, mode: 'dark' | 'light'): string {

@@ -363,11 +363,10 @@ export function renderResumeHtml(
   // both isPdf and the <noscript> fallback (unlike before), since experiences no
   // longer duplicates it — dropping the isPdf gate here would otherwise make Job
   // Finder vanish from the SEO fallback entirely.
-  if (config.featuredProject && config.labels.sections.featuredProject) {
+  if (config.featuredProject) {
     const fp = config.featuredProject
     const fpTitle = fp.role ? `${resolve(fp.role)} - ${resolve(fp.title)}` : resolve(fp.title)
     lines.push(`${indent}  <section style="margin-bottom: ${sectionGap};">`)
-    lines.push(`${indent}    ${sectionTitle(resolve(config.labels.sections.featuredProject))}`)
     if (isPdf) {
       lines.push(`${indent}    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem;">`)
       lines.push(`${indent}      <h3 style="margin: 0 0 0.15rem 0; font-size: 1.02rem; color: ${colors.text};">${escapeHtml(fpTitle)}</h3>`)
@@ -392,11 +391,14 @@ export function renderResumeHtml(
     if (fp.techs && fp.techs.length > 0 && !isPdf) {
       lines.push(`${indent}    ${renderTechBadges(fp.techs, isPdf, true, lang)}`)
     }
-    const bullets = fp.bullets[lang] ?? Object.values(fp.bullets)[0] ?? []
-    if (bullets.length > 0) {
+    for (const group of fp.taskGroups) {
+      if (group.title) {
+        lines.push(`${indent}    <h4 style="margin: 0.5rem 0 0 0; font-size: 0.95rem; color: ${colors.text};">${escapeHtml(resolve(group.title))}</h4>`)
+      }
       lines.push(`${indent}    <ul style="margin: 0.3rem 0 0 1rem; padding: 0;">`)
-      for (const bullet of bullets) {
-        lines.push(`${indent}      <li style="margin-bottom: 0.15rem; font-size: 0.95rem; color: ${colors.text};">${escapeHtml(bullet)}</li>`)
+      for (const task of group.tasks) {
+        const techs = task.techs && task.techs.length > 0 ? ` <span style="color: ${colors.textSecondary};">(${escapeHtml(task.techs.join(', '))})</span>` : ''
+        lines.push(`${indent}      <li style="margin-bottom: 0.15rem; font-size: 0.95rem; color: ${colors.text};">${escapeHtml(resolve(task.text))}${techs}</li>`)
       }
       lines.push(`${indent}    </ul>`)
     }
