@@ -81,7 +81,7 @@ export const resumeConfig: ResumeConfig = {
   // ===== THEME =====
   theme: {
     preset: 'minimal', // 'minimal' | 'warm' | 'ocean' | 'forest' | 'slate' | 'lilac'
-    defaultMode: 'dark',
+    defaultMode: 'light',
   },
 
   // ===== UI LABELS =====
